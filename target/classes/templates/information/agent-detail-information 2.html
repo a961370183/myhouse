@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script language='javascript' th:inline="javascript">
+        /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+        var varAgentDetail = [[${agentDetail}]];
+    </script>
+    <script src="/js/jquery.js" ></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/bootstrapValidator.min.js"></script>
+    <script src="/js/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="main w1200">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="#" >
+                        <i class="icon iconfont icon-lingdang"></i>
+                        机构档案
+                    </a>
+                </li>
+                <li>
+                    <a href="/information/agentSearch">
+                        <i class="icon iconfont icon-fangzidichan"></i>
+                        中介档案
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul class="nav nav-tabs">
+                <li class="active"><a>中介信息查询</a></li>
+            </ul>
+            <div class="container">
+                <div class="form-group"></div>
+                <div class="row">
+                    中介头像
+                </div>
+
+                <div class="row">
+                    <img :src=agentDetail.imgSrc alt="中介照片">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">中介编号：</div>
+                    <div class="col-md-7">
+                        <label>
+                            {{ agentDetail.workNo }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">姓名：</div>
+                    <div class="col-md-7">
+                        <label>
+                            {{ agentDetail.name }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">联系电话：</div>
+                    <div class="col-md-7">
+                        <label>
+                            {{ agentDetail.tel }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">星级：</div>
+                    <div class="col-md-7">
+                        <label>
+                            {{ agentDetail.starLevel }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">所属机构名称：</div>
+                    <div class="col-md-7">
+                        <label>
+                            {{ agentDetail.compName }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">签约次数：</div>
+                    <div class="col-md-7">
+                        <label>
+                            {{ agentDetail.contractNum }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <button class="btn-info btn-sm" @click="comment()">评价该中介</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            list: [],
+            agentDetail: varAgentDetail,
+        },
+        created: function() {
+            this.getAll();
+        },
+        methods: {
+            getAll() {
+                var that = this;
+                var postlist = null;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: '/user',
+                        success: function (d) {
+                            that.list = d;
+                        }
+
+                    }
+                )
+            },
+            contract: function () {
+                if (this.list.userId==null) {
+                    alert("请先登陆");
+                } else if (this.list.userId===this.agentDetail.workNo) {
+                    alert("不能签约自己");
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/agent/contractAgent",
+                        data: {
+                            userId: this.list.userId,
+                            workNo: this.agentDetail.workNo,
+                            contractSrc: ""
+                        },
+                        success: function (msg) {
+                            if (msg) {
+                                alert("签约成功");
+                            } else {
+                                alert("签约失败")
+                            }
+                        },
+                        error: function () {
+                            alert("请检查网络状态");
+                        }
+                    })
+                }
+            },
+            comment: function () {
+                alert("暂未实现评论功能");
+            }
+        }
+    })
+</script>
+</html>

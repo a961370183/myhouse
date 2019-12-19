@@ -1,0 +1,217 @@
+/*先做一个整体规划，页面主体由  检索框 、房源列表框 组成*/
+#buy, #buy .buy-filter {
+    width: 1200px;      /* 固定宽是考虑到缩放时不会影响到此内容显示*/
+    margin: 0 auto;
+}
+
+/* 检索框 */
+#buy .buy-filter {
+    border: 1px solid #d0d0d0;
+    border-bottom: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 60px;
+    margin-bottom: 30px;
+}
+
+/* 房源列表框 */
+#buy .buy-box {
+    width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;   /*溢出隐藏*/
+}
+
+/*--------------------------------------*/
+
+/*----- 检索框内部细节 ------*/
+/*检索框头部-方式概览：条件筛选、地图找房*/
+/* 设置高48px*/
+#buy .buy-filter .filter-title{
+    position: relative;
+    height: 48px;
+    margin: 0 9px;
+    border-bottom: 1px dashed #e3e3e3;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+/* 标题列表，高度占满即48px，文字行高45px，基本上小布局的居中都是用行高来做*/
+#buy .buy-filter .filter-title ul {
+    height: 100%;
+    line-height: 45px;
+    list-style: none;
+}
+
+#buy .buy-filter ul, #buy .buy-filter ul li {
+    margin: 0;
+    padding: 0;
+}
+
+
+#buy .buy-filter .filter-title ul li:first-child {
+    width: 100px;
+    margin: 0 10px 0 0;
+    border-bottom: 3px solid #3e8de5;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* 左浮动 */
+#buy .buy-filter .filter-title ul li {
+    float: left;
+    width: 140px;
+    margin: 0 28px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#buy .buy-filter .filter-title .map-search {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    font-size: 0;
+    cursor: pointer;
+}
+
+a {
+    background-color:
+            transparent;
+}
+img {
+    border: 0;
+}
+/*--检索框内容部分-筛选调节列表*/
+/* 全部的筛选内容框体*/
+#buy .buy-filter .filter-content{
+
+}
+/* 每一行筛选内容框体 */
+#buy .buy-filter .filter-content .filter-box {
+    min-height: 40px;
+    margin: 0 9px;
+    border-bottom: 1px dashed #e3e3e3;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+/* 筛选内容列表 */
+#buy .buy-filter .filter-content .filter-box ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 100%;
+}
+
+/* 筛选项*/
+#buy .buy-filter .filter-content .filter-box ul li {
+    display: inline;
+    height: 40px;
+    padding: 0 10px;
+    line-height: 40px;  /* 行高40px占满整行,这样即使后面再li下有更小高度的，还是会居中 */
+    float: left;
+    text-align: center;
+    cursor: pointer;
+    /*transition: color .1s;*/
+    /*-webkit-transition:color .1s;*/
+    /*-moz-transition: color .1s;*/
+}
+
+.filter-box .fred li:hover{
+    color: #e62a2a;
+    /*font-weight: 700;*/
+}
+label{
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 0px;
+    font-weight: normal;
+}
+
+#buy .buy-filter .filter-content .filter-box ul li label{
+    height: 40px;
+    line-height: 40px;  /* 行高40px占满整行,这样即使后面再li下有更小高度的，还是会居中 */
+    text-align: center;
+    cursor: pointer;
+}
+
+#buy .buy-filter .filter-content .filter-box ul li select{
+    width: 80px;
+    vertical-align: middle;
+}
+
+#buy .buy-filter .filter-content .filter-box ul li input {
+    vertical-align: middle;
+    margin: 0 0;
+    margin-right: 5px;
+}
+
+/*#buy .buy-filter .filter-content .filter-box ul li :hover{*/
+/*  color: #e62a2a;     */
+/*  font-weight: 700;   */
+/*}*/
+/*#buy .buy-filter .filter-content .filter-box ul li :hover{*/
+
+/* 第一个项是名字，不是筛选条件，故光标不变手指*/
+#buy .buy-filter .filter-content .filter-box ul li:first-child {
+    cursor: default;
+}
+
+/* 激活的筛选项 */
+#buy .buy-filter .filter-content .filter-box ul .active {
+    color: #e62a2a;
+    font-weight: 700;
+}
+
+
+/* 已经选择的条件概览 */
+#buy .buy-filter .filter-content .filter-condition {
+    border: none;
+    overflow: hidden;
+}
+/* 选择了的条件项*/
+#buy .buy-filter .filter-content .filter-condition .condition-tag {
+    position: relative;
+    height: 28px;
+    line-height: 28px;
+    text-align: left;
+    margin-top: 6px;
+    padding-left: 5px;
+    padding-right: 30px;
+    border: 1px solid #508bd4;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+/* 每个条件右边都会有一个清除标识，这里采用一个span来表示该标志*/
+#buy .buy-filter .filter-content .filter-condition .condition-tag span {
+    position: absolute;     /* 因为父级元素是relative，所以这里的absolute是在父级元素里面的绝对定位*/
+    right: 3px;
+    top: 7px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    color: #fff;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background-color: #508bd4;
+}
+/* 排序方式选择 */
+#buy .buy-filter .filter-content .filter-orderby {
+    margin: 0;
+    padding-left: 10px;
+    border: none;
+    border-top: 1px solid #e3e3e3;
+    border-bottom: 1px solid #e3e3e3;
+    background-color: #f5f9fc;
+}
+/*  排序方式 的li , 宽80，高39*/
+#buy .buy-filter .filter-content .filter-orderby ul li {
+    width: 80px;
+    height: 38px;
+    margin: 0;
+}
+/* 排序项激活 */
+#buy .buy-filter .filter-content .filter-orderby .orderActive {
+    border-left: 1px solid #e3e3e3;
+    border-right: 1px solid #e3e3e3;
+    border-bottom: none;
+    background-color: #fff;
+}

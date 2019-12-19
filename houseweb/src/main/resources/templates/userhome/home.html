@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/" class="active">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li v-if="list.role=='中介用户'">
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li v-if="list.role=='中介用户'">
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<div class="tap">
+				<span>个人资料</span>
+			</div>
+			<div class="container">
+				<div class="">
+					<div class="col-md-12">
+						<div   id="base-info">
+							<div >
+								<div   style="background:linear-gradient(#F4F4F4,#EDEDED)">
+								</div>
+								<div>
+									<div  class="row">
+										<div  class="col-md-8">
+											<div class="container-fluid" style="margin-top: 50px">
+												<!-- ============================================================== -->
+												<!-- Start Page Content -->
+												<!-- ============================================================== -->
+												<!-- Row -->
+												<div class="row">
+													<!-- Column -->
+													<div class="col-lg-4 col-xlg-3 col-md-5">
+														<div class="card">
+															<div class="card-body">
+																<center class="m-t-30"> <img :src="this.list.img" class="rounded-circle" width="150" />
+																	<div _ngcontent-rwf-135="">
+																		<input  class="file" data-show-preview="true" name="avatar" ref="fileId" id="avatar" type="file" @change="upload()">
+
+																	</div>
+																	<h4 class="card-title m-t-10">{{this.list.nickName}}</h4>
+																	<h6 class="card-subtitle">{{this.list.emal}}</h6>
+																	<div class="row text-center justify-content-md-center">
+																	</div>
+																</center>
+															</div>
+															<div>
+																<hr> </div>
+															<div class="card-body"> <small class="text-muted">邮箱 </small>
+																<h6>{{this.list.email}}</h6> <small class="text-muted p-t-30 db">Phone</small>
+																<h6>{{this.list.tel}}</h6>
+															</div>
+														</div>
+													</div>
+													<!-- Column -->
+													<!-- Column -->
+													<div class="col-lg-8 col-xlg-9 col-md-7">
+														<div class="card">
+															<div class="card-body">
+																<form class="form-horizontal form-material">
+																	<div class="form-group">
+																		<label class="col-md-12">账号</label>
+																		<div class="col-md-8">
+																			<input type="text" disabled="true" v-model="list.userId" class="form-control form-control-line">
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-12">姓名</label>
+																		<div class="col-md-8">
+																			<input type="text" disabled="true" v-model="list.name" class="form-control form-control-line">
+																		</div>
+																		<div class="col-md-4">
+																		<button class="btn btn-primary btn-small" @click.prevent="value3()" data-toggle="modal" data-target="#myModal3">修改</button>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-12">昵称</label>
+																		<div class="col-md-8">
+																			<input type="text"  v-model="this.list.nickName" value="password" disabled="true" class="form-control form-control-line">
+																		</div>
+																		<div class="col-md-4">
+																			<button class="btn  btn-primary btn-small"  @click.prevent="value()" data-toggle="modal" data-target="#myModal">修改</button>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label for="example-email" class="col-md-12">Email</label>
+																		<div class="col-md-8">
+																			<input type="email" disabled="true" v-model="this.list.email" class="form-control form-control-line" name="example-email" id="example-email">
+																		</div>
+																		<div class="col-md-4">
+																			<button class="btn btn-primary btn-small" @click.prevent="value2()" data-toggle="modal" data-target="#myModal1">修改</button>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-12">Password</label>
+																		<div class="col-md-8">
+																			<input type="password" value="password" disabled="true" class="form-control form-control-line">
+																		</div>
+																		<div class="col-md-4">
+																			<button class="btn  btn-primary btn-small"  @click.prevent="" data-toggle="modal" data-target="#myModalp">修改</button>
+																		</div>
+																	</div>
+
+																	<div class="form-group">
+																		<label class="col-md-12">电话</label>
+																		<div class="col-md-8">
+																			<input type="text" v-model="list.tel" class="form-control form-control-line">
+																		</div>
+																	</div>
+																</form>
+																<form name="form" id="form" class="form-horizontal form-label-left ng-untouched ng-pristine ng-valid" style="margin-top:15px">
+																	<div  class="form-group">
+																		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+																			<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+																						<h4 class="modal-title" id="myModalLabel">修改内容</h4>
+																					</div>
+																					<div class="modal-body">
+																						<input type="text" v-model="innernick" >
+																					</div>
+																					<div class="modal-footer">
+																						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+																						<button type="button" class="btn btn-primary" @click="changenickName()">提交更改</button>
+																					</div>
+																				</div><!-- /.modal-content -->
+																			</div><!-- /.modal -->
+																		</div>
+																	</div>
+																	<div  class="form-group">
+
+																		<!-- 模态框（Modal） -->
+																		<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+																			<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+																						<h4 class="modal-title" id="myModalLabel3">修改内容</h4>
+																					</div>
+																					<div class="modal-body">
+																						<input type="text" v-model="innername" >
+																					</div>
+																					<div class="modal-footer">
+																						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+																						<button type="button" class="btn btn-primary" @click="changename()">提交更改</button>
+																					</div>
+																				</div><!-- /.modal-content -->
+																			</div><!-- /.modal -->
+																		</div>
+																	</div>
+																	<div  class="form-group">
+																		<div class="modal fade1" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+																			<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																						<button type="button" class="close"  aria-hidden="true"></button>
+																						<h4 class="modal-title" id="myModalLabe">修改内容</h4>
+																					</div>
+																					<div class="modal-body">
+																						<input type="text" v-model="inneremail" >
+																					</div>
+																					<div class="modal-footer">
+																						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+																						<button type="button" class="btn btn-primary" @click.prevent="changeemail()">提交更改</button>
+																					</div>
+																				</div><!-- /.modal-content -->
+																			</div><!-- /.modal -->
+																		</div>
+																	</div>
+																	<!-- 模态框（Modal） -->
+																	<div class="modal fade" id="myModalp" name="myModalp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+																		<div class="modal-dialog">
+																			<div class="modal-content">
+																				<div class="modal-header">
+																					<button type="button" class="close"  aria-hidden="true"></button>
+																					<h4 class="modal-title" id="myModalLabep">修改密码</h4>
+																				</div>
+																				<div class="modal-body">
+																					<div class="form-group">
+																						<label for="password">Password
+																							<span v-show="myflag" style="color: red" v-text="errormsg"></span>
+																						</label>
+																						<input id="password" type="password" ref="password" v-model="password" class="form-control" name="password"  data-eye required>
+																						<div class="invalid-feedback">
+
+
+																						</div>
+
+																					</div>
+																				</div>
+																				<div class="modal-footer">
+																					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+																					<button type="button" class="btn btn-primary"  @click="fun()">提交更改</button>
+																				</div>
+																			</div><!-- /.modal-content -->
+																		</div><!-- /.modal -->
+																	</div>
+
+																</form>
+															</div>
+														</div>
+													</div>
+													<!-- Column -->
+												</div>
+										</div>
+									<div>
+									</div>
+								</div>
+							</div>
+
+							<!--template bindings={}-->
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+</body>
+<script>
+
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			list:[],
+			myflag:true,
+			password:'',
+			innernick:'',
+			inneremail:'',
+			innername:'',
+			photo:'',
+			errormsg:'新密码必须6-18位 同时包含 数字,英文,字符中的两种以上',
+			innerimg:'',
+			customerHead: "",
+			defaultImg:'this.src="' + 'images/mooctest.png' + '"'
+		},
+		created(){
+			this.getAll();
+			var upload = document.getElementById("btnUpload");
+			var avatar = document.getElementById("avatar");
+			upload.onclick = function () {
+				avatar.click(); //注意IE的兼容性
+			};
+
+		},
+		watch:{
+			password(newVal, oldVal) {
+					var r= /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,18}$/
+					if(r.test(newVal)){
+						this.myflag=false;
+					}
+					else{
+						this.myflag=true;
+					}
+					console.log(this.myflag)
+
+			}
+		},
+		mounted(){
+
+
+
+		},
+		methods:{
+			upload(e) {
+				var that = this;
+				var userName=this.list.userName;
+				let formData = new window.FormData();
+				let file = this.$refs.fileId.files[0];
+				formData.append('file',file);//通过append向form对象添加数据
+				formData.append('userName',userName);//通过append向form对象添加数据
+				//利用split切割，拿到上传文件的格式
+				var src = file.name,
+				formart = src.split(".")[1];
+				//使用if判断上传文件格式是否符合
+				if (formart == "jpg" || formart == "png" ||
+						formart == "docx" || formart == "txt" ||
+						formart == "ppt" || formart == "xlsx" ||
+						formart == "zip" || formart == "rar" ||
+						formart == "doc") {
+					$.ajax({
+						url:  'user/queryImg',
+						type: 'POST',
+						cache: false,
+						data: formData,
+						//dataType: 'json',
+						//async: false,
+						processData: false,
+						contentType: false,
+					}).done(function(res) {
+						alert("上传服务器成功")
+						location.reload();
+					}).fail(function(res) {
+						alert("上传服务器失败")
+					});
+				} else {
+					alert("文件格式不支持上传");
+				}
+
+			},
+
+
+			btn() {
+				this.$refs.div.contentEditable = true
+				this.$refs.div.focus() //获取焦点
+			},
+			getAll() {
+				var that = this;
+				var postlist = null;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								console.log(d)
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+								}
+								if(that.list.role==2){
+									that.list.role='中介'
+									console.log(that.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.role)
+								}
+								if(that.list.img==null){
+									that.list.img='/images/mooctest.png'
+								}
+							}
+
+						}
+				)
+			},
+
+			value(){
+				this.innernick=this.list.nickName;
+			},
+			value2(){
+				console.log(this.inneremail)
+				this.inneremail=this.list.email;
+			},
+			value3() {
+				this.innername=this.list.name;
+			},
+			changenickName(){
+				var that=this;
+				$.ajax(
+						{
+							type: "GET",
+							url: 'user/changenick?userName='+this.list.userName+'&nickName='+this.innernick,
+							success: function (d) {
+								console.log(that.innernick)
+								alert("修改成功！")
+								location.reload();
+							},
+							error:function(d){
+								alert("修改失败，请检查网络或格式")
+							}
+
+						}
+				)
+
+			},
+			fun(){
+			if(this.myflag){
+				alert("请检查你的密码格式")
+			}
+			else{
+				$.ajax(
+						{
+							type: "GET",
+							url: 'user/changePassword?userName='+this.list.userName+'&password='+this.password,
+							success: function (d) {
+								alert("密码修改成功！")
+								window.location.href="/logout";
+							},
+							error:function(d){
+								alert("修改失败，请检查网络或格式")
+							}
+
+						}
+				)
+			}
+			},
+			changename(){
+				var that=this;
+				console.log(this.list.userName + ' ' + this.innername)
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user/changeName?userName='+this.list.userName+'&name='+this.innername,
+							success: function (d) {
+								console.log(that.innernick)
+								alert("修改成功！")
+								location.reload();
+							},
+							error:function(d){
+								alert("修改失败，请检查网络或格式")
+							}
+
+						}
+				)
+
+			},
+			changeemail(){
+				var that=this;
+
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user/changeEmail?userName='+this.list.userName+'&email='+this.inneremail,
+							success: function (d) {
+								console.log(that.inneremail)
+								alert("修改成功！nice")
+								location.reload();
+							},
+							error:function(d){
+								alert("修改失败，请检查网络或格式")
+							}
+
+						}
+				)
+
+			},
+		},
+	})
+</script>
+</html>

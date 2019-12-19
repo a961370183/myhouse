@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/ui.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
+    <title>二手房后台管理系统</title>
+    <!-- Custom CSS -->
+    <link href="/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/dist/css/style.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/vue.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/tendina.min.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/element-ui.js"></script>
+    <script type="text/javascript" src="/js/vue-router.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar" data-navbarbg="skin5">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+                    <!-- ============================================================== -->
+                    <!-- Logo -->
+                    <!-- ============================================================== -->
+
+                    <a class="navbar-brand" href="index.html">
+                        <!-- Logo icon -->
+                        <b class="logo-icon">
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="../../assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                            <!-- Light Logo icon -->
+                            <img src="../../assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
+                        </b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span class="logo-text">
+                             <!-- dark Logo text -->
+                             <img src="../../assets/images/logo-text.png" alt="homepage" class="dark-logo" />
+                            <!-- Light Logo text -->
+                             <img src="../../assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
+                        </span>
+                    </a>
+                    <!-- ============================================================== -->
+                    <!-- End Logo -->
+                    <!-- ============================================================== -->
+                    <!-- This is for the sidebar toggle which is visible on mobile only -->
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-left mr-auto">
+                        <!-- ============================================================== -->
+                        <!-- Search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+                            <form class="app-search position-absolute">
+                                <input type="text" class="form-control" placeholder="Search &amp; enter"> <a class="srh-btn"><i class="ti-close"></i></a>
+                            </form>
+                        </li>
+                    </ul>
+                    <!-- ============================================================== -->
+                    <!-- Right side toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-right">
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../../assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-wallet m-r-5 m-l-5"></i>管理员信息</a>
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-power-off m-r-5 m-l-5"></i>注销</a>
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <aside class="left-sidebar" data-sidebarbg="skin6">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <!-- User Profile-->
+                        <li>
+                            <!-- User Profile-->
+                            <div class="user-profile d-flex no-block dropdown m-t-20">
+                                <div class="user-pic"><img src="../../assets/images/users/1.jpg" alt="users" class="rounded-circle" width="40" /></div>
+                                <div class="user-content hide-menu m-l-10">
+                                    <a href="javascript:void(0)" class="" id="Userdd" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <h5 class="m-b-0 user-name font-medium">Steave Jobs <i class="fa fa-angle-down"></i></h5>
+                                        <span class="op-5 user-email">varun@gmail.com</span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Userdd">
+                                        <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> 管理员信息</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-power-off m-r-5 m-l-5"></i> 注销</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End User Profile-->
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="index.html" aria-expanded="false"><i class="fa fa-plus-square"></i> <span class="hide-menu">首页</span> </a></li>
+                        <!-- User Profile-->
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/agentpass" aria-expanded="false"><i class="mdi mdi-pencil"></i><span class="hide-menu">中介审核</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/compPunishManage" aria-expanded="false"><i class="mdi mdi-open-in-app"></i><span class="hide-menu">信息发布</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/communityManage" aria-expanded="false"><i class="mdi mdi-pentagon-outline"></i><span class="hide-menu">地图管理</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link " href="/admin/agent" aria-expanded="false"><i class="mdi mdi-face"></i><span class="hide-menu">中介管理</span></a></li>
+                        <li class="p-15 m-t-10"><a href="javascript:void(0)" class="btn btn-block create-btn text-white no-block d-flex align-items-center"><i class="mdi mdi-account-network"></i><span class="hide-menu m-l-5">机构管理</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/housereview" aria-expanded="false"><i class="mdi mdi-home"></i><span class="hide-menu">房源审核</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/housemanage" aria-expanded="false"><i class="mdi mdi-file"></i><span class="hide-menu">房源管理</span></a></li>
+                        <li class="sidebar-item"><a href="/admin/user" class="sidebar-link waves-effect waves-dark no-block sidebar-link"><i class="mdi mdi-account-network"></i><span class="hide-menu m-l-5">用户管理</span></a></li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <div class="page-breadcrumb">
+                <div class="row align-items-center">
+                    <div class="col-5">
+                        <h4 class="page-title">机构管理</h4>
+                        <div class="d-flex align-items-center">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">首页</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">已注册机构管理</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Sales chart -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Sales chart -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Table -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- title -->
+                                <div class="d-md-flex align-items-center">
+                                    <div>
+                                        <h4 class="card-title">已注册机构管理</h4>
+                                        <div class="panel-body form-inline">
+
+                                            <!-- 在Vue中，使用事件绑定机制，为元素指定处理函数的时候，如果加了小括号，就可以给函数传参了 -->
+                                            <div style="display: inline-block"> 搜索机构名关键字：</div>
+                                            <el-input  class='searchs' v-model="keywords" icon="search" style="width: 200px" placeholder="请输入各项关键字">
+                                            </el-input>
+                                            <el-button type="primary" icon="el-icon-search" round @click="search()">搜索</el-button>
+                                        </div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <div class="dl">
+                                            <el-button type="primary" round @click="addGsForm">添加新机构</el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- title -->
+                            </div>
+                            <div class="table-responsive">
+                                <template>
+                                    <el-table
+                                            :data = "companies.slice(pageSize * (currentPage-1),pageSize * (currentPage))"
+                                            style="width: 100%"
+                                            :dafault-sort="{prop:'compNo',order:'descending'}">
+                                        <el-table-column
+                                                prop="compNo"
+                                                label="机构编号"
+                                                sortable
+                                                width="120">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="compName"
+                                                label="机构名称"
+                                                sortable
+                                                width="auto">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="address"
+                                                label="地址"
+                                                width="auto">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="legalRepresentor"
+                                                label="法人代表"
+                                                sortable
+                                                width="auto">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="tel"
+                                                label="联系电话"
+                                                width="auto">
+                                        </el-table-column>
+                                        <el-table-column label="操作" width="auto">
+                                            <template slot-scope="scope">
+                                                <el-button  type="primary" icon="el-icon-edit" circle @click="bjGsForm(scope.row)">编辑</el-button>
+                                                <!--                                                <el-button  type="info" icon="el-icon-message" circle @click="bjGsForm(scope.row)">详情</el-button>-->
+                                                <el-button  type="danger" icon="el-icon-delete" circle @click="del(scope.row.compNo,scope.row.index)">删除</el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                </template>
+<!--                                    <table class="table table-bordered table-hover table-striped">-->
+<!--                                        <tbody class="display:block; max-height:200px;overflow-y: scroll;">-->
+<!--                                        &lt;!&ndash; 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 &ndash;&gt;-->
+<!--                                        &lt;!&ndash; 现在， 我们自定义了一个 search 方法，同时，把 所有的关键字，通过传参的形式，传递给了 search 方法 &ndash;&gt;-->
+<!--                                        &lt;!&ndash; 在 search 方法内部，通过 执行 for 循环， 把所有符合 搜索关键字的数据，保存到 一个新数组中，返回 &ndash;&gt;-->
+<!--                                        <tr v-for="(company, index) in companies.slice((currentPage-1)*pageSize, currentPage*pageSize)" >-->
+<!--                                            <td style="width: 40px;text-align: center" v-text="company.compNo"></td>-->
+<!--                                            <td style="width: 80px;text-align: center" v-text="company.compName"></td>-->
+<!--                                            <td style="width: 80px;text-align: center" v-text="company.address"></td>-->
+<!--                                            <td style="width: 50px;text-align: center"v-text="company.legalRepresentor" ></td>-->
+<!--                                            <td style="width: 150px;text-align: center" v-text="company.tel"></td>-->
+<!--                                            <td style="width: 80px;text-align: center">-->
+<!--                                                <el-button style="margin-left: auto" type="danger" icon="el-icon-delete" circle @click="del(company.compNo, index)"></el-button>-->
+<!--                                                <el-button style="margin-left: auto" type="primary" icon="el-icon-edit" circle @click="bjGsForm(company)"></el-button>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+
+<!--                                        </tbody>-->
+<!--                                    </table>-->
+                                    <el-dialog :title="title" class="dialogAdd" width="600px"  :visible.sync="dialogAddgsVisible"  @close="closeDialogAddgsVisible">
+                                        <el-form :model="addForm" ref="addForm" style="margin-right: 20px;" label-position="right" label-width="110px">
+                                            <el-form-item label="机构名称:"  prop="compName" :rules="{required:true,min:0,message:'请输入机构名称',trigger:'blur'}">
+                                                <el-input   placeholder="请输入内容" v-model="addForm.compName" ></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="资质证书号:" prop="qualifyNo" :rules="{required:true,min:0,max:100,message:'请输入资质证书号',trigger:'blur'}">
+                                                <el-input   placeholder="请输入内容" v-model="addForm.qualifyNo"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="地址:" prop="address" :rules="{required:true,min:0,max:1000,message:'请输入地址',trigger:'blur'}">
+                                                <el-input   placeholder="请输入内容" v-model="addForm.address"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="营业执照号:" prop="licenseNo" :rules="{required:true,min:18,max:18,message:'请输入营业执照号,长度为18',trigger:'blur'}">
+                                                <el-input   placeholder="请输入内容" v-model="addForm.licenseNo"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="门店数量:" prop="storesNum" :rules="{required:true,min:0,message:'请输入门店数量',trigger:'blur',type:'number'}" >
+                                                <el-input   placeholder="请输入内容" v-model.number="addForm.storesNum"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="注册资金:" prop="registFund" :rules="{required:true,min:0,message:'请输入注册资金',trigger:'blur',type:'number'}">
+                                                <el-input   placeholder="请输入内容" v-model.number="addForm.registFund"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="法人代表:" prop="legalRepresentor" :rules="{required:true,min:1,message:'请输入法人代表',trigger:'blur'}">
+                                                <el-input   placeholder="请输入内容" v-model="addForm.legalRepresentor"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="员工总数:" prop="employeeNum" :rules="{required:true,min:0,message:'请输入员工数量',trigger:'blur',type:'number'}">
+                                                <el-input   placeholder="请输入内容" v-model.number="addForm.employeeNum"></el-input>
+                                            </el-form-item>
+                                            <el-form-item label="联系电话:" prop="tel" :rules="{required:true,min:0,message:'请输入联系电话',trigger:'blur'}">
+                                                <el-input   placeholder="请输入内容" v-model="addForm.tel"></el-input>
+                                            </el-form-item>
+                                        </el-form>
+                                        <div slot="footer" class="dialog-footer">
+                                            <el-button size="mini" @click="dialogAddgsVisible = false">取 消</el-button>
+                                            <el-button size="mini" type="primary" @click="saveAddForm('addForm')">确 定</el-button>
+                                        </div>
+                                    </el-dialog>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <el-pagination
+                        @size-change=""
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10]"
+                        :page-size="this.pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="this.companies.length">
+                </el-pagination>
+                <!-- ============================================================== -->
+                <!-- Table -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Recent comment and chats -->
+                <!-- ============================================================== -->
+
+                <!-- ============================================================== -->
+                <!-- Recent comment and chats -->
+                <!-- ============================================================== -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <footer class="footer text-center">
+                长沙市住房保障和房产管理局版权所有 © 隐私保护
+
+                开发小组人员：王知往 周世焕 凌城军 李祉臻 黄滔 吐努克
+
+                字节跳动开发小组提供技术支持
+            </footer>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/dist/js/app-style-switcher.js"></script>
+    <!--Wave Effects -->
+    <script src="/dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="/dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="/dist/js/custom.js"></script>
+    <!--This page JavaScript -->
+    <!--chartis chart-->
+    <script src="/assets/libs/chartist/dist/chartist.min.js"></script>
+    <script src="/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
+    <script src="/dist/js/pages/dashboards/dashboard1.js"></script>
+</div>
+</body>
+<script>
+    var vm = new Vue(
+        {
+            el:"#app",
+            data:{
+                companies: [],
+                keywords: "",
+                currentPage: 1,
+                total: 0,
+                pageSize: 10,
+                addForm:{
+                    compNo:"",
+                    compName:"",
+                    qualifyNo:"",
+                    address:"",
+                    licenseNo:"",
+                    storesNum:"",
+                    registFund:"",
+                    legalRepresentor:"",
+                    employeeNum:"",
+                    tel:""
+                },
+                dialogAddgsVisible:false,
+                title:'',
+                collapseBtnClick:false,
+
+            },
+            created(){
+                this.getCompanies();
+            },
+            methods:{
+                getCompanies: function() {
+                    var that = this;
+                    $.ajax({
+                        type: "POST",
+                        url: "/company/getCompanies",
+                        data: {
+                            compName: that.keywords
+                        },
+                        success: function (companies) {
+                            that.companies = companies;
+                            that.total = companies.length;
+                        },
+                        error: function () {
+                            alert("请检查网络状态");
+                        }
+                    })
+                },
+                handleCurrentChange: function(currentPage){
+                    this.currentPage = currentPage;
+                },
+                search(keywords) { // 根据关键字，进行数据的搜索
+                    this.getCompanies(keywords);
+                    // return newList
+                },
+                addGsForm(){
+                    this.dialogAddgsVisible = true;
+                    this.title="新增"
+                },
+                closeDialogAddgsVisible(){
+                    this.$refs.addForm.resetFields();//element封装的方法,清空模态框的值
+                    this.title="" //初始化title的值
+                    this.addForm={//初始化addForm中的值
+                        compName:"",
+                        qualifyNo:"",
+                        address:"",
+                        licenseNo:"",
+                        storesNum:"",
+                        registFund:"",
+                        legalRepresentor:"",
+                        employeeNum:"",
+                        tel:"",
+                    }
+                },
+                bjGsForm(val){
+                    console.log(val)
+                    this.dialogAddgsVisible = true;
+                    this.title="编辑"
+                    this.addForm.compNo=val.compNo;
+                    this.addForm.compName=val.compName
+                    this.addForm.qualifyNo=val.qualifyNo
+                    this.addForm.address=val.address
+                    this.addForm.tel=val.tel
+                    this.addForm.storesNum=val.storesNum
+                    this.addForm.licenseNo=val.licenseNo
+                    this.addForm.employeeNum=val.employeeNum
+                    this.addForm.legalRepresentor=val.legalRepresentor
+                    this.addForm.registFund=val.registFund
+                },
+                saveAddForm(addForm) {
+                    var that = this;
+                    if (this.title === "新增") {
+                        that.addForm.compNo = null;
+                    }
+                    that.$refs[addForm].validate(valid=>{
+                        if(valid){
+                            $.ajax({
+                                type: "POST",
+                                url: "/company/setCompanies",
+                                data:JSON.stringify({
+                                    "compNo":this.addForm.compNo,
+                                    "compName":this.addForm.compName,
+                                    "qualifyNo":this.addForm.qualifyNo,
+                                    "address":this.addForm.address,
+                                    "licenseNo":this.addForm.licenseNo,
+                                    "storesNum":this.addForm.storesNum,
+                                    "registFund":this.addForm.registFund,
+                                    "legalRepresentor":this.addForm.legalRepresentor,
+                                    "employeeNum":this.addForm.employeeNum,
+                                    "tel":this.addForm.tel
+                                }),
+                                contentType: 'application/json',
+                                dataType:'json',
+                                success: function (temp) {
+                                    if(that.title === '新增'){
+                                        if(temp){
+                                            alert("添加成功");
+                                            window.location.reload();
+                                        }else{
+                                            alert("添加失败");
+                                            window.location.reload();
+                                        }
+                                    }else if(that.title === "编辑") {
+                                        if(temp){
+                                            alert("修改成功");
+                                            window.location.reload();
+                                        }else{
+                                            alert("修改失败");
+                                            window.location.reload();
+                                        }
+                                    }
+                                },
+                                error: function () {
+                                    alert("请检查网络状态");
+                                }
+                            })
+                        }else{
+                            alert("请填写完整信息");
+                        }
+                    })
+                },
+                del(compNo, index) {
+                    var that=this;
+                    this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        $.ajax(
+                            {
+                                type: "POST",
+                                url: '/company/delCompany',
+                                data:{
+                                    compNo:compNo
+                                },
+                                success: function () {
+                                    that.companies.splice(index, 1);
+                                }
+                            }
+                        )
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                }
+            }
+        }
+    )
+</script>
+
+</html>

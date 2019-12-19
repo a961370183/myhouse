@@ -1,0 +1,32 @@
+*{font-family: "microsoft yahei";box-sizing: border-box;padding: 0;margin: 0;color: inherit;}
+body{background: #f1f1f1;}
+img{border: none;}
+ul{list-style: none;}
+a{text-decoration: none;}
+.w1200{width: 1200px;height: auto;margin: 0 auto;overflow: hidden;font-size: 16px;}
+.header{width: 100%;height: auto;overflow: hidden;margin-bottom: 20px;}
+.header .bar .l{float: left;}
+.header .bar .l font{font-size: 22px;border-left: 1px solid #fff;margin-left: 20px;padding-left: 20px;}
+.header .bar .r{float: right;}
+.header .bar .r i{padding-right: 10px;}
+.header .user-info{height: 100px;width: 100%;background: url(../images/user_info_bg.jpg) center center no-repeat;background-size: cover;}
+.header .user-info .user-headface{float: left;width: 75px;height: 75px;overflow: hidden;border-radius: 50%;margin-top: 12px;}
+.header .user-info .user-headface img{width: 100%;height: 100%;}
+.header .user-info .user-account{float: left;margin-top: 25px;padding-left: 20px;color: #666;}
+.header .user-info .user-account .tip{margin-bottom: 5px;}
+.header .user-info .user-account .account span{font-size: 13px;padding-right: 20px;}
+.main .left{float: left;width: 200px;height: auto;overflow: hidden;margin-right: 20px;background: #fff;}
+.main .left ul li{width: 100%;height: 50px;line-height: 50px;color: #666666;}
+.main .left ul li a{display: block;width: 100%;height: 100%;padding-left: 20px;}
+.main .left ul li a i{font-size: 20px;padding-right: 5px;}
+.main .right{float: left;width: 980px;height: auto;overflow: hidden;}
+.main .right .container{width: 100%;height: auto;overflow: hidden;background: #fff;}
+.main .right .container .no-doc{width: 100%;height: 350px;text-align: center;color: #999;font-size: 13px;}
+.main .right .container .no-doc img{padding-top: 80px;}
+.main .right .container .row .QBlock{position: relative;  margin: 25px;  border: 5px solid #fafbfd; text-align: left; width: auto;}
+.main .right .container .row .QBlock .Question{margin: 25px; border-bottom: 2px solid #e6ecf5;overflow: hidden;}
+.main .right .container .row .QBlock .Answer{padding:25px; background-color: #fafbfd;overflow: hidden;}
+.user-headface{float: left;width: 75px;height: 75px;overflow: hidden;border-radius: 50%;margin-top: 12px;}
+.user-headface img{width: 100%;height: 100%;}
+.deleteQA{text-align: center;color: white;background-color: #62A8D1;width: 100%;}
+.deleteQA:hover{background-color: #62A8D1}

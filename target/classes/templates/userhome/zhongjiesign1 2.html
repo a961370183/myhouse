@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="/css/elementui.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="/js/element-ui.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/js/vue-router.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue" class="active">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li><a href="/userhome/zhongjieqianyue">中介签约</a></li>
+				<li><a href="/userhome/zhongjiemanage">我签约的中介</a></li>
+				<li class="active"><a href="#">中介认证</a></li>
+			</ul>
+			<div class="container">
+				<div style="margin-top: 20px;margin-bottom: 10px">
+				<el-page-header @back="goBack" content="认证页面">
+				</el-page-header>
+					<hr>
+				</div>
+				</div>
+				<el-form ref="form" :model="form" id="form" name="form"  :rules="rules" label-width="80px">
+					<el-form-item prop="name"  label="经纪姓名">
+						<el-col :span="3">
+						<el-input v-model="form.name" ></el-input>
+						</el-col>
+					</el-form-item>
+					<el-form-item prop="compNo"  label="所属公司">
+						<el-select  placeholder="请选择所属经纪公司"  v-model="form.compNo">
+							<el-option value="">请选择</el-option>
+							<el-option v-for="item in company"
+										:label="item.compName"
+										:value='item.compNo'>
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item prop="type" label="证件类型">
+						<el-col :span="6">
+						<el-select ref="upload" v-model="form.type" name="type" placeholder="请选择证件类型" >
+							<el-option value="">请选择</el-option>
+							<el-option label="经纪备案" value="0"></el-option>
+							<el-option label="全国房地产经纪人协理证" value="1"></el-option>
+						</el-select>
+						</el-col>
+					</el-form-item>
+					<el-form-item prop="cardId"  label="证件编号">
+						<el-col :span="12">
+							<el-input v-model="form.cardId"></el-input>
+						</el-col>
+					</el-form-item>
+					<el-form-item prop="tel"  label="电话号码">
+						<el-col :span="12">
+							<el-input v-model="form.tel"></el-input>
+						</el-col>
+					</el-form-item>
+					<el-form-item label="证件照片" prop="file" ref="uploadElement">
+						<el-upload ref="upload"
+								class="upload-demo"
+								action="/agent/upload"
+								 :on-change="handleChange"
+								:before-upload="beforeUpload"
+								multiple
+								:auto-upload="false"
+								:data="form"
+								:file-list="fileList"
+								   list-type="picture">
+							<el-button size="small" type="primary">点击上传</el-button>
+							<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+						</el-upload>
+						<el-button size="small" type="primary" @click="dialogFormVisible = true">照片上传范例</el-button>
+					</el-form-item>
+				</el-form>
+				<el-button size="large" type="primary" @click="onSubmit('form')">提交认证</el-button>
+				<el-dialog title="上传示例" :visible.sync="dialogFormVisible">
+					<el-form >
+						<div class="block" style="text-align: center">
+							<el-image src="/images/card2.jpg"></el-image>
+							<p align="center"><font color="#003366" face="楷体_GB2312">身份证（正面）</font></p>
+						</div>
+						<div class="block" style="text-align: center">
+							<el-image src="/images/card3.jpg"></el-image>
+							<p align="center"><font color="#003366" face="楷体_GB2312">身份证（背面）</font></p>
+						</div>
+						<div class="block" style="text-align: center">
+							<el-image src="/images/card1.jpg"></el-image>
+							<p align="center"><font color="#003366" face="楷体_GB2312">证书（有效内页）</font></p>
+						</div>
+<!--						<div class="block">-->
+<!--							<span class="demonstration">默认</span>-->
+<!--							<el-image src="images/card2.jpg"></el-image>-->
+<!--						</div>-->
+<!--						<div class="block">-->
+<!--							<span class="demonstration">默认</span>-->
+<!--							<el-image src="images/card3.jpg"></el-image>-->
+					</el-form>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="dialogFormVisible = false">关闭</el-button>
+					</div>
+				</el-dialog>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			formLabelWidth: '120px',
+			dialogFormVisible:false,
+			list:[],
+			src:'',
+			company:[],
+			customerHead: "",
+			form:{
+				userId:'',
+				id:'',
+				compNo:'',
+				type:'',
+				name: '',
+				cardId:'',
+				tel:'',
+			},
+			fileList: [],
+			formdata:new FormData(),
+			rules: {
+				name: [//需要验证的字段名，下面的只是栗子，有些不能同时存在一个验证内
+					{ required: true, message: '请输入姓名', trigger: 'blur' },
+					{ min: 2, max: 10, message: '长度在 2 到 10 个中文', trigger: 'blur' },
+					{
+						required: true,
+						pattern: /^[\u4e00-\u9fa5]+$/,
+						message: '姓名不支持特殊字符',
+						trigger: 'blur'
+					}
+				],
+				cardId:[
+					{ required: true, message: '请输入证件编号', trigger: 'blur' },
+					{
+						required: true,
+						pattern: /^\d{12}$/,
+						message: '证件编码为12位',
+						trigger: 'blur'
+					}
+				],
+				tel:[
+					{ required: true, message: '请输入电话号码', trigger: 'blur' },
+					{
+						required: true,
+						pattern: /^\d{11}$/,
+						message: '电话号码为11位',
+						trigger: 'blur'
+					}
+				],
+				type:[
+					{ required: true, message: '请选择', trigger:'change'  }
+				],
+				compNo: [
+					{required: true, message: '请选择公司', trigger: 'blur'},
+					{
+						type:'number',required:true,message:'请选择',trigger:'change'
+					}
+				]
+			},
+		},
+
+		created(){
+			this.getAll();
+			this.getCompany();
+		},
+
+		mounted(){
+			this.formData = new FormData();
+
+		},
+		methods:{
+			goBack() {
+				window.location.href="/userhome/zhongjiesign";
+			},
+			handleChange(file, fileList) {
+				this.fileList = fileList.slice(-3);
+			},
+			beforeUpload(file){
+				debugger
+				console.log(file,'文件');
+				this.files = file;
+				const extension = file.name.split('.')[1] === 'jpg'
+				const extension2 = file.name.split('.')[1] === 'png'
+				const isLt2M = file.size / 1024 / 1024 < 0.5
+				if (!extension && !extension2) {
+					this.$message.warning('上传模板只能是 jpg、png格式!')
+					return false
+				}
+				if (!isLt2M) {
+					this.$message.warning('上传模板大小不能超过 500kb!')
+					return false
+				}
+				this.fileName = file.name;
+			},
+
+			uploadFile(file){
+
+			},
+			getCompany(){
+				var that=this;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/company/getCompany',
+							success: function (d) {
+								that.company = d;
+							}
+
+						}
+				)
+			},
+			onSubmit(form) {
+				this.$refs[form].validate(
+						(valid)=>{
+							if(!valid){
+								console.log('验证不通过')
+								return false;
+							}
+							else{
+								this.formdata=new FormData;
+								var that=this;
+								that.formdata.append("userId",this.form.userId)
+								that.formdata.append("name",this.form.name)
+								that.formdata.append("tel",this.form.tel)
+								that.formdata.append("compNo",this.form.compNo)
+								that.formdata.append("cardId",this.form.cardId)
+								that.fileList.forEach(function (file) {
+									that.formdata.append('file', file.raw);
+								})
+								// vm.$refs.upload.submit();
+								let config = {
+									headers: {
+										'Content-Type': 'multipart/form-data'
+									}
+								}
+								axios.post("/agent/upload", that.formdata,config).then( res => {
+									if(res.data=='exists')
+									{alert("已经存在此证件或已经提交认证，请勿重复提交")}
+									else if(res.data=='update'){
+											alert("已经更新资料，重新提交审核")
+									}
+									else{
+										alert("已提交审核，请耐心等待")
+									}
+									that.formdata=[]
+								}).catch( res => {
+									console.log(res)
+									alert("上传失败，请检查网络")
+								})
+							}
+						}
+				)
+			},
+			handleRemove(file,fileList) {
+				console.log(file, fileList);
+			},
+			handlePreview(file) {
+				console.log(file);
+			},
+
+			getAll() {
+				var that = this;
+				var postlist = null;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+									console.log(that.role)
+								}
+								if(that.list.role==2){
+									that.list.role='中介'
+									console.log(that.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.role)
+								}
+								if(that.list.img==null){
+									that.list.img='/images/mooctest.png'
+								}
+								if(that.list.name!=null){
+									that.form.name=that.list.name
+								}
+								console.log(that.list)
+								that.form.userId=that.list.userId;
+							}
+
+						}
+				)
+
+
+			},
+		},
+	})
+</script>
+
+
+</html>

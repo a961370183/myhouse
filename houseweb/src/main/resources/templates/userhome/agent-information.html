@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/elementui.css">
+    <link rel="stylesheet" href="/css/agent/agent-show.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script src="/js/element-ui.js"></script>
+
+<body>
+<div id="app" v-cloak>
+    <div class="header">
+        <div class="bar">
+            <div class="w1200">
+                <span class="l">二手房交易网<font>用户中心</font></span>
+                <span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+                <span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="w1200">
+                <div class="user-headface">
+                    <img :src="this.list.img" >
+                </div>
+                <div class="user-account">
+                    <p class="tip">欢迎你，{{this.list.nickName}}</p>
+                    <p class="account">
+                        <span>账号：</span><span>{{this.list.userName}}</span>
+                        <span>用户类型：</span><span>{{this.list.role}}</span>
+                    </p>
+                </div>
+                <div class="user-modify">
+                    <a href="/userhome">修改资料></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main w1200">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="/userhome/">
+                        <i class="icon iconfont icon-lingdang"></i>
+                        个人信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myfavorite/">
+                        <i class="icon iconfont icon-fangzidichan"></i>
+                        我的收藏
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myquestion/">
+                        <i class="icon iconfont icon-wenda"></i>
+                        问答
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/houseManage">
+                        <i class="icon iconfont icon-icon--"></i>
+                        房源管理
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/zhongjieqianyue">
+                        <i class="icon iconfont icon-geren"></i>
+                        中介签约
+                    </a>
+                </li>
+                <li v-if="list.role=='中介'" >
+                    <a href="/userhome/agentInformation" class="active">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        中介信息
+                    </a>
+                </li>
+                <li v-if="list.role=='中介'">
+                    <a href="/userhome/agentContractingManage">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        签约管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <div class="tap">
+                <span>个人资料</span>
+            </div>
+            <div class="container">
+                <div class="agent-show">
+                    <div class="show-pic">
+                        <!--                <img :src="agentDetail.imgSrc" >-->
+                        <img src="/images/user_face.jpg" >
+                    </div>
+                    <div class="show-self">
+                        <div class="self-name"><span>{{ agentDetail.name }}</span></div>
+                        <div>
+                            <el-rate
+                                    v-model="agentDetail.starLevel"
+                                    disabled
+                                    show-score
+                                    text-color="#ff9900"
+                                    score-template="{value}"
+                            >
+                            </el-rate>
+                        </div>
+                        <div class="self-workNo"><span>工作编号：{{ agentDetail.workNo }}</span></div>
+                        <div class="self-compName"><span>机构名称：{{ agentDetail.compName }}</span></div>
+                        <div class="self-tel"><span>联系电话：{{ agentDetail.tel }}</span></div>
+                        <div class="self-workYear"><span>工作年限：{{ agentDetail.workYear }}</span></div>
+                        <div class="self-contractNum"><span>签约数：{{ agentDetail.contractNum }}</span></div>
+                    </div>
+                </div>
+
+                <el-table :data="contracts.slice((currentPage-1)*pageSize,currentPage*pageSize)"  border style="width: 100%;min-height: 450px">
+                    <el-table-column prop="userId" label="用户编号" width="80"></el-table-column>
+                    <el-table-column prop="formatDateString" label="评价日期" width="100"></el-table-column>
+                    <el-table-column prop="description" label="评价内容"></el-table-column>
+                    <el-table-column prop="starLevel" label="评价星级" width="80"></el-table-column>
+                </el-table>
+
+                <div class="block" style="float: right">
+                    <span class="demonstration">共{{total}}条记录</span>
+                    <el-pagination
+                            layout="prev, pager, next"
+                            @current-change="current_change"
+                            :total="total*10/pageSize">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    function logOut() {
+        $.ajax({
+            url:'/logout',
+            type:'post',
+            success:function () {
+                window.location.href = '/house'
+            }
+        })
+    }
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            agentDetail: [],
+            contracts: [],
+            currentPage: 1,
+            total: 0,
+            pageSize: 7,
+            list:[],
+            myflag:true,
+            password:'',
+            innernick:'',
+            inneremail:'',
+            innername:'',
+            photo:'',
+            errormsg:'新密码必须6-18位 同时包含 数字,英文,字符中的两种以上',
+            innerimg:'',
+            customerHead: "",
+            defaultImg:'this.src="' + 'images/mooctest.png' + '"'
+        },
+        created(){
+            this.getAll();
+        },
+        watch:{
+            password(newVal, oldVal) {
+                var r= /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,18}$/
+                if(r.test(newVal)){
+                    this.myflag=false;
+                }
+                else{
+                    this.myflag=true;
+                }
+                console.log(this.myflag)
+
+            }
+        },
+        mounted(){
+
+
+
+        },
+        methods:{
+            getAgentDetail: function() {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/getOneAgentDetail",
+                    dataType: "json",
+                    data: {
+                        workNo: that.list.userId
+                    },
+                    success: function (agentDetail) {
+                        that.agentDetail = agentDetail;
+                    },
+                    error: function () {
+                        alert("获取中介信息失败");
+                    }
+                })
+            },
+            getContracts: function() {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/getContractsByWorkNo",
+                    data: {
+                        workNo: this.list.userId,
+                    },
+                    success: function (contracts) {
+                        that.contracts = contracts;
+                        that.total = contracts.length;
+                    }
+                })
+            },
+            current_change: function (currentPage) {
+                var that = this;
+                that.currentPage = currentPage;
+            },
+            getAll() {
+                var that = this;
+                var postlist = null;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: '/user',
+                        success: function (d) {
+                            console.log(d)
+                            that.list = d;
+                            if(that.list.role==1){
+                                that.list.role='普通用户'
+                            }
+                            if(that.list.role==2){
+                                that.list.role='中介'
+                                console.log(that.role)
+                            }
+                            if(that.list.role==3){
+                                that.list.role='系统管理员'
+                                console.log(that.role)
+                            }
+                            if(that.list.img==null){
+                                that.list.img='/images/mooctest.png'
+                            }
+                            that.getAgentDetail();
+                            that.getContracts();
+                        }
+
+                    }
+                )
+            }
+        },
+    })
+</script>
+</html>

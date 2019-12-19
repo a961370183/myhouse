@@ -1,0 +1,105 @@
+/*中介项*/
+.agent-show {
+    float:left;
+    width: 100%;
+    height: 154px;
+    border-bottom: 1px dashed silver;
+    cursor: pointer;
+}
+
+.agent-show:hover {
+    background:#ecf1f0;
+}
+
+/*中介左边头像图片*/
+.agent-show .show-pic {
+    float: left;
+    position: relative;
+    height: 135px;
+    width: 150px;
+    text-align: right;
+}
+
+.agent-show .show-pic img {
+    margin-top: 10px;
+    width: 140px;
+    height: 135px;
+}
+
+/*中介右边信息*/
+.agent-show .show-self {
+    position: relative;
+    float: left;
+    height: 154px;
+    width: 640px;
+    padding: 20px 16px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.agent-show .show-self .self-workNo,
+.agent-show .show-self .self-compName,
+.agent-show .show-self .self-name,
+.agent-show .show-self .self-tel,
+.agent-show .show-self .self-workYear,
+.agent-show .show-self .self-contractNum {
+    height: 30px;
+    line-height: 40px;
+}
+
+.agent-show .show-self .self-workNo span,
+.agent-show .show-self .self-compName span,
+.agent-show .show-self .self-name span,
+.agent-show .show-self .self-starLevel span,
+.agent-show .show-self .self-tel span,
+.agent-show .show-self .self-workYear span,
+.agent-show .show-self .self-contractNum span{
+    margin:0 10px;
+}
+
+.agent-show .show-self .self-workNo {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.agent-show .show-self .self-compName {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.agent-show .show-self .self-name {
+    height: 40px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #286cc0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.agent-show .show-self .self-tel {
+    position: absolute;
+    right: 12px;
+    top:20px;
+    font-size: 20px;
+    color: #ea6566;
+}
+
+.agent-show .show-self .self-workYear {
+    position: absolute;
+    right: 12px;
+    top:56px;
+    font-size: 20px;
+}
+
+.agent-show .show-self .self-contractNum {
+    position: absolute;
+    right: 12px;
+    top:95px;
+    font-size: 20px
+}
+
+[v-cloak]{
+    display: none;
+}

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/elementui.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
+    <title>二手房后台管理系统</title>
+    <!-- Custom CSS -->
+    <link href="/dist/css/style.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+<![endif]-->
+    <style>
+        html[dir=ltr] body .m-t-10 {
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar" data-navbarbg="skin5">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+                    <!-- ============================================================== -->
+                    <!-- Logo -->
+                    <!-- ============================================================== -->
+                    <a class="navbar-brand" href="index.html">
+                        <!-- Logo icon -->
+                        <b class="logo-icon">
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="../../assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                            <!-- Light Logo icon -->
+                            <img src="../../assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
+                        </b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span class="logo-text">
+                             <!-- dark Logo text -->
+                             <img src="../../assets/images/logo-text.png" alt="homepage" class="dark-logo" />
+                             <!-- Light Logo text -->    
+                             <img src="../../assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
+                        </span>
+                    </a>
+                    <!-- ============================================================== -->
+                    <!-- End Logo -->
+                    <!-- ============================================================== -->
+                    <!-- This is for the sidebar toggle which is visible on mobile only -->
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-left mr-auto">
+                        <!-- ============================================================== -->
+                        <!-- Search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+                            <form class="app-search position-absolute">
+                                <input type="text" class="form-control" placeholder="Search &amp; enter"> <a class="srh-btn"><i class="ti-close"></i></a>
+                            </form>
+                        </li>
+                    </ul>
+                    <!-- ============================================================== -->
+                    <!-- Right side toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-right">
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../../assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-wallet m-r-5 m-l-5"></i>管理员信息</a>
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-power-off m-r-5 m-l-5"></i>注销</a>
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <aside class="left-sidebar" data-sidebarbg="skin6">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <!-- User Profile-->
+                        <li>
+                            <!-- User Profile-->
+                            <div class="user-profile d-flex no-block dropdown m-t-20">
+                                <div class="user-pic"><img src="../../assets/images/users/1.jpg" alt="users" class="rounded-circle" width="40" /></div>
+                                <div class="user-content hide-menu m-l-10">
+                                    <a href="javascript:void(0)" class="" id="Userdd" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <h5 class="m-b-0 user-name font-medium">Steave Jobs <i class="fa fa-angle-down"></i></h5>
+                                        <span class="op-5 user-email">varun@gmail.com</span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Userdd">
+                                        <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> 管理员信息</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-power-off m-r-5 m-l-5"></i> 注销</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End User Profile-->
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/admin" aria-expanded="false"><i class="fa fa-plus-square"></i> <span class="hide-menu">首页</span> </a></li>
+                        <!-- User Profile-->
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/agentpass" aria-expanded="false"><i class="mdi mdi-pencil"></i><span class="hide-menu">中介审核</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/compPunishManage" aria-expanded="false"><i class="mdi mdi-open-in-app"></i><span class="hide-menu">信息发布</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/communityManage" aria-expanded="false"><i class="mdi mdi-pentagon-outline"></i><span class="hide-menu">地图管理</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/agent" aria-expanded="false"><i class="mdi mdi-face"></i><span class="hide-menu">中介管理</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/company" aria-expanded="false"><i class="mdi mdi-pentagon-outline"></i><span class="hide-menu">机构管理</span></a></li>
+                        <li class="p-15 m-t-10 "> <a class="btn btn-block create-btn text-white no-block d-flex align-items-center " href="#" aria-expanded="false"><i class="mdi mdi-home"></i><span class="hide-menu">房源审核</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/housemanage" aria-expanded="false"><i class="mdi mdi-file"></i><span class="hide-menu">房源管理</span></a></li>
+                        <li class="sidebar-item"><a href="/admin/user" class="sidebar-link waves-effect waves-dark no-block sidebar-link"><i class="mdi mdi-account-network"></i><span class="hide-menu m-l-5">用户管理</span></a></li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <div class="page-breadcrumb">
+                <div class="row align-items-center">
+                    <div class="col-5">
+                        <h4 class="page-title">房源审核</h4>
+                        <div class="d-flex align-items-center">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/admin">首页</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">房源审核</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Sales chart -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Sales chart -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Table -->
+                <!-- ============================================================== -->
+                <h5 class="card-subtitle">待处理审核房源数为：{{list.length}}</h5>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div style="display: inline-block"> 搜索关键字：</div>
+                                <el-input  class='searchs' v-model="search" icon="search" style="width: 200px" placeholder="请输入各项关键字">
+                                </el-input>
+                                <div class="table-responsive">
+                                    <el-table
+                                            :data="searchData.slice(pageSize * (currentPage-1),pageSize * (currentPage))"
+                                            style="width:auto">
+                                        <el-table-column
+                                                label="创建日期"
+                                                prop="created"
+                                                sortable
+                                                width="auto">
+                                            <template slot-scope="scope">
+                                                <!--i class="el-icon-time"></i-->
+                                                <span style="margin-left: 10px" v-html="dateFormat(scope.row.houseDetail.created)"></span>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="房源ID"
+                                                width="auto">
+                                            <template slot-scope="scope">
+                                                <i  v-html="scope.row.houseDetail.houseNo"></i>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="标题"
+                                                width="auto">
+                                            <template slot-scope="scope">
+                                                <div v-html="scope.row.houseDetail.title"></div>
+
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="地址"
+                                                width="auto">
+                                            <template slot-scope="scope" v-html="scope.row.houseDetail.address">
+                                                <div v-html="scope.row.houseDetail.address">
+                                                </div>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="房产号"
+                                                width="auto">
+                                            <template slot-scope="scope" v-html="scope.row.house.propertyNo">
+                                                <div v-html="scope.row.house.propertyNo">
+                                                </div>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column label="操作">
+                                            <template slot-scope="scope">
+                                                <el-button  type="primary" icon="el-icon-link" circle @click="detail(scope.row.house.houseNo)">详情</el-button>
+                                                <br>
+                                                <el-button  type="primary" icon="el-icon-edit" circle @click="openMyDialog(scope.row.house.houseNo)">审批</el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <el-dialog :title="title" width="600px"  :visible.sync="dialogVisible"  @close="dialogVisible = false">
+                                        <el-input  type="textarea" :autosize="{ minRows: 2, maxRows: 8}" placeholder="请输入内容" v-model="comment"></el-input>
+                                        </el-form>
+                                        <div slot="footer" class="dialog-footer">
+                                            <el-tooltip placement="bottom-start" style="margin-right: 280px">
+                                                <div slot="content">审核回复参考：<br/>信息（不）真实 + 细节<br/>图片（不）符合房源 + 细节</div>
+                                                <a href="#" style="font-size: small">审核帮助</a>
+                                            </el-tooltip>
+                                            <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
+                                            <el-button size="mini" type="danger" @click="summitCheck(2)">不通过</el-button>
+                                            <el-button size="mini" type="success" @click="summitCheck(1)">通过</el-button>
+                                        </div>
+                                    </el-dialog>
+
+                                    <el-pagination
+                                            @size-change="handleSizeChange"
+                                            @current-change="handleCurrentChange"
+                                            :current-page="currentPage"
+                                            :page-sizes="[10]"
+                                            :page-size="this.pageSize"
+                                            layout="total, sizes, prev, pager, next, jumper"
+                                            :total="this.total">
+                                    </el-pagination>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================== -->
+                <!-- Table -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Recent comment and chats -->
+                <!-- ============================================================== -->
+
+                <!-- ============================================================== -->
+                <!-- Recent comment and chats -->
+                <!-- ============================================================== -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <footer class="footer text-center">
+                长沙市住房保障和房产管理局版权所有 © 隐私保护
+
+                开发小组人员：王知往 周世焕 凌城军 李祉臻 黄滔 吐努克
+
+                字节跳动开发小组提供技术支持
+            </footer>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/dist/js/app-style-switcher.js"></script>
+    <!--Wave Effects -->
+    <script src="/dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="/dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="/dist/js/custom.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/vue.min.js"></script>
+    <script type="text/javascript" src="/js/tendina.min.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/element-ui.js"></script>
+</div>
+</body>
+<script>
+    var vm = new Vue(
+        {
+            el:"#app",
+            data:{
+                search:"",
+                dataShow:[],
+                list:[],
+                total:0,
+                totalPage: [],
+                // 每页显示数量
+                pageSize: 10,
+                keywords:"",
+                // 共几页
+                pageNum: 1,
+                // 当前显示的数据
+                // 默认当前显示第一页
+                currentPage: 1,
+                dialogVisible:false,
+                title:'审核',
+                comment:'',
+                currentHouseNo:'',
+                popoverVisible:false,
+            },
+            created(){
+                //this.getAll();
+                this.gethouse();
+            },
+            computed: {
+                searchData:function() {
+                    var search = this.search;
+                    if (search) {
+                        var mylist= this.list.filter(function (product) {
+                             // return String(product.house.houseNo).toLowerCase().indexOf(search) > -1
+                            // return Object.keys(product).some(function(key) {
+                            //     return String(product[key]).toLowerCase().indexOf(search) > -1
+                            // })
+                            return Object.keys(product).some(function(key) {
+                                return Object.keys(product[key]).some(function(keyinkey){
+                                    return String(product[key][keyinkey]).toLowerCase().indexOf(search) > -1
+                                })
+                            })
+                        })
+                        this.total=mylist.length;
+                        return mylist;
+                    }
+                    this.total=this.list.length;
+                    return this.list;
+                },
+            },
+            methods:{
+                gethouse() {
+                    var that = this;
+                    $.ajax(
+                        {
+                            type: "GET",
+                            url: '/housemanage/getUnchecked',
+                            success: function (d) {
+                                console.log(d);
+                                that.list=d;
+                                that.length=that.list.length
+                                that.pageNum = Math.ceil(that.list.length / that.pageSize) || 1;
+                                console.log(that.pageNum);
+                                console.log(that.list);
+                                var i = 0 ;
+
+                                // for (i = 0; i < that.pageNum; i++) {
+                                //     that.totalPage[i] = that.list.slice(that.pageSize * i, that.pageSize * (i + 1))
+                                //     console.log(that.totalPage[i])
+                                // }
+                                // that.dataShow = that.totalPage[that.currentPage]
+                                // that.total=that.list.length;
+
+                            },
+                        }
+                    )
+                },
+                dateFormat:function(time) {
+                    var date=new Date(time);
+                    var year=date.getFullYear();
+                    /* 在日期格式中，月份是从0开始的，因此要加0
+                     * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+                     * */
+                    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+                    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+                    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+                    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+                    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+                    // 拼接
+                    return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+                },
+                handleCurrentChange: function(currentPage){
+                    this.currentPage = currentPage;
+                    this.dataShow = this.totalPage[currentPage-1];
+                    console.log(this.currentPage)  //点击第几页
+                },
+                handleCurrentChange: function(currentPage){
+                    // this.currentPage = currentPage;
+                    // this.dataShow = this.totalPage[currentPage-1];
+                    console.log(currentPage)  //点击第几页
+                },
+                handleSizeChange(val) {
+                    console.log(`每页 ${val} 条`);
+                    this.pageSize=val;
+                    this.pageNum = Math.ceil(this.list.length / val) || 1;
+                    console.log(this.pageNum);
+                    var i = 0 ;
+                    this.currentPage=0;
+                    for (i = 0; i < this.pageNum; i++) {
+                        this.totalPage[i] = this.list.slice(val * i, val * (i + 1))
+                    }
+                    this.dataShow = this.totalPage[this.currentPage]
+                },
+                openMyDialog(houseNo){
+                    if (this.currentHouseNo != houseNo) {this.comment='';}
+                    this.currentHouseNo=houseNo;
+                    this.dialogVisible = true;
+
+                },
+                detail(houseNo){
+                    window.open ( '/houseDetail/'+houseNo)
+                },
+                summitCheck(status){
+                    var that=this;
+                    this.$confirm('此操作将完成审批无法取消, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        $.ajax(
+                            {
+                                type: "GET",
+                                url: '/housemanage/checkHouse?'+'houseNo='+that.currentHouseNo+'&comment='+that.comment+'&status='+status,
+                                success:function () {
+                                    that.list.forEach((item,index)=>{
+                                        if (item.house.houseNo == that.currentHouseNo){
+                                            that.list.splice(index,1);
+                                        }
+                                    })
+                                    that.length=that.list.length
+                                    that.pageNum = Math.ceil(that.list.length / that.pageSize) || 1;
+                                    that.dialogVisible=false;
+                                    that.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                }
+                            }
+                        )
+
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消'
+                        });
+                    });
+                },
+
+            }
+        }
+    )
+</script>
+
+</html>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.AgentMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.Agent">
+    <id column="workNo" jdbcType="INTEGER" property="workNo" />
+    <result column="compNo" jdbcType="INTEGER" property="compNo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="starLevel" jdbcType="DECIMAL" property="starLevel" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="workYear" jdbcType="INTEGER" property="workYear" />
+    <result column="imgSrc" jdbcType="VARCHAR" property="imgSrc" />
+    <result column="status" jdbcType="CHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    workNo, compNo, name, starLevel, password, tel, workYear, imgSrc, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from agent
+    where workNo = #{workNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from agent
+    where workNo = #{workNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="hnu.houseweb.entity.Agent">
+    insert into agent (workNo, compNo, name,
+      starLevel, password, tel,
+      workYear, imgSrc, status
+      )
+    values (#{workNo,jdbcType=INTEGER}, #{compNo,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR},
+      #{starLevel,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
+      #{workYear,jdbcType=INTEGER}, #{imgSrc,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.Agent">
+    insert into agent
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="workNo != null">
+        workNo,
+      </if>
+      <if test="compNo != null">
+        compNo,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="starLevel != null">
+        starLevel,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="workYear != null">
+        workYear,
+      </if>
+      <if test="imgSrc != null">
+        imgSrc,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="workNo != null">
+        #{workNo,jdbcType=INTEGER},
+      </if>
+      <if test="compNo != null">
+        #{compNo,jdbcType=DECIMAL},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="starLevel != null">
+        #{starLevel,jdbcType=INTEGER},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="workYear != null">
+        #{workYear,jdbcType=INTEGER},
+      </if>
+      <if test="imgSrc != null">
+        #{imgSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.Agent">
+    update agent
+    <set>
+      <if test="compNo != null">
+        compNo = #{compNo,jdbcType=DECIMAL},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="starLevel != null">
+        starLevel = #{starLevel,jdbcType=INTEGER},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="workYear != null">
+        workYear = #{workYear,jdbcType=INTEGER},
+      </if>
+      <if test="imgSrc != null">
+        imgSrc = #{imgSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where workNo = #{workNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.Agent">
+    update agent
+    set compNo = #{compNo,jdbcType=DECIMAL},
+      name = #{name,jdbcType=VARCHAR},
+      starLevel = #{starLevel,jdbcType=INTEGER},
+      password = #{password,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      workYear = #{workYear,jdbcType=INTEGER},
+      imgSrc = #{imgSrc,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR}
+    where workNo = #{workNo,jdbcType=INTEGER}
+  </update>
+</mapper>

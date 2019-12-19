@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<div lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>My Login Page </title>
+	<link rel="stylesheet" href="/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="/css/elementui.css">
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+	<script src="/js/bootstrapValidator.min.js"></script>
+	<script src="/js/element-ui.js"></script>
+<body class="my-login-page">
+<div id="app">
+	<div class="h-100">
+		<div class="container h-100">
+			<div class="row justify-content-md-center h-100">
+				<div class="card-wrapper" style="margin: 0 auto ;">
+					<div class="brand">
+						<img src="/images/logo.jpg" alt="bootstrap 4 login page">
+					</div>
+					<div class="card fat" style="background-color: white">
+						<div class="card-body">
+							<h4 class="card-title">用户注册</h4>
+							<form    id="form" class="my-login-validation" >
+								<div class="form-group">
+								<label for="name">Name</label>
+								<input id="name" type="text" class="form-control" name="name" v-model="username" required autofocus>
+								<div class="invalid-feedback">
+									输入你的帐号
+								</div>
+							</div>
+
+								<div class="form-group">
+									<label for="email">E-Mail Address</label>
+									<input id="email" type="email" class="form-control" name="email" required v-model="email">
+									<div class="invalid-feedback">
+										你的邮箱账号
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="password">Password</label>
+									<input id="password" type="password"  class="form-control" v-model="password" name="password" required data-eye>
+									<div class="invalid-feedback">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="password">Password</label>
+									<input id="passwordcomfirm" type="password"  class="form-control" name="passwordcomfirm" v-model="passwordcomfirm" data-eye>
+									<div class="invalid-feedback">
+									</div>
+								</div>
+								<div class="form-group" >
+								<label style="">手机号码</label>
+									<input class="col-md-7 form-control" style="width: 200px" id="tel" type="text"  class="form-control" name="tel" v-model="tel" placeholder="请输入手机号码" style="margin-bottom: 30px"data-eye>
+									<el-button
+											class="col-md-4"
+											type="primary"
+											@click="getVerify"
+											style="width:150px;height: 35px;margin-left: 20px"
+											:disabled="disabled=!show"
+									>
+										<span v-show="show">获取验证码</span>
+										<span v-show="!show" class="count">{{count}} s</span>
+									</el-button>
+								</div>
+								<div class="form-group">
+								<div>
+									<input style="margin-top: 50px;margin-bottom: 5px;margin-right: 5px" class="form-control" style="width: 150px;" id="code" name="code" type="text" v-model="code" placeholder="输入手机验证码">
+								</div>
+								</div>
+								<div class="form-group">
+									<label for="checkcode">Check Code</label>
+									<input id="checkcode" type="text" class="form-control" name="checkcode"   required autofocus>
+									<div class="invalid-feedback">
+										请输入验证码
+									</div>
+									<div>
+										<img alt="验证码" onclick="this.src='/defaultKaptcha?d='+new Date()*1" src="/defaultKaptcha" />
+									</div>
+								</div>
+
+
+								<div class="form-group m-0">
+									<button  class="btn btn-primary btn-block" @click.prevent="comparecode()" >
+										Register
+									</button>
+								</div>
+								<div class="mt-4 text-center">
+									Already have an account? <a href="login.html">Login</a>
+								</div>
+							</form>
+							<div>
+								<a href="/login.html">回到登陆</a>
+							</div>
+						</div>
+					</div>
+					<div class="footer">
+						Copyright &copy; 2017 &mdash; 字节移动
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</section>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="/js/bootstrap.min.js" ></script>
+<script src="/js/my-login.js"></script>
+</body>
+</div>
+
+<script>
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			id: '',
+			show:true,
+			count:'',
+			code:'',
+			username: '',
+			password: '',
+			email:'',
+			tel:'',
+			display:false,
+			flag:'0',
+		},
+		methods:{
+			comparecode(){
+				var that=this;
+				$.ajax(
+						{
+							type: "POST",
+							data: {"code": that.code},
+							url: '/sign/comparecode',
+							success: function (result) {
+								if (result == "1") {
+									alert("请勿输入空白短信验证码！");
+								} else if(result=="3"){
+									$.ajax(
+											{
+												type:"POST",
+												data:{
+													"name":that.username,
+													"password":that.password,
+													"email":that.email,
+													"tel":that.tel,
+														},
+												url:'/sign/register',
+												success:function(result){
+													alert("注册成功，即将前往登陆页面")
+													window.location.href="/login.html"
+												},
+												error:function () {
+													alert("网络忙，请稍后再试")
+												}
+											}
+									)
+								}else{
+									alert("短信验证码验证失败，请重新输入");
+								}
+
+							},
+							error:function () {
+								alert("网络错误，请检查网络")
+							}
+						}
+				)
+			},
+			checkPhone() {
+				let phone = this.tel;
+				if (!/^1[3456789]\d{9}$/.test(phone)) {
+					this.$message.error("请填写正确的手机号");
+					return false;
+				}
+			},
+			getVerify() {
+				var phone=this.tel;
+				// 验证手机号
+				if (this.checkPhone() == false) {
+					return false;
+				} else {
+					$.ajax(
+							{
+								type: "POST",
+								data: {"tel": phone},
+								url: '/sign/getcode',
+								success: function (result) {
+									if (result == "0") {
+										alert("成功获取验证码，请注意查收！");
+									} else {
+										alert("获取失败")
+									}
+
+								}
+							}
+					)
+
+					const TIME_COUNT = 60; //更改倒计时时间
+					if (!this.timer) {
+						this.count = TIME_COUNT;
+						this.show = false;
+						this.timer = setInterval(() => {
+							if (this.count > 0 && this.count <= TIME_COUNT) {
+								this.count--;
+							} else {
+								this.show = true;
+								clearInterval(this.timer); // 清除定时器
+								this.timer = null;
+							}
+						}, 1000);
+					}
+				}
+			},
+		},
+	})
+</script>
+<script>
+	$('form').bootstrapValidator({
+		// 默认的提示消息
+		message: 'This value is not valid',
+		// 表单框里右侧的icon
+		feedbackIcons: {
+			valid: 'glyphicon glyphicon-ok',
+			invalid: 'glyphicon glyphicon-remove',
+			validating: 'glyphicon glyphicon-refresh'
+		},
+		submitHandler: function (validator, form, submitButton) {
+
+		},
+		fields: {
+			name: {
+				message: '该账号已被占用，请更换',
+				validators: {
+					notEmpty: {
+						message: '用户名不能为空'
+					},
+					stringLength: {  //长度限制
+						min: 6,
+						max: 18,
+						message: '用户名长度必须在6到18位之间'
+					},
+					regexp: { //正则表达式
+						regexp: /^[a-zA-Z0-9_]+$/,
+						message: '用户名只能包含大写、小写、数字和下划线'
+					},
+					different: {  //比较
+						field: 'username', //需要进行比较的input name值
+						message: '密码不能与用户名相同'
+					},
+					remote: {
+						type: "POST",
+						message: '用户名已经存在',
+						url: '/user/exists',
+						data: function (validator) {
+							return {
+								userName: $('[name="name"]').val(),
+							};
+							delay: 2000;
+						},
+						//这里默认会传递该验证字段的值到后端,
+						//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+					},
+				}
+
+			},
+			email: {
+				validators: {
+					notEmpty: {
+						message: '邮箱地址不能为空'
+					},
+					emailAddress: {
+						message: '邮箱地址格式有误'
+					}
+				}
+			},
+			tel: {
+				validators: {
+					notEmpty: {
+						message: '手机号码不能为空'
+					},
+					stringLength: {  //长度限制
+						min: 11,
+						max: 11,
+						message: '手机号码长度必须为11位'
+					},
+				}
+			},
+			passwordcomfirm:{
+				validators: {
+					notEmpty: {
+						message: '请确认密码'
+					},
+					identical: {
+						field: 'password',
+						message: '两次输入的密码不相符'
+					},
+				}
+			},
+			checkcode: {
+				validators: {
+					notEmpty: {
+						message: '验证码不能为空'
+					},
+					// stringLength: {  //长度限制
+					// 	min: 4,
+					// 	max: 4,
+					// 	message: '验证码长度必须为4位'
+					// },
+					remote: {
+						type: "POST",
+						message: '验证码不正确',
+						url: '/comparecode',
+						data: function () {
+							return {
+								checkcode: $('[name="checkcode"]').val(),
+							};
+							delay: 2000;
+						},
+					},
+				}
+			},
+			code: {
+				validators: {
+					notEmpty: {
+						message: '手机验证码不能为空'
+					},
+					stringLength: {  //长度限制
+						min: 6,
+						max: 6,
+						message: '验证码长度必须为6位'
+					},
+				}
+			},
+			password: {
+				validators: {
+					notEmpty: {
+						message: '密码不能为空'
+					},
+					stringLength: {  //长度限制
+						min: 6,
+						max: 18,
+						message: '密码长度必须在6到18位之间'
+					},
+					// regexp: { //正则表达式
+					// 	regexp: /^[a-zA-Z0-9_]+$/,
+					// 	message: '用户名只能包含大写、小写、数字和下划线'
+					// },
+					different: {  //比较
+						field: 'name', //需要进行比较的input name值
+						message: '密码不能与用户名相同'
+					},
+					identical: {
+						field: 'passwordcomfirm',
+						message: '两次输入的密码不相符'
+					},
+					regexp: { //正则表达式
+						regexp: /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,18}$/,
+						message: '密码包含 数字,英文,字符中的两种以上'
+					},
+				},
+
+
+			}
+		}
+		});
+</script>
+</html>

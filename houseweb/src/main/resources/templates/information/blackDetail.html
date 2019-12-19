@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>经纪机构信息平台</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" href="/css/elementui.css">
+    <link rel="stylesheet" href="/css/information.css">
+</head>
+<body style="background:#f1f1f1 ">
+<nav class="navbar navbar-default navbar-static-top" style="min-width: 1200px">
+    <div style="width:1200px;margin:0 auto">
+        <!-- 下拉触发按钮 以及 商标-->
+        <div class="navbar-header" style="width: 156px;float:left;">
+            <a class="navbar-brand" href="#">二手房交易平台</a>
+        </div>
+        <ul class="my-nav">
+            <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+            <li><a href="/information">机构人员信息</a></li>
+            <li><a href="/information/compPunishment">行业管理公示</a></li>
+            <li><a href="/information/agentCommentPage">服务评价公示</a></li>
+            <li class="active"><a href="/information/redList">红黑名单公示</a></li>
+            <li><a href="/information/lawNews">政策法规</a></li>
+            <li><a href="/information/agentContractSearch">签约排行</a></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+</nav>
+    <div style="background-color: #f1f1f1;position: absolute;left: 0;right: 0;top:50px;bottom: 0">
+    <div style="width: 1200px;margin:60px auto">
+        <div class="left-side">
+            <a href="/information/redList">
+                <div class="sub" style=" color:#666;background-image: url('/images/icon/logo13.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">红名单</span>
+                </div>
+            </a>
+            <a href="/information/blackList">
+                <div class="sub   active" style="background-image: url('/images/icon/logo14.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">黑名单</span>
+                </div>
+            </a>
+        </div>
+        <div class="right-side" id="app">
+            <div class="right-header">首页 &gt; 黑名单公示</div>
+            <div style="margin-top: 10px;border: solid 1px #dddddd;position: relative">
+                <div style="height: 44px;line-height: 44px;padding:0 30px ;background-color: #e6e6e6;">
+                    黑名单公示
+                </div>
+                <div style="padding:20px 30px">
+                    <div style="line-height: 50px">
+                        <div style="float: left;width: 365px">
+                            <div style="width: 95px;margin-right: 15px;text-align: right;float: left">
+                                从业编号:
+                            </div>
+                            <div style="float: left;width: 250px;" v-text="black.workNo">
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div style="line-height: 50px">
+                        <div style="float: left;width: 365px">
+                            <div style="width: 95px;margin-right: 15px;text-align: right;float: left">
+                                姓名:
+                            </div>
+                            <div style="float: left;width: 250px;" v-text="black.name">
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div style="line-height: 50px;">
+                        <div style="float: left;width: 365px">
+                            <div style="width: 95px;margin-right: 15px;text-align: right;float: left">
+                                所属机构:
+                            </div>
+                            <div style="float: left;width: 250px;" v-text="black.compName">
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+
+                    <div style="line-height: 50px;margin-bottom: 20px">
+                        <div style="float: left;width: 365px">
+                            <div style="width: 95px;margin-right: 15px;text-align: right;float: left">
+                                日期:
+                            </div>
+                            <div style="float: left;width: 250px;" v-text="black.created">
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div style="line-height: 50px;margin-bottom: 15px">
+                        <div style="float: left;width: 365px">
+                            <div style="width: 95px;margin-right: 15px;text-align: right;float: left">
+                                违法行为:
+                            </div>
+                            <div style="float: left;width: 250px;border: dashed 1px #dddddd;padding:0 20px" v-text="black.reason">
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+                <div style="position: absolute;right: 45px;top:65px">
+                    <img :src="black.imgSrc" width="150px" height="200px">
+                </div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+    </div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var black = [[${black}]]
+</script>
+<script>
+    var app = new Vue({
+        el:'#app',
+        data:{
+            black:black
+        }
+    })
+</script>
+</html>

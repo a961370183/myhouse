@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script src="/js/vue-router.js"></script>
+
+<body>
+<div id="app" v-cloak>
+    <div class="header">
+        <div class="bar">
+            <div class="w1200">
+                <span class="l">二手房交易网<font>用户中心</font></span>
+                <span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+                <span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="w1200">
+                <div class="user-headface">
+                    <img src="/images/user_face.jpg"/>
+                </div>
+                <div class="user-account">
+                    <p class="tip">欢迎你，{{this.list.nickName}}</p>
+                    <p class="account">
+                        <span>帐户名：</span><span>{{this.list.userName}}</span>
+                        <span>用户类型：</span><span>{{this.list.role}}</span>
+                    </p>
+                </div>
+                <div class="user-modify">
+                    <a href="#">修改资料></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main w1200">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="/userhome/">
+                        <i class="icon iconfont icon-lingdang"></i>
+                        个人信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myfavorite/">
+                        <i class="icon iconfont icon-fangzidichan"></i>
+                        我的收藏
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myquestion/">
+                        <i class="icon iconfont icon-wenda"></i>
+                        问答
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/houseManage">
+                        <i class="icon iconfont icon-icon--"></i>
+                        房源管理
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/zhongjieqianyue">
+                        <i class="icon iconfont icon-geren"></i>
+                        中介签约
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentInformation">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        中介信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentContractingManage" class="active">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        签约管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul class="nav nav-tabs">
+                <li class="active"><a>签约申请</a></li>
+                <li><a href="/userhome/agentContractedManage">已签约</a></li>
+            </ul>
+            <div class="container">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+<!--                        <th style="width: 100px">用户账号</th>-->
+<!--                        <th style="width: 80px">用户类型</th>-->
+<!--                        <th style="width: 150px">用户名</th>-->
+<!--                        <th style="width: 150px">昵称</th>-->
+<!--                        <th style="width: 250px">手机号</th>-->
+<!--                        <th style="width: 250px">邮箱</th>-->
+<!--                        <th >操作</th>-->
+                        <th>姓名</th>
+                        <th>身份证号</th>
+                        <th>手机号</th>
+                        <th>邮箱</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
+                    <!-- 现在， 我们自定义了一个 search 方法，同时，把 所有的关键字，通过传参的形式，传递给了 search 方法 -->
+                    <!-- 在 search 方法内部，通过 执行 for 循环， 把所有符合 搜索关键字的数据，保存到 一个新数组中，返回 -->
+                        <tr v-for="(user, index) in users" >
+    <!--                        <td style="width: 100px">{{ item.userId }}</td>-->
+    <!--                        <td style="width: 80px;text-align: center">{{item.role}}</td>-->
+    <!--                        <td style="width: 150px" v-text="item.userName" ></td>-->
+    <!--                        <td style="width: 150px">{{ item.nickName}}</td>-->
+    <!--                        <td style="width: 250px" v-text="item.tel"></td>-->
+    <!--                        <td style="width: 250px" v-text="item.email"></td>-->
+    <!--                        <td>-->
+    <!--                            <button type="button" class="btn-warning btn-sm" @click="del(item.userId)">删除</button>-->
+    <!--                            <button type="button" class="btn-primary btn-sm">编辑</button>-->
+    <!--                            <button type="button" class="btn-default btn-sm">禁用</button>-->
+    <!--                        </td>-->
+                            <td v-text="user.name"></td>
+                            <td v-text="user.userId"></td>
+                            <td v-text="user.tel"></td>
+                            <td v-text="user.email"></td>
+                            <td>
+                                <button type="button" class="btn-info btn-sm" @click="agree(index, user.userId)">同意</button>
+                                <button type="button" class="btn-warning btn-sm" @click="reject(index, user.userId)">拒绝</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+<!--                <nav aria-label="Page navigation">-->
+<!--                    <td colspan=3>-->
+<!--                        <div id="pageList" style="width: 100%">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-sm-5" style="line-height: 80px">-->
+<!--                                    <div class="dataTables_info" id="sample-table-2_info">-->
+<!--                                        共{{this.totalPage}}条，当前页数为第-->
+<!--                                        <span>{{this.currentPage+1}}</span>-->
+<!--                                        页-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <ul class="pagination">-->
+<!--                                    <li  class="prev">-->
+<!--                                        <a href="javascript:void(0)" @click="prePage()">-->
+<!--                                            上一页-->
+<!--                                        </a>-->
+<!--                                    </li>-->
+<!--                                    <li  class="next">-->
+<!--                                        <a href="javascript:void(0)" @click="nextPage()">-->
+<!--                                            下一页-->
+<!--                                        </a>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </td>-->
+<!--                </nav>-->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function logOut() {
+        $.ajax({
+            url:'/logout',
+            type:'post',
+            success:function () {
+                window.location.href = '/house'
+            }
+        })
+    }
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            list: [],
+            users: [],
+        },
+        created(){
+            this.getAll();
+        },
+        methods:{
+            getAll() {
+                var that = this;
+                var postlist = null;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: '/user',
+                        success: function (d) {
+                            that.list = d;
+                            that.getUsers();
+                        }
+
+                    }
+                )
+            },
+            getUsers() {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/getContract",
+                    data: {
+                        workNo: that.list.userId,
+                        contractState: "0"
+                    },
+                    success: function (users) {
+                        if (users != null) {
+                            that.users = users;
+                        }
+                    },
+                    error: function () {
+                        alert("请检查网络状态");
+                    }
+                })
+            },
+            agree(index, userId) {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/updateContractingState",
+                    data: {
+                        workNo: that.list.userId,
+                        userId: userId,
+                        contractState: "1"
+                    },
+                    success: function (msg) {
+                        if (msg) {
+                            alert("已同意签约");
+                            that.users.splice(index, 1);
+                        }
+                    },
+                    error: function () {
+                        alert("请检查网络状态");
+                    }
+                })
+            },
+            reject(index, userId) {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/updateContractingState",
+                    data: {
+                        workNo: that.list.userId,
+                        userId: userId,
+                        contractState: "2"
+                    },
+                    success: function (msg) {
+                        if (msg) {
+                            alert("已拒绝签约");
+                            that.users.splice(index, 1);
+                        }
+                    },
+                    error: function () {
+                        alert("请检查网络状态");
+                    }
+                })
+            }
+        },
+    })
+</script>
+</html>

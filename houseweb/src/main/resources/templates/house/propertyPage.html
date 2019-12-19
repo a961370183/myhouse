@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>房产证号录入</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/css/my-navbar.css">
+    <style>
+        body,html{
+            font-size: 12px;
+        }
+        #main{
+            width: 1200px;
+            margin:60px auto;
+        }
+
+        #tabContainer{
+            margin:60px auto;
+            width: 900px;
+        }
+        #formContainer{
+            margin:60px auto;
+            width: 600px;
+        }
+        .form-control{
+            border-radius: 0;
+        }
+        .form-control:focus {
+            border-color: #3498db;
+            outline: 0;
+            -webkit-box-shadow: none;
+            box-shadow:none;
+        }
+        .tab-ul {
+            width: 100%;
+            margin:50px auto;
+            overflow: hidden;
+        }
+        .tab-ul-li {
+            font-weight: 700;
+            float: left;
+            list-style: none;
+            width: 40%;
+            line-height: 50px;
+            text-align: center;
+            color: #c8c8c8;
+            border-bottom: 4px solid #c8c8c8;
+        }
+        .tab-ul-li:first-child {
+            margin-left: 3%;
+        }
+
+        .tab-li-check {
+            color: #3498db;
+            border-bottom: 4px solid #3498db;
+        }
+        .tab-ul-li:last-child {
+            margin-left: 7%;
+        }
+
+         .tab-ul-li .tab-li-span {
+             margin-right: 15px;
+             padding: 5px 10px;
+             line-height: 50px;
+             background-color: #c8c8c8;
+             color: #fff;
+             border-radius: 50%;
+         }
+        .tab-li-check .tab-li-span {
+            background-color: #3498db;
+        }
+
+        .btn-primary{
+            color: #fff;
+            background-color: #20a0ff;
+            border-color: #20a0ff;
+            opacity: 0.9;
+            transition: opacity .5s;
+            -moz-transition:opacity .5s ;
+            -webkit-transition: opacity .5s;
+        }
+
+        .btn-primary:hover{
+            color: #fff;
+            background-color: #3498db;
+            border-color: #20a0ff;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- 下拉触发按钮 以及 商标-->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">二手房交易平台</a>
+            </div>
+            <!-- 适配手机，将部分栏目转至下拉导航-->
+            <div class="collapse navbar-collapse" id="collapse1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="/house">二手房</a></li>
+                    <li class="active"><a href="#">发布房源</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" id="userInfo" v-cloak>
+                    <li v-if="userInfo==null" ><a href="#" data-toggle="modal" data-target="#myModal">登录</a></li>
+                    <li v-if="userInfo==null" ><a href="register.html">注册</a></li>
+                    <li v-if="userInfo!=null" ><span style="line-height: 50px;color: #fff">欢迎您!{{userInfo.userName}}</span></li>
+                    <li v-if="userInfo!=null" ><a href="/userhome">个人中心</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </nav>
+
+    <div id="main">
+        <div id="tabContainer">
+            <ul class="tab-ul">
+                <li class="tab-ul-li tab-li-check">
+                    <span class="tab-li-span">1</span>
+                    验证房产证号
+                </li>
+                <li class="tab-ul-li">
+                    <span class="tab-li-span">2</span>
+                    填写房源详细信息
+                </li>
+            </ul>
+        </div>
+        <div id="formContainer">
+            <form class="form-horizontal" action="/uploadHouse/checkHouseProperty" method="post">
+                <div class="form-group">
+                    <label for="propertyNo" class="col-sm-2 control-label"><span style="color: red;font-size: 15px">*</span>产权证号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="propertyNo" required id="propertyNo" placeholder="请输入产权证号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><span style="color: red;font-size: 15px">*</span>产权人</label>
+                    <div class="col-sm-5">
+                        <input type="text" :value="user.userName" class="form-control" id="ownerName" required name="ownerName" placeholder="产权人姓名">
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="text" :value="user.idNumber" class="form-control" id="ownerId" required name="ownerId" placeholder="产权人身份证号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-4">
+                        <button type="submit" style="width: 100%;margin-top: 50px;"  class="btn btn-primary">提交验证</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<!--如果该房源已设置信息则回填房源信息-->
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var user = [[${userInfo}]]
+    var error = [[${error}]]
+
+    if(error!=null){
+        alert(error)
+    }
+    console.log(user)
+    // $(function() {
+    //     $("img.lazy").lazyload({effect: "fadeIn",threshold: 250});
+    // });
+    var userVue = new Vue({
+        el:"#userInfo",
+        data:{
+            userInfo:user
+        }
+    })
+
+    var main = new Vue({
+        el:'#main',
+        data:{
+            user:user
+        }
+    })
+</script>
+</html>

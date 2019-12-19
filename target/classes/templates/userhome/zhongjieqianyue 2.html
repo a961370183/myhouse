@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script src="/js/vue-router.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue" class="active">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="/userhome/zhongjieqianyue">中介签约</a></li>
+				<li><a href="/userhome/zhongjiemanage">我签约的中介</a></li>
+				<li ><a href="/userhome/zhongjiesign">中介认证</a></li>
+			</ul>
+			<div class="container">
+				<div class="span4">
+					<form class="form-horizontal" id="myform" name="myform" role="form">
+						<br>
+						<div class="leaderboard">
+							<h1>中介签约</h1>
+							<p>向与你签约的中介咨询中介编号，并完成平台签约</p>
+							<p>
+								<a href="/information/agentSearch" class="btn btn btn-primary btn-large">点此搜索中介</a></p>
+						</div>
+						<br>
+						<div class="form-group">
+							<label for="id" class="col-sm-2 control-label">中介编号</label>
+							<div class="col-sm-5">
+								<input type="text"  v-model="id" name="id" class="form-control" id="id" placeholder="请输入中介编号">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="name" class="col-sm-2 control-label">姓名</label>
+							<div class="col-sm-3 ">
+								<input type="text" class="form-control" id="name" name="name" v-model="name" placeholder="请输入中介姓名" >
+
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<div class="checkbox">
+									<label>
+										<input name="check" id="check" type="checkbox" required>请同意<a href="#">二手房交易网中介签约条例</a>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-2">
+								<div class="form-group m-0">
+									<button  class="btn-lg btn-primary btn-block"  style="margin-bottom: 2px" @click="fun()" >
+									确认签约
+									</button>
+								</div>
+
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	$(document).ready(function () {
+		formValidator();
+	});
+	function formValidator() {
+		$("#myform").bootstrapValidator({//根据自己的formid进行更改
+			message: 'This value is not valid',//默认提示信息
+			feedbackIcons: {//提示图标
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				name: {//名称校验
+					message: '姓名验证失败',
+					validators: {//验证条件
+						notEmpty: {
+							message: '姓名名称不能为空'
+						},
+						stringLength: {
+							min: 2,
+							max: 10,
+							message: '姓名名称应在2-10个字'
+						},
+						regexp:{
+							regexp: /^[\u4e00-\u9fa5]+$/,
+							message:'中介姓名只能为中文'
+						}
+
+					}
+				},
+				check: {
+					message: '请同意条例'
+				},
+				id: {
+					message: '中介编号验证失败',
+					validators: {
+						notEmpty: {
+							message: '中介编号不能为空'
+						},
+						stringLength: {
+							min: 5,
+							max: 5,
+							message: '中介编号应为五位'
+						},
+						regexp: {//自定义校验
+							regexp: /^[0-9]*$/,//正则表达式
+							message: '中介编号只能为数字'
+						}
+					}
+				},
+			},
+		})
+	}
+</script>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			list:[],
+			src:'',
+			id:'',
+			name:'',
+			photo:'',
+			innerimg:'',
+			customerHead: "",
+		},
+		created(){
+			this.getAll();
+
+		},
+
+		mounted(){
+
+		},
+		methods:{
+			fun(){
+				var that = this;
+				var flag = $("#myform").data('bootstrapValidator').isValid();
+				if(flag){
+					$.ajax(
+							{
+								type :"POST" ,
+								url:'/agent/sign',
+								datatype:'json',
+								data:{
+									userId:that.list.userId,
+									id:that.id,
+									name:that.name,
+								},
+								success: function(d) {
+									if(d=='success'){
+										alert("成功发送签约请求，请等待中介确认")
+									}
+									else if(d=='notfound'){
+										alert("中介编号与用户名不匹配，请检查后重新输入")
+									}
+									else if(d=='nullError'){
+										alert("已经发送签约，请勿重复发送")
+									}
+								},
+								error:function(){
+									alert("失败，请检查网络")
+								}
+
+							}
+					)
+
+				}
+				else{
+					alert("提交失败，请检验填写信息是否正确")
+				}
+
+			},
+			compare1(){
+
+
+			},
+
+			getAll() {
+				var that = this;
+				var postlist = null;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+									console.log(that.role)
+								}
+								if(that.list.role==2){
+									that.list.role='中介'
+									console.log(that.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.role)
+								}
+								if(that.list.img==null){
+									that.list.img='/images/mooctest.png'
+								}
+								console.log(that.list)
+							}
+
+						}
+				)
+
+
+			},
+		},
+	})
+</script>
+<script>
+</script>
+
+
+</html>

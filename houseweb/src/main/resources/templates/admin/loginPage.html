@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员登录页</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <style>
+        body,html{
+            font-size: 14px;
+        }
+
+        .my-navbar{
+            width: 1200px;
+        }
+        .my-navbar .navbar-right{
+            float: right;
+        }
+        .my-navbar .navbar-right .navbar-right-a{
+            padding:20px 15px;display: block;
+            color: #fff;
+            cursor: pointer;
+            transition: color .3s;
+        }
+        .my-navbar .navbar-right .navbar-right-a:hover{
+            color: #00a2ca;
+        }
+        @media (max-width: 768px ){
+            .my-navbar {
+                width: 100%;
+            }
+        }
+
+        .my-input{
+            border-radius: 3px;
+            line-height: 16px;
+            padding-left: 5px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            margin-top: 5px;
+            font-size: 14px;
+            float: left;
+            vertical-align: middle;
+            border: 1px solid #ccc;
+            color: #595959;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-shadow: 0 1px 0 #ececec inset;
+            background: transparent;width: 100%;
+        }
+        .my-input::selection {
+            background: #1996e6;
+            color: #fff;
+        }
+        .my-input::-moz-selection{
+            background: #1996e6;
+            color: #fff;
+        }
+        .my-input::-webkit-keygen-select{
+            background: #1996e6;
+            color: #fff;
+        }
+        .my-btn{
+            width: 100%;
+            background: #00a2ca;
+            text-align: center;
+            outline: none;
+            cursor: pointer;
+            height: 34px;
+            box-shadow: 0 0px 0px #ebe7e6;
+            border:0;
+            font-weight: 700;
+            color: #fff;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .my-btn:hover{
+            background: #00bffe;
+        }
+
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <div style="background: rgba(44,48,52,.95);height: 60px;color: #fff;width: 100%">
+        <div style="margin:0 auto" class="my-navbar">
+            <div style="float: left">
+                <a style="padding:20px 15px;display: block;color: #fff;cursor: pointer">
+                二手房平台后台管理系统
+                </a>
+            </div>
+            <ul class="navbar-right">
+                <li>
+                    <a href="/" class="navbar-right-a">
+                        首页
+                    </a>
+                </li>
+            </ul>
+            <div style="clear: both"></div>
+        </div>
+    </div>
+
+    <div style="position: absolute;top:60px;left: 0;right: 0;bottom: 0;z-index: 1;background: url('/images/loginC.jpg');background-repeat:no-repeat;background-size:cover;">
+        <!-- 主内容 -->
+        <div style="margin-top: 100px;min-height:500px;position:relative;min-width: 700px">
+            <div id="welcome" style="float: right;position:relative;margin-right: 708px;text-align:center;width: 380px;min-height: 330px;">
+<!--                <img src="/images/loginBackground.jpg" style="width: 425px;height: 325px">-->
+                <div id="loginTip" style="position: absolute;color:#FFF;font-size:28px;font-weight:600;transition:all .5s;-webkit-transition: all .5s;-moz-transition: all .5s; top:-50px">登录页面</div>
+                <div id="welcomeTip" style="position: absolute;color:#FFF;font-size:28px;font-weight:600;transition:all .5s;-webkit-transition: all .5s;-moz-transition: all .5s;bottom:-50px">{{time}},管理员</div>
+                <div style="clear: both"></div>
+            </div>
+            <div id="login" style="position: absolute;background:#fff;right: 260px;border:1px solid #D4D4D4;min-width: 290px;min-height: 300px;padding:15px 20px">
+                <form action="#" onsubmit="right.submit();return false" style="padding:10px 0" v-cloak>
+                    <div style="text-align: center">
+                        <div style="font-weight: 600;font-size: 16px;padding:15px 0">登录</div>
+                        <div style="clear: both"></div>
+                        <div v-if="successShow" style="text-align: left;color: green;font-size: 12px;transition: all .5s;-webkit-transition: all .5s;-moz-transition: all .5s;">登录成功！正在跳转</div>
+                        <div v-if="errorShow1" style="text-align: left;color: red;font-size: 12px;transition: all .5s;-webkit-transition: all .5s;-moz-transition: all .5s;">账户名或密码错误，再输入{{count}}次将锁定账户</div>
+                        <div v-if="errorShow2" style="text-align: left;color: red;font-size: 12px;transition: all .5s;-webkit-transition: all .5s;-moz-transition: all .5s;" v-text="errorMsg"></div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700;font-size: 12px;padding:5px 0">用户名:</div>
+                        <input type="text" @click="cleanError" required v-model="username" name="username" placeholder="请输入用户名" class="my-input">
+                        <div style="clear: both"></div>
+                    </div>
+                    <div style="margin-top: 20px">
+                        <div style="font-weight: 700;font-size: 12px">密码:</div>
+                        <input type="password" @click="cleanError" required v-model="password" name="password" placeholder="请输入密码" class="my-input">
+                        <div style="clear: both"></div>
+                    </div>
+                    <div style="margin-top: 20px" v-if="checkCodeShow">
+                        <div style="font-weight: 700;font-size: 12px">验证码:</div>
+                        <input type="text" @click="cleanError" required id="checkCode" v-model="checkCode" name="checkCode" placeholder="请输入验证码" class="my-input">
+                        <div style="clear: both"></div>
+                    </div>
+                    <div style="margin-top: 20px">
+                        <input type="submit" name="password" value="登录" class="my-btn">
+                    </div>
+                </form>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+    </div>
+</body>
+
+<script src="/js/jquery.js"></script>
+<script src="/js/vue.min.js"></script>
+<script>
+    var left = new Vue({
+        el:'#welcome',
+        data:{
+            time:''
+        },
+        created(){
+            let now = new Date(),hour = now.getHours()
+            if(hour < 6){this.time = '晚上好'}
+            else if (hour < 9){this.time = '早上好'}
+            else if (hour < 12){this.time = '上午好！'}
+            else if (hour < 14){this.time = '中午好！'}
+            else if (hour < 17){this.time = '下午好！'}
+            else if (hour < 19){this.time = '下午好！'}
+            else if (hour < 22){this.time = '晚上好！'}
+            else {this.time = '晚上好！'}
+        },
+        mounted(){
+            setTimeout(function () {
+                $("#loginTip").css("top","100px")
+                $("#welcomeTip").css("bottom","100px")
+            },50)
+        }
+    })
+    function getCookie(name)
+    {
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+    var right = new Vue({
+        el:'#login',
+        data:{
+            errorShow1:false,
+            errorShow2:false,
+            successShow:false,
+            count:3,
+            username:'',
+            password:'',
+            checkCode:'',
+            checkCodeShow:false,
+            checkCodeError:false,
+            errorMsg:'网络或服务器错误'
+        },
+        created(){
+            if(getCookie('count')!=null){
+                this.count = parseInt(getCookie('count'));
+            }
+        },
+        methods:{
+            login(){
+                var that = this
+                $.ajax({
+                    url:'/admin/loginService',
+                    type:'post',
+                    data:{
+                      username:that.username,
+                      password:that.password
+                    },
+                    dataType:'json',
+                    success:function (data) {
+                        if(data == '1'){
+                            that.successShow = true
+                            window.location.href = '/admin'
+                        }else{
+                            that.count = parseInt(getCookie('count'));
+                            if(that.count>0)
+                                that.errorShow1 = true
+                            else{
+                                that.errorShow1 = false
+                                that.errorMsg = '输入尝试次数过多，请稍后再试'
+                                that.errorShow2 = true
+                            }
+                        }
+                    },error:function () {
+                        that.errorMsg = '网络或服务器错误'
+                        that.errorShow2 = true
+                    }
+                })
+            },
+            cleanError(){
+                this.errorShow1 = false;
+                this.errorShow2 = false;
+            },
+            submit(){
+                console.log('a')
+                if(this.username.trim() && this.password.trim()){
+                    if(this.checkCodeShow == true && this.checkCode.trim()){
+                        console.log('验证码已输入')
+                        this.login()
+                    }else if(this.checkCodeShow == false){
+                        this.login()
+                    }
+                }
+                return false;
+            }
+        }
+    })
+</script>
+</html>

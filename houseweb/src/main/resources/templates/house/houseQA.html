@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>问答详情</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/my-navbar.css">
+    <link rel="stylesheet" href="/css/houseSearch/house-filter.css">
+    <link rel="stylesheet" href="/css/houseSearch/house-show.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <style>
+        .answer{
+            width:99%;height:106px;
+            display: inline-block;
+            padding: 18px 30px 18px 15px;
+            width: 100%;
+            font-size: 14px;
+            color: #333;
+            border: 1px solid #dedede;
+            overflow: hidden;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .answer:focus{
+            border-color: #3498db;
+        }
+    </style>
+</head>
+<body style="background: #f1f1f1">
+    <div id="main">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <!-- 下拉触发按钮 以及 商标-->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">二手房交易平台</a>
+                </div>
+                <!-- 适配手机，将部分栏目转至下拉导航-->
+                <div class="collapse navbar-collapse" id="collapse1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+                        <li class="active"><a href="#">二手房</a></li>
+                        <li><a href="javascript:void(0);" onclick="redirectHelp('/propertyPage/')">发布房源</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" id="userInfo" v-cloak>
+                        <li v-if="userInfo==null" ><a href="javascript:void(0)" onclick="openLoginLayer()" >登录</a></li>
+                        <li v-if="userInfo==null" ><a href="register.html">注册</a></li>
+                        <li v-if="userInfo!=null" ><span style="line-height: 50px;color: #fff">欢迎您!{{userInfo.userName}}</span></li>
+                        <li v-if="userInfo!=null" ><a href="/userhome">个人中心</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div>
+        </nav>
+        <!-- 左边框 w1200 -->
+        <div style="width: 900px;margin:60px auto">
+            <div style="width: 900px;float: left">
+                <div style="background: #fff;border-radius: 4px;padding:20px">
+                    <h1 style="font-size: 22px;font-weight: 600" v-text="question?question.questionContent:'问题丢失'"></h1>
+                    <div style="margin-top: 30px;color: #999"><span style="padding-right: 15px">匿名</span> | <span style="padding-left: 15px" v-text="dateFormat(question.created)"></span></div>
+<!--                    <div style="color: #3498db;margin-top: 20px;cursor: pointer">我来回答</div>-->
+                    <div class="layui-form-item" style="margin-top: 20px;">
+                        <div class="layui-input-block" style="margin-left: 0">
+                            <textarea v-model="answerContent" placeholder="请输入5个字以上的回答" type="text/plain" class="answer"></textarea>
+                            <div style="position: absolute;
+                            bottom: 14px;
+                            right: 10px;
+                            padding: 0 0 0 5px;
+                            font-size: 14px;
+                            color: #ccc;
+                            background: #fff;"><span v-text="wordNum"></span>/<span>100</span></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" @click="addAnswer">提交回答</button>
+                </div>
+
+                <div style="background: #fff;border-radius: 4px;padding:20px;margin-top: 50px">
+                    <div style="padding:15px 0;font-weight: 500;font-size: 16px">
+                        全部<span v-text="answers?answers.length:0"></span>个回答
+                    </div>
+                    <ul style="color: #333">
+                        <li style="position:relative;padding:15px 0;border-bottom:1px dotted #e6e6e6;" v-for="item in answers">
+                            <div style="position:relative;padding-left: 74px">
+                                <div v-text="item.name"></div>
+                                <div style="padding-top: 12px" v-text="item.answerContent"></div>
+                                <div style="margin-top: 12px;font-size:12px;color: #666" v-text="dateFormat(item.answerTime)"></div>
+                                <a style="position:absolute;left: 0;top:5px;width: 55px;height: 72px">
+                                    <img style="width: 100%;height: 100%" :src="item.img">
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+<!--            <div style="width: 300px;float: right"></div>-->
+        </div>
+    </div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/assets/layui/layui.all.js"></script>
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var userInfo = [[${userInfo}]]
+    var answers = [[${answers}]]
+    var question = [[${question}]]
+</script>
+<script>
+
+    function dateFormat(time) {
+
+        if (time==null){
+            return "暂无时间"
+        }
+        var date=new Date(time);
+        var year=date.getFullYear();
+        /* 在日期格式中，月份是从0开始的，因此要加0
+         * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+         * */
+        var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+        var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+        var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+        var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+        var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+        // 拼接
+        console.log(date)
+        return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+    }
+
+    function openLoginLayer() {
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 1,
+            shadeClose: true,
+            skin: 'layerForm',
+            content: `
+                <form class="layui-form" style="padding:35px;width: 300px" id="loginForm" action="/login" method="post">
+                  <div style="font-size: 18px;font-weight: 600">账号密码登录</div>
+                  <hr style="margin-bottom: 35px">
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <input type="text" name="username" required placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <input type="password" name="password" required placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                   <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <button class="layui-btn" style="background:#3498db;width: 100%">立即提交</button>
+                    </div>
+                  </div>
+                </form>
+                `
+        });
+    }
+
+
+    var main = new Vue({
+        el:'#main',
+        data:{
+            userInfo:userInfo,
+            wordNum:0,
+            answers:answers,
+            question:question,
+            answerContent:''
+        },
+        methods:{
+            addAnswer(){
+                if(userInfo!=null && this.wordNum>5) {
+                    var that = this
+                    $.ajax({
+                        url: '/houseQA/addAnswer',
+                        type: 'post',
+                        data: {
+                            content: that.answerContent,
+                            questionId: question.questionNo
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data != null) {
+                                that.answers = data
+                                that.answerContent = ''
+                            }
+                        }, error: function (data) {
+                            alert("错误请求")
+                        }
+                    })
+                }else if(userInfo!=null){
+                    alert("请输入五个字以上的回答")
+                }else if(userInfo==null){
+                    openLoginLayer()
+                }
+            }
+        },
+        watch:{
+            answerContent(val){
+                this.wordNum = val.length
+                if(this.wordNum>100){
+                    this.answerContent = this.answerContent.substring(0,100)
+                }
+            }
+        }
+    })
+
+</script>
+</html>

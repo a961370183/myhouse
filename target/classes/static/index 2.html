@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <title>字节跳动二手房交易监管平台</title>
+    <style>
+        .demo{
+            background: white;
+            text-align: center;
+            margin:20px 20px 0 20px
+        }
+        .pic{
+            display: block;
+            height: auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<!-- 引入组件库 -->
+<div id="app" style="height: 100%">
+    <div class="top" style="background-image: url(/images/banner.png);background-repeat: no-repeat;width: 100%;background-size:cover">
+        <div class="content" >
+            <div class="h27"></div>
+            <div class="tel"style="margin-left: 0px">
+                <a href="" class="num" style="display: block;width: 130px;text-decoration:none;">咨询电话</a>
+            </div>
+            <div class="logo">
+                <div style="height: auto">
+                    <h2 style="margin: 10px 50px 50px 50px ;font: 34px/1.5 Tahoma,Helvetica,Arial,'宋体',sans-serif;" >
+                        <a href="index.html" id="logo" >
+                            <!--                        <img height="50px" width="80px" src="img/logo.jpg"  >-->
+                            <img src="images/zi.png">
+                        </a>
+                    </h2>
+
+                </div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+    <!--    <div class="page-header demo">-->
+
+    <!--    </div>-->
+    <div class="center" :style="{backgroundImage: 'url(' +'/images/bg.jpg' + ')' }">
+        <div class="content">
+            <div class="h85"></div>
+            <a href="index.html" class="twoBox ml145">
+                <img class="mt25" src="/images/pic1.png">
+                <img class="mt16" src="/images/tit1.png">
+            </a>
+            <a href="/house" class="twoBox ml185">
+                <img class="mt25" src="/images/pic2.png">
+                <img class="mt16" src="/images/tit2.png">
+            </a>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="h30"></div>
+        <p>长沙市住房保障和房产管理局版权所有 © 隐私保护 </p>
+        <p>开发小组人员：王知往 周世焕 凌城军 李祉臻 黄滔 吐努克</p>
+        <p>字节跳动开发小组提供技术支持</p>
+    </div>
+</div>
+</body>
+<!-- 先引入 Vue -->
+<script src="/js/vue.min.js"></script>
+<!-- 引入组件库 -->
+<script>
+    new Vue({
+        el: '#app',
+        data: function() {
+            return { visible: false }
+        }
+    })
+</script>
+</html>

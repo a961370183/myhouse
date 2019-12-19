@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link rel="stylesheet" type="text/css" href="/css/qa_style.css">
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+
+<body>
+<div id="app" v-cloak>
+    <div class="header">
+        <div class="bar">
+            <div class="w1200">
+                <span class="l">二手房交易网<font>用户中心</font></span>
+                <span class="r"><a href="#"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+                <span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="w1200">
+                <div class="user-headface">
+                    <img :src="this.list.img" >
+                </div>
+                <div class="user-account">
+                    <p class="tip">欢迎你，{{this.list.nickName}}</p>
+                    <p class="account">
+                        <span>账号：</span><span>{{this.list.userName}}</span>
+                        <span>用户类型：</span><span>{{this.list.role}}</span>
+                    </p>
+                </div>
+                <div class="user-modify">
+                    <a href="#">修改资料></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main w1200">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="/userhome/">
+                        <i class="icon iconfont icon-lingdang"></i>
+                        个人信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myfavorite/">
+                        <i class="icon iconfont icon-fangzidichan"></i>
+                        我的收藏
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myquestion/" class="active">
+                        <i class="icon iconfont icon-wenda"></i>
+                        问答
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/houseManage">
+                        <i class="icon iconfont icon-icon--"></i>
+                        房源管理
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/zhongjieqianyue">
+                        <i class="icon iconfont icon-geren"></i>
+                        中介签约
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentInformation">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        中介信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentContractingManage">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        签约管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul class="nav nav-tabs">
+                <li ><a href="/userhome/myquestion" >我的问题</a></li>
+                <li class="active"><a href="/userhome/myanswer">我的回答</a></li>
+            </ul>
+            <div class="container">
+                <div v-for="(item,index) in qatohouselist" :key="item.houseNo">
+                    <div class="row">
+                        <div class="QBlock" >
+                            <div class="QuestionRelatedHouse" style="background-color:#62ab00; color: white; padding-left: 25px;padding-left: 25px; border-bottom: 2px solid #e6ecf5;">
+                                <i>房源：</i>
+                                <a href="#" style="font-weight: Bold; font-size: 25px;" @click="detail(item.houseDetail.houseNo,item.houseDetail.role)">
+                                    {{item.houseDetail.title}}
+                                </a>
+
+                            </div>
+                            <div class="panel-group" id="accordion">
+                                <div v-for="(qaitem,index) in item.qaUnionList" :key="qaitem.question.questionNo" class="panel panel-default" >
+                                    <div class="panel-heading" style="background-color: white;padding-left:20px; padding-right: 20px;" >
+                                        <h4 class="panel-title" style="width: 880px;">
+                                            <a data-toggle="collapse" data-parent="#accordion" :href="'#collapseNo'+qaitem.question.questionNo">
+                                                {{qaitem.question.questionContent}}
+                                            </a>
+                                            <i style="font-weight: bold">{{qaitem.answer==null?"(未回答)":null}}</i>
+                                            <i style="color: grey">{{qaitem.question.created}}</i>
+                                        </h4>
+
+                                    </div>
+                                    <div :id="'collapseNo'+qaitem.question.questionNo" class="panel-collapse collapse in" style="background-color: #fafbfd;padding-left:20px; padding-right: 20px;">
+                                        <div class="panel-body">
+                                            {{qaitem.answer==null?"暂无回答":qaitem.answer.answerContent}}
+
+                                            <!-- 按钮触发模态框 -->
+                                            <button class="btn btn-primary" data-toggle="modal" :data-target="'#myModal'+qaitem.question.questionNo" @click="textareaData=(qaitem.answer==null?null:qaitem.answer.answerContent)" style="float: right;background-color: #62ab00;">
+                                                创建/修改回答
+                                            </button>
+                                            <!-- 模态框（Modal） -->
+                                            <div class="modal fade" :id="'myModal'+qaitem.question.questionNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title" id="myModalLabel"><b>问题：</b>{{qaitem.question.questionContent}}</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form role="form">
+                                                                <div class="form-group">
+                                                                    <label >你的回答：</label>
+                                                                    <textarea v-model="textareaData" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                            <button type="button" class="btn btn-primary" @click="submitAns(qaitem.question.questionNo)">提交更改</button>
+                                                        </div>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal -->
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            list:[],
+            qatohouselist:[],
+            src:'',
+            textareaData:'',
+        },
+        created(){
+            this.getAll();
+
+        },
+        mounted(){
+        },
+        methods:{
+
+            btn() {
+                this.$refs.div.contentEditable = true
+                this.$refs.div.focus() //获取焦点
+            },
+            getAll() {
+                var that = this;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: '/user',
+                        success: function (d) {
+                            that.list = d;
+                            if(that.list.role==1){
+                                that.list.role='普通用户'
+                                console.log(that.list.role)
+                            }
+                            if(that.list.role==2){
+                                that.list.role='中介'
+                                console.log(that.list.role)
+                            }
+                            if(that.list.role==3){
+                                that.list.role='系统管理员'
+                                console.log(that.list.role)
+                            }
+                            console.log(that.list);
+                            that.getHouseRelatedQA(that.list.userId);
+                        }
+
+                    }
+                )
+
+
+            },
+            getHouseRelatedQA() {
+                console.log(this.list.userId);
+                var _this = this;
+                $.ajax(
+                    {
+                        type:"GET",
+                        url: '/question/QAtoHouses?userid='+_this.list.userId,
+                        success: function (d) {
+                            _this.qatohouselist=d;
+                            if (_this.qatohouselist.length==0) alert("暂无问题");
+                            console.log(_this.qatohouselist);
+                        },
+                        error: function (d){
+                            alert("获取失败")
+                        }
+                    }
+                )
+            },
+            detail(houseNo,role){
+                if(role==1){
+                    window.location.href = '/userHouseDetail/'+houseNo
+                }else{
+                    window.location.href = '/agentHouseDetail/'+houseNo
+                }
+            },
+            submitAns(questionno){
+                console.log(questionno);
+                console.log(this.textareaData);
+                console.log(this.list.userId);
+                var _this = this;
+                if (this.textareaData==null) alert("请输入答案");
+                else if (this.textareaData.length==0) alert("请输入答案");
+                else if (this.textareaData.length>500) alert("字数过多");
+                else{
+                    $.ajax(
+                        {
+                            type:"GET",
+                            url: '/question/answerQuestion?questionno='+questionno+'&ansContent='+_this.textareaData+'&userId='+_this.list.userId,
+                            success: function (d) {
+                                if (d==1) alert("成功提交");
+                                console.log(d);
+                                window.location.reload();
+                            },
+                            error: function (d){
+                                alert("提交失败")
+                            }
+                        }
+                    )
+                }
+            }
+        },
+        computed:{
+
+        },
+
+    })
+</script>
+</html>

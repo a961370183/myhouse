@@ -1,0 +1,190 @@
+.house-show {
+    float:left;
+    width: 900px;
+    height: 250px;
+    border-bottom: 1px dashed silver;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.house-show:hover{
+    background:#ecf1f0;
+}
+/*  左边图片  */
+.house-show .house-show-info .show-pic {
+    float: left;
+    position: relative;
+    height: 230px;
+    width: 260px;
+    text-align: right;
+}
+
+.house-show .house-show-info .show-pic img {
+    margin-top: 20px;
+    width: 246px;
+    height: 190px;
+}
+.house-show .house-show-info .show-pic .show-type{
+    width: 84px;
+    height: 84px;
+    position: absolute;     /*在父级元素中绝对定位到右上角*/
+    top: 0;
+    right: 0;
+    z-index: 99;
+}
+
+.house-show .house-show-info .show-pic .show-type img {
+    width: 84px;
+    height: 84px;
+}
+
+.house-show .house-show-info .show-pic .tag-count {
+    position: absolute;         /*在父级元素中绝对定位到左上角*/
+    top: 20px;
+    left: 14px;
+    z-index: 99;
+    padding: 0 14px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    opacity: .4;
+}
+
+.house-show .house-show-info .show-pic .clicks {
+    position: absolute;        /*在父级元素中绝对定位到右下角*/
+    right: 0;
+    bottom: 20px;
+    z-index: 99;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 4px;
+    font-size: 0;
+    background-color: #000;
+    opacity: .4;
+    color: #fff;
+    text-align: center;
+}
+.house-show .house-show-info .show-pic .clicks img {
+    margin-top: 0;
+    margin-right: 4px;
+    height: 30px;
+    width: 30px;
+    vertical-align: middle;
+}
+.house-show .house-show-info .show-pic .clicks span {
+    font-size: 14px;
+    vertical-align: middle;
+}
+/*  左边图片结束end!  */
+
+/* 右边房源简述 */
+.house-show .house-show-info .show-self {
+    position: relative;
+    float: left;
+    height: 230px;
+    width: 640px;
+    padding: 40px 16px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.house-show .house-show-info .show-self .self-title ,
+.house-show .house-show-info .show-self .self-type ,
+.house-show .house-show-info .show-self .self-tag,
+.house-show .house-show-info .show-self .self-site {
+    height: 40px;
+    line-height: 40px;
+}
+
+.house-show .house-show-info .show-self .self-title span,
+.house-show .house-show-info .show-self .self-type span,
+.house-show .house-show-info .show-self .self-tag span,
+.house-show .house-show-info .show-self .self-site span{
+    margin:0 10px;
+}
+.house-show .house-show-info .show-self .self-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #286cc0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.house-show .house-show-info .show-self .self-type {
+    font-size: 14px;
+    font-weight: 700;
+}
+.house-show .house-show-info .show-self .self-type span {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-left: 2px #000000 solid;
+    padding:0 10px;
+    margin:0;
+}
+.house-show .house-show-info .show-self .self-type span:first-child{
+    border-left:none;
+}
+.house-show .house-show-info .show-self .self-site {
+    margin: 0 10px;
+}
+
+.house-show .house-show-info .show-self .self-tag span {
+    padding: 6px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.house-show .house-show-info .show-self .self-tag span:first-child {
+    border: 1px solid #7496e5;
+    color: #7496e5;
+}
+.house-show .house-show-info .show-self .self-tag span:nth-child(2) {
+    border: 1px solid #89c898;
+    color: #89c898;
+}
+.house-show .house-show-info .show-self .self-tag span:nth-child(3) {
+    border: 1px solid #9b59b6;
+    color: #9b59b6;
+}
+/* 最右边估价，采用绝对定位*/
+.house-show .house-show-info .show-self .self-price {
+    position: absolute;
+    right: 12px;
+    top:80px;
+    font-size: 14px;
+    color: #ea6566;
+}
+.house-show .house-show-info .show-self .self-price span {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: 'tahoma';
+    color: #db4c3f;
+}
+.house-show .house-show-info .show-self .self-danjia {
+    position: absolute;
+    right: 12px;
+    top:115px;
+}
+
+.house-show .house-show-info .show-self .created {
+    position: absolute;
+    right: 12px;
+    top:135px;
+}
+
+.house-show .collectcancel-btn{
+    text-align: center;
+    width: 900px;
+    height: 20px;
+    float: left;
+    background-color: #62ab00;
+    color: white;
+    cursor: pointer;
+}
+
+[v-cloak]{
+    display: none;
+}

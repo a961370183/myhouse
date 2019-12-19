@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.AgentHangoutMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.AgentHangout">
+    <id column="workNo" jdbcType="INTEGER" property="workNo" />
+    <id column="houseNo" jdbcType="INTEGER" property="houseNo" />
+    <result column="clientId" jdbcType="INTEGER" property="clientId" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="period" jdbcType="INTEGER" property="period" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    workNo, houseNo, clientId, created, period
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="hnu.houseweb.entity.AgentHangoutKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from agentHangout
+    where workNo = #{workNo,jdbcType=INTEGER}
+      and houseNo = #{houseNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="hnu.houseweb.entity.AgentHangoutKey">
+    delete from agentHangout
+    where workNo = #{workNo,jdbcType=INTEGER}
+      and houseNo = #{houseNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="hnu.houseweb.entity.AgentHangout">
+    insert into agentHangout (workNo, houseNo, clientId,
+      created, period)
+    values (#{workNo,jdbcType=INTEGER}, #{houseNo,jdbcType=INTEGER}, #{clientId,jdbcType=INTEGER},
+      #{created,jdbcType=TIMESTAMP}, #{period,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.AgentHangout">
+    insert into agentHangout
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="workNo != null">
+        workNo,
+      </if>
+      <if test="houseNo != null">
+        houseNo,
+      </if>
+      <if test="clientId != null">
+        clientId,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="period != null">
+        period,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="workNo != null">
+        #{workNo,jdbcType=INTEGER},
+      </if>
+      <if test="houseNo != null">
+        #{houseNo,jdbcType=INTEGER},
+      </if>
+      <if test="clientId != null">
+        #{clientId,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="period != null">
+        #{period,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.AgentHangout">
+    update agentHangout
+    <set>
+      <if test="clientId != null">
+        clientId = #{clientId,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="period != null">
+        period = #{period,jdbcType=INTEGER},
+      </if>
+    </set>
+    where workNo = #{workNo,jdbcType=INTEGER}
+      and houseNo = #{houseNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.AgentHangout">
+    update agentHangout
+    set clientId = #{clientId,jdbcType=INTEGER},
+      created = #{created,jdbcType=TIMESTAMP},
+      period = #{period,jdbcType=INTEGER}
+    where workNo = #{workNo,jdbcType=INTEGER}
+      and houseNo = #{houseNo,jdbcType=INTEGER}
+  </update>
+</mapper>

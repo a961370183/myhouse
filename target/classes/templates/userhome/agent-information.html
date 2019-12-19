@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script src="/js/vue-router.js"></script>
+
+<body>
+<div id="app"  v-cloak>
+    <div class="header">
+        <div class="bar">
+            <div class="w1200">
+                <span class="l">二手房交易网<font>用户中心</font></span>
+                <span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+                <span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="w1200">
+                <div class="user-headface">
+                    <img :src="this.list.img" >
+                </div>
+                <div class="user-account">
+                    <p class="tip">欢迎你，{{this.list.nickName}}</p>
+                    <p class="account">
+                        <span>帐户名：</span><span>{{this.list.userName}}</span>
+                        <span>用户类型：</span><span>{{this.list.role}}</span>
+                    </p>
+                </div>
+                <div class="user-modify">
+                    <a href="/userhome">修改资料></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main w1200">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="/userhome/">
+                        <i class="icon iconfont icon-lingdang"></i>
+                        个人信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myfavorite/">
+                        <i class="icon iconfont icon-fangzidichan"></i>
+                        我的收藏
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myquestion/">
+                        <i class="icon iconfont icon-wenda"></i>
+                        问答
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/houseManage">
+                        <i class="icon iconfont icon-icon--"></i>
+                        房源管理
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/zhongjieqianyue">
+                        <i class="icon iconfont icon-geren"></i>
+                        中介签约
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentInformation" class="active">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        中介信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentContractingManage">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        签约管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul class="nav nav-tabs">
+                <li class="active"><a>中介信息</a></li>
+            </ul>
+            <div class="container">
+
+                <form name="form" id="form" class="form-horizontal form-label-left ng-untouched ng-pristine ng-valid" style="margin-top:15px">
+                    <div class="form-group">
+                        <div>
+                            中介头像
+                        </div>
+                        <div class="user-headface col-md-6">
+                            <img :src="list.img" style="width:100%;height: 100%" alt="中介头像">
+                        </div>
+                    </div>
+                    <div  class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-3"><span  class="required">* </span>账号</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <label v-text="this.list.userName"></label>
+                        </div>
+                    </div>
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">从业编号</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <label v-text="this.agent.workNo"></label>
+                        </div>
+                    </div>
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">机构编号</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <label v-text="this.agent.compNo"></label>
+                        </div>
+                    </div>
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">真实姓名</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <div ref="div">
+                                <label v-text="this.agent.name"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">中介联系电话</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+
+                            <div ref="div2">
+                                <label v-text="this.agent.tel"></label>
+                            </div>
+                            <button class="btn btn-primary btn-small" data-toggle="modal" @click.prevent="telValue()" data-target="#agentTelModal">修改</button>
+                            <!-- 模态框（Modal） -->
+                            <div class="modal fade1" id="agentTelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close"  aria-hidden="true"></button>
+                                            <h4 class="modal-title" id="agentTelModalLabel">修改内容</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="text" v-model="innerTel" >
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary" @click.prevent="changeTel()">提交更改</button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">从业年限</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <div ref="div">
+                                <label v-text="this.agent.workYear"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">星级评定</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <div ref="div">
+                                <label v-text="this.agent.starLevel"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div  class="form-group">
+                        <label  class="control-label col-md-3 col-sm-3 col-xs-3">账号状态</label>
+                        <div  class="col-md-8 col-sm-8 col-xs-8" style="margin-top:10px">
+                            <div ref="div">
+                                <label v-text="this.agent.status"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function logOut() {
+        $.ajax({
+            url:'/logout',
+            type:'post',
+            success:function () {
+                window.location.href = '/house'
+            }
+        })
+    }
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            list:[],
+            agent: [],
+            innerTel: ""
+        },
+        created(){
+            this.getAll();
+
+        },
+
+        mounted(){
+
+        },
+        methods:{
+            getAll() {
+                var that = this;
+                var postlist = null;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: '/user',
+                        success: function (d) {
+                            that.list = d;
+                            if(that.list.role==1){
+                                that.list.role='普通用户';
+                                console.log(that.role)
+                            }
+                            if(that.list.role==2){
+                                that.list.role='中介';
+                                console.log(that.role)
+                            }
+                            if(that.list.role==3){
+                                that.list.role='系统管理员';
+                                console.log(that.role)
+                            }
+                            if(that.list.img==null){
+                                that.list.img='/images/mooctest.png'
+                            }
+                            console.log(that.list);
+                            $.ajax({
+                                type: "POST",
+                                url: "/agent/getMyAgentInformation",
+                                data: {
+                                    workNo: that.list.userId
+                                },
+                                success: function (agent) {
+                                    that.agent = agent;
+                                    if (that.agent.status==="1") {
+                                        that.agent.status = "正常"
+                                    } else {
+                                        that.agent.status = "正在审核"
+                                    }
+                                }
+                            })
+                        }
+
+                    }
+                )
+            },
+            telValue: function () {
+                this.innerTel = this.agent.tel;
+            },
+            changeTel: function () {
+                var that;
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/changeAgentTel",
+                    data: {
+                        workNo: this.agent.workNo,
+                        tel: this.innerTel
+                    },
+                    success: function (msg) {
+                        if (msg) {
+                            alert("修改成功");
+                            location.reload();
+                        } else {
+                            alert("修改失败");
+                        }
+                    },
+                    error: function () {
+                        alert("修改失败，请检查网络或格式");
+                    }
+                });
+            }
+        },
+    })
+</script>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue" class="active">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li  v-if="list.role=='中介用户'">
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li  v-if="list.role=='中介用户'">
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="/userhome/zhongjie" >搜索中介</a></li>
+				<li ><a href="/userhome/zhongjieqianyue">中介签约</a></li>
+				<li><a href="#">历史签约</a></li>
+				<li ><a href="/userhome/zhongjiesign">中介认证</a></li>
+			</ul>
+			<div class="container">
+				<table class="table table-bordered table-hover table-striped">
+					<div class="panel-heading">
+					</div>
+					<div class="panel-body form-inline">
+						<label>
+							中介编号:
+							<input type="text" class="form-control" >
+						</label>
+
+						<label>
+							中介姓名:
+							<input type="text" class="form-control" >
+						</label>
+
+
+						<!-- 在Vue中，使用事件绑定机制，为元素指定处理函数的时候，如果加了小括号，就可以给函数传参了 -->
+						<input type="button" value="搜索" class="btn btn-primary">
+
+						<label>
+							搜索名称关键字：
+							<!-- 注意： Vue中所有的指令，在调用的时候，都以 v- 开头 -->
+							<input type="text" class="form-control"  id="search" v-focus v-color="'green'">
+						</label>
+					</div>
+
+					<thead>
+					<tr>
+						<th>Id</th>
+						<th>Name</th>
+						<th>Ctime</th>
+						<th>Operation</th>
+					</tr>
+					</thead>
+					<tbody>
+					<!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
+					<!-- 现在， 我们自定义了一个 search 方法，同时，把 所有的关键字，通过传参的形式，传递给了 search 方法 -->
+					<!-- 在 search 方法内部，通过 执行 for 循环， 把所有符合 搜索关键字的数据，保存到 一个新数组中，返回 -->
+<!--					<tr v-for="item in list" :key="item.id">-->
+<!--						<td>{{ item.id }}</td>-->
+<!--						<td v-text="item.username"></td>-->
+<!--						<td>{{ item.password}}</td>-->
+<!--						<td>-->
+<!--							<a href="" @click.prevent="del(item.id)">删除</a>-->
+<!--						</td>-->
+<!--					</tr>-->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			list:[],
+			src:'',
+			innernick:'',
+			inneremail:'',
+			innername:'',
+			photo:'',
+			innerimg:'',
+			customerHead: "",
+		},
+		created(){
+			this.getAll();
+
+		},
+		mounted(){
+
+		},
+		methods:{
+
+			getAll() {
+				var that = this;
+				var postlist = null;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+									console.log(that.role)
+								}
+								if(that.list.role==2){
+									that.list.role='中介用户'
+									console.log(that.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.role)
+								}
+								console.log(that.list)
+								if(that.list.img==null){
+									that.list.img='/images/mooctest.png'
+								}
+							}
+
+						}
+				)
+
+
+			},
+		},
+	})
+</script>
+<script>
+</script>
+
+
+</html>

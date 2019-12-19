@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.ContractReviewMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.ContractReview">
+    <id column="adminNo" jdbcType="INTEGER" property="adminNo" />
+    <id column="contractNo" jdbcType="INTEGER" property="contractNo" />
+    <result column="created" jdbcType="DATE" property="created" />
+    <result column="result" jdbcType="CHAR" property="result" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    adminNo, contractNo, created, result
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="hnu.houseweb.entity.ContractReviewKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from contractReview
+    where adminNo = #{adminNo,jdbcType=INTEGER}
+      and contractNo = #{contractNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="hnu.houseweb.entity.ContractReviewKey">
+    delete from contractReview
+    where adminNo = #{adminNo,jdbcType=INTEGER}
+      and contractNo = #{contractNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="hnu.houseweb.entity.ContractReview">
+    insert into contractReview (adminNo, contractNo, created,
+      result)
+    values (#{adminNo,jdbcType=INTEGER}, #{contractNo,jdbcType=INTEGER}, #{created,jdbcType=DATE},
+      #{result,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.ContractReview">
+    insert into contractReview
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="adminNo != null">
+        adminNo,
+      </if>
+      <if test="contractNo != null">
+        contractNo,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="result != null">
+        result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="adminNo != null">
+        #{adminNo,jdbcType=INTEGER},
+      </if>
+      <if test="contractNo != null">
+        #{contractNo,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=DATE},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.ContractReview">
+    update contractReview
+    <set>
+      <if test="created != null">
+        created = #{created,jdbcType=DATE},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=CHAR},
+      </if>
+    </set>
+    where adminNo = #{adminNo,jdbcType=INTEGER}
+      and contractNo = #{contractNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.ContractReview">
+    update contractReview
+    set created = #{created,jdbcType=DATE},
+      result = #{result,jdbcType=CHAR}
+    where adminNo = #{adminNo,jdbcType=INTEGER}
+      and contractNo = #{contractNo,jdbcType=INTEGER}
+  </update>
+</mapper>

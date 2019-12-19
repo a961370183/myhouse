@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <meta charset="UTF-8">
+    <title>二手房详情页面</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/my-navbar.css">
+    <link rel="stylesheet" href="/css/houseDetail/header.css">
+    <link rel="stylesheet" href="/css/houseDetail/detail.css">
+    <link rel="stylesheet" href="/css/houseDetail/overview.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <style>
+        body {
+            font-size: 14px;
+            color: #333;
+            font-family: "Hiragino Sans GB","Microsoft Yahei UI","Microsoft Yahei","微软雅黑",'Segoe UI',Tahoma,"宋体b8b\4f53",SimSun,sans-serif;
+            text-rendering: optimizeLegibility;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body{
+            padding-right: 0px !important;  /*阻止模态框改变容器大小*/
+        }
+
+        .modal-open {
+            　　overflow: hidden;
+        }
+
+        .clearfix:after, #content:after {
+            clear: both;
+            content: ".";
+            display: block;
+            font-size: 0;
+            height: 0;
+            line-height: 0;
+            visibility: hidden;
+        }
+        .overview .left-img{
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        [v-cloak]{
+            display: none;
+        }
+        .left-img .imgContainer {
+            vertical-align: top;
+        }
+
+        #main{
+            min-height: 1000px;position: relative;padding-bottom:150px;
+        }
+
+        /*讨论区相关*/
+        .comm-qa-list li {
+            width: 100%;
+            position: relative;
+            margin-top: 20px;
+            border-bottom: 1px solid #eeeeee;;
+        }
+        .comm-qa-list li a {
+            display: block;
+            width: 730px;
+            color: #333;
+        }
+        .comm-qa-list dl {
+            margin-left: 55px;
+        }
+
+        .comm-qa-list dl dt {
+            float: left;
+            margin-left: -54px;
+        }
+        .comm-qa-list dl dt {
+            float: left;
+            width: 40px;
+            height: 100%;
+        }
+        .comm-qa-list .qa-item-q dt {
+            margin-top: 3px;
+        }
+        .comm-qa-list .qa-item-q dt span {
+            background-color: #3498db;
+            font-weight: normal;
+        }
+        .comm-qa-list dl dt span {
+            display: inline-block;
+            color: #fff;
+            width: 40px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+        }
+        .comm-qa-list .qa-item-q dd {
+            line-height: 24px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .comm-qa-list .qa-item-q .qa-item-txt {
+            float: left;
+            max-width: 595px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .comm-qa-list .qa-item-q .qa-time {
+            margin-left: 10px;
+            font-size: 12px;
+            color: #666;
+            float: left;
+            font-weight: 400;
+        }
+        /*回答相关*/
+        .comm-qa-list .qa-item-a {
+            margin-top: 10px;
+        }
+        .comm-qa-list .qa-item-a dt {
+            margin-top: 7px;
+        }
+        .comm-qa-list .qa-item-a dd {
+            line-height: 32px;
+            font-size: 14px;
+            max-height: 64px;
+            overflow: hidden;
+            color: #666;
+        }
+        .qa-brokername {
+            color: #1f64b2;
+        }
+        .qa-brokername:hover {
+            color: red;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #3498db;
+            border-color: #2e6da4;
+        }
+
+        /* 鼠标悬浮显示机构营业执照 */
+        .hide-img{ display:none; z-index:9999; position:relative;left: -220px;top:-310px;-moz-box-shadow: 5px 5px 18px #333333;-webkit-box-shadow: 5px 5px 18px #333333;box-shadow: 5px 5px 18px #333333;}
+        .show-img:hover + .hide-img{ display:block}
+    </style>
+</head>
+<body>
+<div id="main" v-cloak>
+<!--    导航栏-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- 下拉触发按钮 以及 商标-->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">二手房交易平台</a>
+            </div>
+            <!-- 适配手机，将部分栏目转至下拉导航-->
+            <div class="collapse navbar-collapse" id="collapse1">
+                <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+                        <li class="active"><a href="/house">二手房</a></li>
+                        <li><a href="/propertyPage/">房源挂牌</a></li>
+                    </ul>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" id="userInfo" v-cloak>
+                    <li v-if="userInfo==null" ><a href="#" data-toggle="modal" data-target="#myModal">登录</a></li>
+                    <li v-if="userInfo==null" ><a href="register.html">注册</a></li>
+                    <li v-if="userInfo!=null" ><span style="line-height: 50px;color: #fff">欢迎您!{{userInfo.userName}}</span></li>
+                    <li v-if="userInfo!=null" ><a href="/userhome">个人中心</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </nav>
+
+<!--    头部信息-->
+    <div class="sellDetailHeader">
+        <div class="content">
+            <div class="title">
+                <h1  class="main" v-text="house.title"></h1>
+                <div class="sub" v-text="house.description"></div>
+            </div>
+            <div class="btnContainer">
+                <div class="action">
+<!--                    这两个函数有读-->
+                    <button @click="collect1" v-show="!isCollected">收藏房源</button>
+                    <button @click="cancleCollect" v-show="isCollected">取消收藏</button>
+                    <span v-text="collectNum"></span>人关注
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--   概览：图片概览、持有者信息-->
+    <div class="overview">
+        <div class="left-img">
+            <div class="imgContainer" id="videoPlayer" style="display: inline-block;">
+                <video controls="controls" id="videoTag" :poster="house.coverUrl" style="width: 100%;height: 100%;object-fit: fill">
+                    <source src="/video/house/10015/1574862652/b01e3d7813024874b2a42ee40f4c1906.mp4" type="video/mp4"/>
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="imgContainer" style="display: inline-block">
+                <img :src="imgShow[currentIndex]">
+                <div class="show-type">
+                    <img :src="house.role == 1 ?grTag:zjTag">
+                </div>
+                <span>{{imgType[currentImgType]}}</span>
+            </div>
+            <div style="clear: both"></div>
+            <div class="thumbnail">
+                <div class="pre" @click="pre(1)">&lt;</div>
+                <ul class="smallpic">
+                    <li :class="{'selected':index==currentIndex}" v-for="(item,index) in imgShow" @click="imgClick(index)"><img :src="item"></li>
+                </ul>
+                <div class="next" @click="next(1)">&gt;</div>
+            </div>
+        </div>
+        <div class="right-info" style="height: 480px">
+            <div class="price">
+                <span class="total" v-text="house.price"></span>
+                <span class="unit">万</span>
+                <div class="text">
+                    <div class="unitPrice">
+                        <span class="unitPriceValue" v-text="((house.price/house.size).toFixed(4))*10000"></span>
+                        元/平米
+                    </div>
+                    <div class="tax">详细价格请咨询</div>
+                </div>
+            </div>
+            <div class="houseInfo">
+                <div class="unit">
+                    <div class="mainInfo">{{house.roomNum}}室{{house.hallNum}}厅</div>
+                    <div class="subInfo">{{floor[house.floor]}}/共{{house.maxFloor}}层</div>
+                </div>
+                <div class="unit">
+                    <div class="mainInfo">{{faceAt[house.faceAt]}}</div>
+                    <div class="subInfo">平层</div>
+                </div>
+                <div class="unit">
+                    <div class="mainInfo">{{house.size}}平米</div>
+                    <div class="subInfo">{{house.buildYear}}年建</div>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            <div class="aroundInfo">
+                <div class="areaname">
+                    <span class="lable">区域名称</span>
+                    <span class="info"><a :href="'/house/'+ region.id + '/'">{{region.name}}</a></span>
+                </div>
+                <div class="time">
+                    <span class="lable">看房时间</span>
+                    <span class="info">{{house.lookTime}}</span>
+                </div>
+                <div class="houseno">
+                    <span class="lable">房源编号</span>
+                    <span class="info">{{house.houseNo}}</span>
+                </div>
+            </div>
+            <div class="agent-info">
+                <a>
+                    <img :src="house.imgSrc">
+                </a>
+                <div class="brokerInfoText">
+                    <a class="agent-name">{{house.name}}</a>
+                    <div class="evaluate" v-if="house.role==2">
+                        <span>评分：<i v-if="house.starLevel!=null" v-text="house.starLevel"></i></span>
+                        <span>/100次评价</span>
+                    </div>
+                    <div class="evaluate" v-if="house.role==2">
+                        <span class="show-img" v-if="house.businessScope!=null" style="cursor: pointer">所属公司：<a  :href="house.businessScope" v-text="house.compName"></a></span>
+                        <div class="hide-img" style="width: 200px;height: 200px"><img  :src="house.businessScope" style="width: 300px;height: 300px"></div>
+                    </div>
+                    <div class="broker-tlp">
+                        <span class="tlp-img"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAcCAYAAABsxO8nAAAArUlEQVQ4jWN8pqXl4Je3cT8DBWDTJH9HFlza7RgYGFixiP9mYGA4hEUcp0FQQxixiP/Hph6nQb8hFFZNJBmEzflEGeQMoRj3Qvl2BDQeguj5D1NPfRfBwKZJ/kRrnpi3Ec5mItFinGDUoFGDRg0aYgbBi5E7DAwMKgwM/5GLBkLgDjaDHkIxuQCv17whFKgmYYSycQLqhxE2sJWBgUEeWiWB2GQbBAJEhRsDAwMAyxod4ZKF0A0AAAAASUVORK5CYII="> </span>
+                        <span class="tlp-box">{{house.tel}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 清浮动 -->
+        <div style="clear: both"></div>
+    </div>
+
+<!--        房源基本信息、详细信息、特色-->
+    <div class="detail-wrap">
+        <div class="box-left">
+            <div class="info-wrap baseinform">
+                <h2>
+                    <div class="title">基本信息</div>
+                </h2>
+                <div class="introContent">
+                    <div class="base">
+                        <div class="name">基本属性</div>
+                        <div class="content">
+                            <ul>
+                                <!-- 循环 -->
+                                <li>
+                                    <span class="lable">房屋户型</span>
+                                    {{house.roomNum}}室{{house.hallNum}}厅{{house.kitchenNum}}厨{{house.toiletNum}}卫
+                                </li>
+                                <li>
+                                    <span class="lable">所在楼层</span>
+                                    {{floor[house.floor]}}/共{{house.maxFloor}}楼
+                                </li>
+                                <li>
+                                    <span class="lable">建筑面积</span>
+                                    {{house.size}}㎡
+                                </li>
+                                <li>
+                                    <span class="lable">房屋朝向</span>
+                                    {{faceAt[house.faceAt]}}
+                                </li>
+                                <li>
+                                    <span class="lable">建筑结构</span>
+                                    {{structure[house.structure]}}
+                                </li>
+                                <li>
+                                    <span class="lable">装修情况</span>
+                                    {{decoration[house.decoration]}}
+                                </li>
+                                <li>
+                                    <span class="lable">配备电梯</span>
+                                    {{house.elevator=='1'?'有':'无'}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="transaction">
+                        <div class="name">交易</div>
+                        <div class="content">
+                            <ul>
+                                <!-- 循环 -->
+                                <li>
+                                    <span class="lable">
+                                        挂牌时间
+                                    </span>
+                                    {{house.created}}
+                                </li>
+                                <li>
+                                    <span class="lable">
+                                        房屋用途
+                                    </span>
+                                    {{yongTu[house.yongTu]}}
+                                </li>
+                                <li>
+                                    <span class="lable">
+                                        产权所属
+                                    </span>
+                                    {{ownStatus[house.ownStatus]}}
+                                </li>
+                                <li>
+                                    <span class="lable">
+                                        抵押信息
+                                    </span>
+                                    {{house.diyaInfo}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="disclaimer">注：房源所示“房屋用途、交易权属、建成年代、产权年限、建筑结构”仅供参考，购房时请以房本信息为准。</div>
+                <div style="clear: both"></div>
+            </div>
+            <div class="info-wrap baseinform">
+                <h2>
+                    <div class="title">房源特色</div>
+                </h2>
+                <div class="introContent">
+                    <div class="base">
+                        <div class="name">售房详情</div>
+                        <div class="content">
+                            {{house.sellReason}}
+                        </div>
+                    </div>
+                    <div class="base">
+                        <div class="name">户型介绍</div>
+                        <div class="content">
+                            {{house.houseInfo}}
+                        </div>
+                    </div>
+                    <div class="base">
+                        <div class="name">核心卖点</div>
+                        <div class="content">
+                            {{house.keyPoint}}
+                        </div>
+                    </div>
+                </div>
+                <div class="disclaimer">注：1.房源介绍中的周边配套、在建设施、规划设施、地铁信息、绿化率、得房率、容积率等信息为通过物业介绍、房产证、实勘、政府官网等渠道获取，因时间、政策会发生变化，与实际情况可能略有偏差，房源介绍仅供参考。 2.房源介绍中与距离相关的数据均来源于百度地图。 3.土地使用起止年限详见业主土地证明材料或查询相关政府部门的登记文件。</div>
+            </div>
+
+            <div class="info-wrap baseinform">
+                <h2 style="padding-bottom:10px;margin-bottom:20px;border-bottom: 2px solid #eeeeee;">
+                    <div class="title">周边地图</div>
+                </h2>
+                <div id="mapContainer" style="width: 100%;height: 400px"></div>
+            </div>
+
+            <div class="info-wrap baseinform">
+                <h2 style="padding-bottom:10px;margin-bottom:20px;border-bottom: 2px solid #eeeeee;">
+                    <div class="title">房源问答</div>
+                </h2>
+                <form role="form" action="javascript:void(0)" onsubmit="submitQuestion();return false;">
+                    <div class="form-group">
+                        <input name="question" id="question"  class="form-control" placeholder="尽可能精简描述问题">
+                    </div>
+                    <button type="submit" style="float: right;border-radius: 1px" class="btn btn-primary">提问</button>
+                </form>
+                <div style="clear: both;margin:20px 0;border-bottom: 2px solid #eeeeee;">
+                </div>
+                <div id="QA">
+                    <ul class="comm-qa-list">
+                        <li v-for="item in qa">
+                            <a href="javascript:void(0);" class="comm-qa-item clearfix">
+                                <dl class="qa-item-q clearfix">
+                                    <dt><span>提问</span></dt>
+                                    <dd class="qa-item-txt" v-text="item.question.questionContent"></dd>
+                                    <dd class="qa-time" v-text="item.question.created"></dd>
+                                </dl>
+                                <dl class="qa-item-a clearfix" v-for="item2 in item.answers">
+                                    <dt><span style="background: #f60;font-weight: normal">回答</span></dt>
+                                    <dd>
+                                        <span class="qa-brokername" v-text="item2.name">
+                                        </span>
+                                        {{item2.answerContent}}
+                                    </dd>
+                                </dl>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="box-right"></div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 500px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">请登录</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="loginForm" action="/login" method="post">
+                        <div class="form-group">
+                            <label for="userName" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="username" class="form-control" id="username" placeholder="请输入用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="password" class="form-control" id="password" placeholder="请输入密码">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="submitLogin()">登录</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="my-footer" style="position:absolute;bottom: 0">
+        <div class="content">
+            <span style="line-height: 60px">二手房交易平台 HNU</span>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/assets/layui/layui.all.js"></script>
+<script src="/js/city.js"></script>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=DVBBZ-TQCK6-D2LSU-EDV5T-4OJJJ-R6BDJ&libraries=place"></script>
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var house = [[${house}]]
+    var collect = [[${collect}]]
+    var userInfo = [[${userInfo}]]
+
+    function submitLogin() {
+        $('#loginForm').submit()
+    }
+
+    function redirectHelp(url) {
+        if(userInfo==null){
+            $("#myModal").modal("show")
+        }else{
+            window.location.href = url
+        }
+    }
+
+</script>
+<script>
+    var zjTag = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RjM0Mzc4OTVDODQxMTFFN0JFNkJCODNBNjY2NjREQjgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RjM0Mzc4OTZDODQxMTFFN0JFNkJCODNBNjY2NjREQjgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGMzQzNzg5M0M4NDExMUU3QkU2QkI4M0E2NjY2NERCOCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGMzQzNzg5NEM4NDExMUU3QkU2QkI4M0E2NjY2NERCOCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtHYydcAAAj7SURBVHja7Jt7TJVl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"
+    var grTag = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDA0Rjc0MDlDODQyMTFFN0I3QkE4NzQ3NEQ4REU1RDAiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDA0Rjc0MEFDODQyMTFFN0I3QkE4NzQ3NEQ4REU1RDAiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowMDRGNzQwN0M4NDIxMUU3QjdCQTg3NDc0RDhERTVEMCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowMDRGNzQwOEM4NDIxMUU3QjdCQTg3NDc0RDhERTVEMCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pj0mG4IAAAiPSURBVHja7JsJbFRV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"
+    var houseNo = '';
+    var userVue = new Vue({
+        el:"#userInfo",
+        data:{
+            userInfo:userInfo
+        }
+    })
+    var housedetail = new Vue({
+        el:'#main',
+        data:{
+            house:house,
+            collect:collect,
+            houseNo:'',
+            currentImgType:0,
+            currentIndex:0,
+            imgShow:[],
+            imgNum:[],
+            faceAt:['未知','东','南','西','北','东南','东北','西南','西北'],
+            floor:['未知','低楼层','中楼层','高楼层'],
+            structure:['未知','钢结构','钢、钢混结构','钢混结构','混合结构','砖木结构','其它结构'],
+            decoration:['未知','精装修','普通装修','毛坯房'],
+            yongTu:['未知','普通住宅','商业类','别墅','四合院','车位','其它'],
+            ownStatus:['未知','非共有','共有'],
+            imgType:['视频','室内图','室外图','环境图'],
+            isCollected:false,
+            region:{},
+            collectNum:0,
+            qa:[]
+        },
+        created(){
+            // var contextPath = location.pathname.substring(location.pathname.lastIndexOf('/'))
+            // houseNo = contextPath
+            var that = this
+            var num = 0;
+            var arr
+            if(collect!=null){
+                this.isCollected = true
+            }
+
+            /*视频预览*/
+            that.imgNum.push(0)
+            that.imgShow.push(house.coverUrl)
+            num = 0
+
+            /*图片预览*/
+            if(house.insideUrl!=null){
+                arr = house.insideUrl.split(';')
+                num += arr.length
+                that.imgNum.push(num)
+                console.log(num)
+                for(j = 0,len=arr.length; j < len; j++) {
+                    that.imgShow.push(arr[j])
+                }
+            }
+            if(house.outsideUrl!=null){
+                arr = house.outsideUrl.split(';')
+                num += arr.length
+                that.imgNum.push(num)
+                for(j = 0,len=arr.length; j < len; j++) {
+                    that.imgShow.push(arr[j])
+                }
+            }
+            console.log(num)
+            if(house.envUrl!=null) {
+                arr = house.envUrl.split(';')
+                num += arr.length
+                that.imgNum.push(num)
+                for (j = 0, len = arr.length; j < len; j++) {
+                    that.imgShow.push(arr[j])
+                }
+            }
+            console.log(num)
+            for (let key of region) {
+                if (house.region == key.id) {
+                    that.region = key
+                }
+            }
+            console.log(that.imgShow)
+            console.log(that.imgNum)
+
+            $.ajax({
+                url:'/collectService/getCollectNum/'+house.houseNo,
+                success:function(data){
+                    that.collectNum = data
+                }
+            })
+
+
+            $.ajax({
+                url:'/questionService/getQuestion',
+                dataType:'json',
+                type:'post',
+                data:{
+                    houseNo:house.houseNo
+                },
+                success:function (data) {
+                    that.qa = data
+                }
+            })
+        },
+        methods:{
+            /* 往右，符合移动条件时，第一个元素加140px*/
+            /* */
+            next(step){
+                var movePx = 140
+                var firstLi = $(".smallpic li:first")
+                console.log(firstLi)
+                var marleft = firstLi.css("margin-left")
+                var pxLeft = parseInt(marleft.substr(0,marleft.length-2))
+                var index = this.currentIndex
+                console.log(firstLi)
+                if(index < this.imgNum[3]){
+                    this.currentIndex += step;
+                    if(index>=2 && index<this.imgNum[3]-2)
+                        firstLi.css("margin-left",(pxLeft-movePx) + 'px')
+                    console.log(firstLi.css("margin-left"))
+                    $("#videoPlayer").css("margin-left","-750px")
+                    document.getElementById("videoTag").pause()
+                    /* 如果读完一种类型图片，换下一种*/
+                    if(this.currentIndex>this.imgNum[this.currentImgType]){
+                        this.currentImgType ++;
+                    }
+                }else{
+                    this.currentIndex = 0;
+                    $("#videoPlayer").css("margin-left","0px")
+                    firstLi.css("margin-left", '0px')
+                    this.currentImgType = 0
+                }
+            },
+            pre(step){
+                var movePx = 140
+                var firstLi = $(".smallpic li:first")
+                var marleft = firstLi.css("margin-left")
+                var pxLeft = parseInt(marleft.substr(0,marleft.length-2))
+                var index = this.currentIndex
+                console.log(this.currentIndex)
+                if(index>0){
+                    this.currentIndex -= step;
+                    if(index>2 && index<this.imgNum[3]-1)
+                        firstLi.css("margin-left",(pxLeft+movePx) + 'px')
+                    console.log(firstLi.css("margin-left"))
+                    console.log('here: '+ this.currentIndex)
+                    if(this.currentIndex == 0)
+                        $("#videoPlayer").css("margin-left","0px")
+                    /* 如果读完一种类型图片，换一种*/
+                    if(this.currentIndex<this.imgNum[this.currentImgType]){
+                        this.currentImgType --;
+                    }
+                }else{
+                    this.currentIndex = this.imgNum[3]
+                    this.currentImgType = 3
+                    $("#videoPlayer").css("margin-left","-750px")
+                    document.getElementById("videoTag").pause()
+                    var goto = this.imgNum[3]-4
+                    firstLi.css("margin-left",(goto*(-140)) + 'px')
+                }
+            },
+            imgClick(index){
+                var i = parseInt(index)
+                var ci = this.currentIndex
+                console.log('ci :' + ci+ ' i: '+ i)
+                if(i>ci){
+                    this.next(1)
+                }else if(i<ci){
+                    this.pre(1)
+                }
+            },
+            cancleCollect(){
+                var that = this
+                $.ajax({
+                    url:'/collectService/cancle/'+that.house.houseNo,
+                    success:function (data) {
+                        if(data=='1'){
+                            // that.isCollected = false
+                            location.reload()
+                        }else if(data=='0'){
+                            alert('取消失败，请检查网络')
+                        }
+                    },
+                    error:function () {
+                        alert('网络异常')
+                    }
+                })
+            },
+            collect1(){
+                var that = this
+                $.ajax({
+                    url:'/collectService/collect/'+that.house.houseNo,
+                    success:function (data) {
+                        console.log('data' + data)
+                        if(data=='1'){
+                            location.reload()
+                        }else if(data=='2'){
+                            alert('请先登录')
+                            window.location.href = "/login.html"
+                        }else{
+                            alert('请先登录')
+                            window.location.href = "/login.html"
+                        }
+                    },
+                    error:function () {
+                        alert('网络异常')
+                    }
+                })
+            }
+        }
+    })
+
+    // var QA = new Vue({
+    //     el:'#QA',
+    //     data:{
+    //         qa:[]
+    //     },
+    //     created(){
+    //         $.ajax({
+    //             url:'/questionService/getQuestion',
+    //             dataType:'json',
+    //             data:{
+    //                 houseNo:house.houseNo
+    //             },
+    //             success:function (data) {
+    //                 this.qa = data
+    //             }
+    //         })
+    //     }
+    // })
+
+    function submitQuestion(){
+        if(userInfo==null || userInfo.userId==null){
+            $("#myModal").modal()
+           return false;
+        }
+        var q = $("#question").val()
+        if(q.length < 100 && q.length > 10){
+            var loading = layer.load(0, {
+                shade: false,
+                time: 100*1000
+            });
+            $.ajax({
+                url:'/questionService/askQuestion',
+                data:{
+                    houseNo:house.houseNo,
+                    userId:userInfo.userId,
+                    content:q
+                },
+                success:function (data) {
+                    $("#question").val("")
+                    Vue.set(housedetail,'qa',data)
+                    layer.close(loading)
+                },error:function () {
+                    alert("网络错误")
+                }
+            })
+        }else{
+            alert("多输入一些")
+        }
+        return false
+    }
+</script>
+<script>
+    var mapCenter;
+    var marker;
+    if(house.latitude!=null && house.longitude!=null){
+        mapCenter = new qq.maps.LatLng(house.latitude,house.longitude)
+    }
+
+    let myMap = new qq.maps.Map(
+        document.getElementById("mapContainer"),
+        {
+            center: mapCenter,
+            zoom: 14,
+            draggable: true,
+            panControl : false,
+            zoomControlOptions : {
+                // style : qq.maps.ZoomControlStyle.SMALL,
+                position: qq.maps.ControlPosition.RIGHT_CENTER
+            },
+            scrollwheel: false,
+            disableDoubleClickZoom: true
+        }
+    );
+
+    marker = new qq.maps.Marker({
+        position: mapCenter,
+        content:house.keyPoint,
+        title:house.title,
+        animation:qq.maps.MarkerAnimation.DROP,
+        draggable: false,
+        map: myMap
+    });
+
+    var infoWin = new qq.maps.InfoWindow( {
+        map : myMap
+    });
+
+    qq.maps.event.addListener(
+    marker,
+    'click',
+    function(evt) {
+        infoWin.open();
+        infoWin.setContent('<div style="text-align:center;width:100px;font-size:10px;margin:10px;text-overflow:ellipsis">'+house.community+'</div>');
+        infoWin.setPosition(evt.latLng);
+    });
+
+    // let key = 'DVBBZ-TQCK6-D2LSU-EDV5T-4OJJJ-R6BDJ'
+    // var resUrl="https://apis.map.qq.com/ws/place/v1/search";
+    // var params={
+    //     boundary:"region(长沙,0)",
+    //     key:key,
+    //     keyword:'湖南大学',
+    //     output:"jsonp",
+    // };
+</script>
+</html>

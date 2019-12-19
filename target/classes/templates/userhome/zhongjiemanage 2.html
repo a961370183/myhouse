@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="/js/element-ui.js"></script>
+<script src="/js/vue-router.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span ref="tit">{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue" class="active">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li><a href="/userhome/zhongjieqianyue">中介签约</a></li>
+				<li class="active"><a href="#">我签约的中介</a></li>
+				<li ><a href="/userhome/zhongjiesign">中介认证</a></li>
+			</ul>
+			<div class="container">
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+						<tr>
+							<th style="width: 100px;text-align: center" >签约日期</th>
+							<th style="width: 100px;text-align: center">签约状态</th>
+							<th style="width: 100px;text-align: center">中介姓名</th>
+							<th style="width: 100px;text-align: center;">操作</th>
+						</tr>
+						</thead>
+					</table>
+				<div class="table-box" style="height: 460px;overflow: auto">
+					<table class="table table-bordered table-hover table-striped">
+						<tbody class="display:block; max-height:200px;overflow-y: scroll;">
+						<!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
+						<!-- 现在， 我们自定义了一个 search 方法，同时，把 所有的关键字，通过传参的形式，传递给了 search 方法 -->
+						<!-- 在 search 方法内部，通过 执行 for 循环， 把所有符合 搜索关键字的数据，保存到 一个新数组中，返回 -->
+						<tr v-for="item in contract" >
+							<td style="width: 100px ;text-align: center" >{{dateFormat(item.created)}}</td>
+							<td style="width: 100px ;text-align: center" v-if="item.contractState==0">待确认</td>
+							<td style="width: 100px ;text-align: center" v-else-if="item.contractState==1">已确认</td>
+							<td style="width: 100px ;text-align: center" v-else-if="item.contractState==2">被拒绝</td>
+							<td style="width: 100px ;text-align: center" v-else="item.contractState==3">已完成评价</td>
+							<th style="width: 100px;text-align: center" >{{item.name}}</th>
+							<td style="width: 100px;text-align: center" >
+								<el-button  type="primary" icon="el-icon-edit" circle @click="check(item.name,item.workNo,item.contractNo,item.contractSrc,item.description,item.created)">信息</el-button>
+								<el-button  type="primary" icon="el-icon-chat-round" v-if="item.contractState==1"circle @click="comment(item.name,item.workNo,item.contractNo)">评价</el-button>
+							</td>
+							<el-dialog title="中介评价" :visible.sync="dialogFormVisible">
+								<el-form :model="form" :rules="rules" ref="form">
+									<el-form-item label="中介编号"  :label-width="formLabelWidth">
+										<span class="demonstration" v-text="form.id"></span>
+									</el-form-item>
+									<el-form-item label="中介姓名"  :label-width="formLabelWidth">
+										<span class="demonstration" v-text="form.name"></span>
+									</el-form-item>
+									<el-form-item prop="star" label="中介评分" :label-width="formLabelWidth">
+										<div class="block">
+											<el-rate
+													v-model="form.star"
+													:colors="colors">
+											</el-rate>
+										</div>
+									</el-form-item>
+									<el-form-item prop="text" :label-width="formLabelWidth" label="评价内容">
+										<el-input
+												v-model="form.text"
+												id="myinput"
+												type="textarea"
+												placeholder="请输入内容"
+												maxlength="50"
+												show-word-limit
+												clearable="true"
+												rows="5"
+												style="width: 500px"
+										>
+										</el-input>
+									</el-form-item>
+								</el-form>
+								<div slot="footer" class="dialog-footer">
+									<el-button @click="dialogFormVisible = false">取 消</el-button>
+									<el-button type="primary" @click="onSubmit('form')" >确 定</el-button>
+								</div>
+							</el-dialog>
+
+							<el-dialog title="签约详情" :visible.sync="dialogFormVisible1">
+								<el-form :model="form" :rules="rules" ref="form">
+									<el-form-item  :label-width="formLabelWidth" label="签约时间">
+										<span class="demonstration" v-text="dateFormat(form.created)"></span>
+									</el-form-item>
+									<el-form-item label="中介编号"  :label-width="formLabelWidth">
+										<span class="demonstration" v-text="form.id"></span>
+									</el-form-item>
+									<el-form-item label="中介姓名"  :label-width="formLabelWidth">
+										<span class="demonstration" v-text="form.name"></span>
+									</el-form-item>
+									<el-form-item  :label-width="formLabelWidth" label="签约合同">
+									</el-form-item>
+									<el-form-item  :label-width="formLabelWidth" label="评价内容">
+										<span class="demonstration" v-text="form.text"></span>
+										<span class="demonstration" v-if="form.text==null">暂无评价</span>
+									</el-form-item>
+								</el-form>
+								<div slot="footer" class="dialog-footer">
+									<el-button @click="dialogFormVisible1 = false">关闭</el-button>
+								</div>
+							</el-dialog>
+
+						</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<el-pagination
+						:current-page="currentPage"
+						:page-sizes="[5]"
+						:page-size="this.pageSize"
+						layout="total, sizes, prev, pager, next, jumper"
+						:total="this.list.length">
+				</el-pagination>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			rules:{
+				text :[{required: true, message: '请输入', trigger: 'blur',},
+					{
+						min: 5,
+						max: 50,
+						message: '长度在 5 到 50 个字符'
+					},],
+				star :[{required: true, message: '请选择星级', trigger: 'blur',},
+				],
+			},
+			colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+			star:"",
+			imgsrc:"",
+			list:[],
+			contract:[],
+			totalPage: [],
+			// 每页显示数量
+			pageSize: 10,
+			// 共几页
+			pageNum: 1,
+			// 当前显示的数据
+			dataShow: "",
+			// 默认当前显示第一页
+			currentPage: 0,
+			src:'',
+			dialogFormVisible: false,
+			dialogFormVisible1:false,
+			form: {
+				contractNo:'',
+				name: '666',
+				star:5,
+				id:'',
+				text:'',
+				created:'',
+			},
+			formLabelWidth: '120px'
+		},
+		created(){
+			var that= this;
+			axios
+					.get('/user')
+					.then(
+							function(response){
+								that.list=response.data;
+								if(that.list.role==1){
+															that.list.role='普通用户'
+															console.log(that.role)
+														}
+														if(that.list.role==2){
+															that.list.role='中介'
+															console.log(that.role)
+														}
+														if(that.list.role==3){
+															that.list.role='系统管理员'
+															console.log(that.role)
+														}
+														if(that.list.img==null){
+															that.list.img='/images/mooctest.png'
+														}
+														console.log(that.list)
+								that.$nextTick(function(){
+									that.getContract();
+								})
+							}
+					)
+
+		},
+
+		mounted(){
+
+
+		},
+		methods:{
+			onSubmit(form) {
+				var that=this;
+				this.$refs[form].validate(
+						(valid)=>{
+							if(!valid){
+								console.log('请输入评价')
+								return false;
+							}
+							else{
+								$.ajax(
+										{	type: "POST",
+											url: '/contracting/comment',
+											data:{
+											contractNo:that.form.contractNo,
+												comment:that.form.text,
+												star:that.form.star
+											},
+											success:function (d) {
+												alert("评价成功！")
+												window.location.reload();
+											},
+											error:function(d){
+												alert("评价失败，网络正忙请稍后再试")
+											}
+
+										}
+								)
+							}
+						}
+				)
+			},
+			comment(name,id,contractNo){
+				this.form.name=name;
+				this.form.id=id;
+				this.form.contractNo=contractNo;
+				this.dialogFormVisible = true;
+			},
+			check(name,id,contractNo,imgsrc,comment,created){
+				this.form.name=name;
+				this.form.id=id;
+				this.form.contractNo=contractNo;
+				this.form.imgsrc=imgsrc;
+				this.form.text=comment;
+				this.form.created=created;
+				this.dialogFormVisible1 = true;
+			},
+			dateFormat:function(time) {
+				var date=new Date(time);
+				var year=date.getFullYear();
+				/* 在日期格式中，月份是从0开始的，因此要加0
+                 * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+                 * */
+				var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+				var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+				var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+				var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+				var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+				// 拼接
+				return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+			},
+			getContract(){
+				var that=this;
+				$.ajax(
+						{	type: "GET",
+							url: '/contracting/getAll?userId='+this.list.userId,
+							success:function (d) {
+								that.contract=d;
+								console.log(that.contract)
+
+							}
+						}
+				)
+			},
+		},
+	})
+</script>
+<script>
+</script>
+
+
+</html>

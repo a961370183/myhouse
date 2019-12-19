@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>经纪机构信息平台</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" href="/css/elementui.css">
+    <link rel="stylesheet" href="/css/information.css">
+    <style>
+        .table-bordered thead tr,.table-bordered tbody tr{
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .table-bordered tbody tr td:first-child{
+            width: 160px;
+        }
+        .table-bordered tbody tr td{
+            width: 500px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space:nowrap;
+            text-align: center;
+        }
+    </style>
+</head>
+<body style="background:#f1f1f1 ">
+<nav class="navbar navbar-default navbar-static-top" style="min-width: 1200px">
+    <div style="width:1200px;margin:0 auto">
+        <!-- 下拉触发按钮 以及 商标-->
+        <div class="navbar-header" style="width: 156px;float:left;">
+            <a class="navbar-brand" href="#">二手房交易平台</a>
+        </div>
+        <ul class="my-nav">
+            <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+            <li ><a href="/information">机构人员信息</a></li>
+            <li><a href="/information/compPunishment">行业管理公示</a></li>
+            <li><a href="/information/agentCommentPage">服务评价公示</a></li>
+            <li><a href="/information/redList">红黑名单公示</a></li>
+            <li class="active"><a href="/information/lawNews">政策法规</a></li>
+            <li><a href="/information/agentContractSearch">签约排行</a></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+</nav>
+<div style="background-color: #f1f1f1;width: 100%;height: auto;">
+    <div style="width: 1200px;margin:60px auto">
+        <div class="left-side">
+            <a href="/information/lawNews">
+                <div class="sub active" style="background-image: url('/images/icon/logo2.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">政策法规公示</span>
+                </div>
+            </a>
+        </div>
+        <div class="right-side" id="app">
+            <div class="right-header">首页 &gt; 政策法规公示</div>
+            <div style="margin-top: 10px;">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>标题</td>
+                            <td v-text="law.title"></td>
+                        </tr>
+                        <tr>
+                            <td>发布时间</td>
+                            <td v-text="law.created"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="clear: both"></div>
+                <div v-html="law.content" style="padding:10px 15px">
+
+                </div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+    <div style="clear: both"></div>
+</div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var law = [[${law}]]
+</script>
+<script>
+    var app = new Vue({
+        el:'#app',
+        data:{
+            law:law
+        }
+    })
+</script>
+</html>

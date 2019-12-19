@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="/js/element-ui.js"></script>
+<script src="/js/vue-router.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue" class="active">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li><a href="/userhome/zhongjieqianyue">中介签约</a></li>
+				<li><a href="/userhome/zhongjiemanage">我签约的中介</a></li>
+				<li class="active"><a href="#">中介认证</a></li>
+			</ul>
+			<div class="container">
+				<el-form ref="form"   :inline="true"  style="margin-top: 30px;padding-left: 20px"class="demo-form-inline">
+					<el-form-item  label="中介姓名" style="margin-right: 200px">
+						<i class="el-icon-user"></i>
+						<span  style="text-align: center" v-text="list.name" ></span>
+					</el-form-item>
+					<el-form-item label="认证进程">
+						<span  v-if="message.status==0" style="text-align: center"  >待审核</span>
+						<span  v-else-if="message.status==1" style="text-align: center"  >已通过审核</span>
+						<span  v-else-if="message.status==2" style="text-align: center"  >审核未通过</span>
+					</el-form-item>
+					<div>
+						<el-form-item label="申请时间">
+							<i class="el-icon-time"></i>
+						</el-form-item>
+						<el-form-item>
+
+							<span   v-text="dateFormat(message.created)" ></span>
+						</el-form-item>
+					</div>
+					<div>
+						<el-form-item label="所属公司名称" style="margin-right: 63px">
+							<i class="el-icon-s-home"></i>
+							<span   v-text="message.compname" ></span>
+						</el-form-item>
+						<el-form-item label="电话号码">
+							<i class="el-icon-phone"></i>
+						</el-form-item>
+						<el-form-item>
+							<span   v-text="message.tel" ></span>
+						</el-form-item>
+						<div>
+							<el-form-item label="审核资料">
+								<div class="demo-image__lazy" style="overflow: scroll;height: 400px ;width: 700px">
+									<el-image v-for="url in urls" :key="url" :src="url" ></el-image>
+								</div>
+							</el-form-item>
+						</div>
+						<div>
+							<el-form-item >
+								<el-button  v-if="message.status==1||message.status==0" type="primary"@click="jump('/userhome/zhongjiesign')" >返回</el-button>
+								<el-button  v-if="message.status==2" type="primary" @click="jump('/userhome/zhongjiesign1')" >重新上传</el-button>
+							</el-form-item>
+
+						</div>
+
+					</div>
+				</el-form>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			urls:[],
+			list:[],
+			src:'',
+			innernick:'',
+			inneremail:'',
+			innername:'',
+			photo:'',
+			innerimg:'',
+			customerHead: "",
+			message:[],
+
+		},
+		created:function(){
+			this.getAll();
+		},
+		mounted() {
+
+			},
+
+		methods:{
+			jump(url){
+				window.location.href=url;
+			},
+			dateFormat:function(time) {
+
+				if (time==null){
+					return "暂无时间"
+				}
+				var date=new Date(time);
+				var year=date.getFullYear();
+				/* 在日期格式中，月份是从0开始的，因此要加0
+                 * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+                 * */
+				var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+				var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+				var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+				var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+				var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+				// 拼接
+				console.log(date)
+				return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+			},
+			getAll() {
+				var that = this;
+				var postlist = null;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+									console.log(that.role)
+								}
+								if(that.list.role==2){
+									that.list.role='中介'
+									console.log(that.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.role)
+								}
+								if(that.list.img==null){
+									that.list.img='/images/mooctest.png'
+								}
+								console.log(that.list)
+								$.ajax(
+										{
+											type: "GET",
+											url: '/agent/getMyAgentInformation?workNo='+that.list.userId,
+											success: function (d) {
+												that.message=d;
+												console.log(that.message)
+												that.urls=that.message.imgurl.split(";");
+
+											},
+										}
+								)
+							}
+
+						}
+				)
+
+
+
+			},
+		},
+	})
+</script>
+<script>
+</script>
+
+
+</html>

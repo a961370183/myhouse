@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="/js/element-ui.js"></script>
+<script src="/js/vue-router.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>账号：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="/userhome">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li  v-if="list.role=='中介用户'">
+					<a href="/userhome/zhongjieqianyue" class="active">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li  v-if="list.role=='中介用户'">
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li><a href="/userhome/zhongjieqianyue">中介签约</a></li>
+				<li><a href="/userhome/zhongjiemanage">我签约的中介</a></li>
+				<li class="active"><a href="#">中介认证</a></li>
+			</ul>
+			<div class="container">
+				<div _ngcontent-wpi-15="" markdown=""><h2 id="-">如何认证成为中介？</h2>
+					<p>a) 准备相关证件(包括房地产经纪人资格证）</p><p><a href="#">中介资格认证</a></p>
+					<p>b) 将最终文件的拍照上传</p>
+					<p>c) 完善中介资料</p>
+<!--					<button type="button" class="btn-default"><a href="/userhome/zhongjiesign1"></a></button>-->
+					<el-button type="primary" ><a href="/userhome/zhongjiesign1">点此进行中介认证</a></el-button>
+					</button>
+					<br>
+					<br>
+					<el-button type="success" ><a href="/userhome/process">查看认证进程</a></el-button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			list:[],
+			src:'',
+			exists:'',
+		},
+		created:function(){
+			this.getAll();
+			console.log(this.list.a)
+
+		},
+		mounted(){
+		},
+
+		methods:{
+
+			getAll() {
+				var that = this;
+				var postlist = null;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+									console.log(that.role)
+								}
+								if(that.list.role==2){
+									that.list.role='中介用户'
+									console.log(that.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.role)
+								}
+								if(that.list.img==null){
+									that.list.img='/images/mooctest.png'
+								}
+								console.log(that.list)
+							}
+
+						}
+				)
+
+
+			},
+		},
+	})
+</script>
+<script>
+</script>
+
+
+</html>

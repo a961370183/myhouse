@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>后台用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/my-login.css">
+	<link rel="stylesheet" href="/css/bootstrapValidator.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="/css/qa_style.css">
+	<style>
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+
+<body>
+<div id="app" v-cloak>
+	<div class="header">
+		<div class="bar">
+			<div class="w1200">
+				<span class="l">二手房交易网<font>用户中心</font></span>
+				<span class="r"><a href="#" onclick="logOut()"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+				<span class="r" style="margin-right: 20px"><a href="/house/">返回房源页面</a></span>
+			</div>
+		</div>
+		<div class="user-info">
+			<div class="w1200">
+				<div class="user-headface">
+					<img :src="this.list.img" >
+				</div>
+				<div class="user-account">
+					<p class="tip">欢迎你，{{this.list.nickName}}</p>
+					<p class="account">
+						<span>帐户名：</span><span>{{this.list.userName}}</span>
+						<span>用户类型：</span><span>{{this.list.role}}</span>
+					</p>
+				</div>
+				<div class="user-modify">
+					<a href="#">修改资料></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main w1200">
+		<div class="left">
+			<ul>
+				<li>
+					<a href="/userhome/">
+						<i class="icon iconfont icon-lingdang"></i>
+						个人信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myfavorite/">
+						<i class="icon iconfont icon-fangzidichan"></i>
+						我的收藏
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/myquestion/" class="active">
+						<i class="icon iconfont icon-wenda"></i>
+						问答
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/houseManage">
+						<i class="icon iconfont icon-icon--"></i>
+						房源管理
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/zhongjieqianyue">
+						<i class="icon iconfont icon-geren"></i>
+						中介签约
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentInformation">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						中介信息
+					</a>
+				</li>
+				<li>
+					<a href="/userhome/agentContractingManage">
+						<i class="icon iconfont glyphicon-eye-open"></i>
+						签约管理
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="/userhome/myquestion" >我的问题</a></li>
+				<li ><a href="/userhome/myanswer">我的回答</a></li>
+			</ul>
+			<div class="container">
+				<div v-for="(item,index) in qalist" :key="item.question.questionno">
+					<div class="row">
+						<div class="QBlock ">
+							<div class="QuestionRelatedHouse" style="background-color:#62A8D1; color: white; padding-left: 25px;padding-left: 25px; border-bottom: 2px solid #e6ecf5;">
+								<i>房源：</i>
+								<a href="#" style="font-weight: Bold; font-size: 25px;color: #fff" @click="detail(item.houseDetail.houseNo,item.houseDetail.role)">
+									{{item.houseDetail.title}}
+								</a>
+							</div>
+							<div class="Question">
+								<div style="height: auto; width: 75px;float: left">
+									<div style="text-align: center;">
+										<b>问题</b>
+										<!--<p style="font-size: 20px">{{list.nickName}}</p>-->
+									</div>
+								</div>
+								<div style="float: left; padding-left: 20px;">
+									<p>
+										{{item.question.questionContent}}
+									</p>
+									<span style="color: grey; ">{{item.question.created}}</span>
+								</div>
+							</div>
+							<div class="Answer">
+								<div style="height: auto; width: 75px;float: left">
+									<div style="text-align: center;">
+										<b>回答</b>
+									</div>
+								</div>
+								<div style="float: left; padding-left: 20px;">
+									<p >
+										{{item.answer==null?"暂无答案":item.answer.answerContent}}
+									</p>
+									<span style="color: grey">{{item.answer==null?"":item.answer.created}}</span>
+								</div>
+							</div>
+							<div  class="deleteQA"    @click="deleteQA(item.question.questionNo)">
+								<div >
+									删除问题
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+	function logOut() {
+		$.ajax({
+			url:'/logout',
+			type:'post',
+			success:function () {
+				window.location.href = '/house'
+			}
+		})
+	}
+	var vm = new Vue({
+		el:"#app",
+		data:{
+			list:[],
+			qalist:[],
+			questionlist:[],
+			anslist:[],
+			src:'',
+			photo:'',
+			innerimg:'',
+			customerHead: "",
+		},
+		created(){
+			this.getAll();
+
+		},
+		mounted(){
+			//this.getRelatedQA();
+		},
+		methods:{
+
+			btn() {
+				this.$refs.div.contentEditable = true
+				this.$refs.div.focus() //获取焦点
+			},
+			getAll() {
+				var that = this;
+				$.ajax(
+						{
+							type: "GET",
+							url: '/user',
+							success: function (d) {
+								that.list = d;
+								if(that.list.role==1){
+									that.list.role='普通用户'
+									console.log(that.list.role)
+								}
+								if(that.list.role==2){
+									that.list.role='中介'
+									console.log(that.list.role)
+								}
+								if(that.list.role==3){
+									that.list.role='系统管理员'
+									console.log(that.list.role)
+								}
+								console.log(that.list);
+								that.getRelatedQA();
+							}
+
+						}
+				)
+
+
+			},
+			getRelatedQA() {
+				console.log(this.list.userId);
+				var _this = this;
+				$.ajax(
+						{
+							type:"GET",
+							url: '/question/getQA?userid='+_this.list.userId,
+							success: function (d) {
+								_this.qalist=d;
+								if (_this.qalist.length==0)
+									console.log('问题为空')
+								console.log(_this.qalist);
+							},
+							error: function (d){
+								console.log('获取失败')
+							}
+						}
+				)
+			},
+			deleteQA(questionno){
+				console.log(questionno);
+				var _this=this;
+				$.ajax(
+						{
+							type:"GET",
+							url: '/question/deleteQA?questionno='+questionno,
+							success: function (d) {
+								if (d=="0") alert("没找到问题");
+								_this.qalist.forEach((item,index)=>{
+									if (item.question.questionno == questionno){
+										_this.qalist.splice(index,1);
+									}
+								})
+							},
+							error: function (d){
+								alert("获取失败")
+							}
+						}
+				)
+			},
+			detail(houseNo,role){
+				if(role==1){
+					window.location.href = '/userHouseDetail/'+houseNo
+				}else{
+					window.location.href = '/agentHouseDetail/'+houseNo
+				}
+			},
+		},
+		computed:{
+
+		},
+
+	})
+</script>
+</html>

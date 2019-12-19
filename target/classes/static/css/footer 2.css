@@ -1,0 +1,19 @@
+.my-footer{
+    width: 100%;
+    min-width: 1200px;
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    padding: 12px 0;
+    font-size: 14px;
+    margin-top: 50px;
+    border-top: 1px solid #666;
+    background:#222;
+    color:#fff;
+    paddint: 15px 0;
+}
+
+.my-footer .content{
+    height: 60px;
+    vertical-align: middle;
+    text-align: center;
+}

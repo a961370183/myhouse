@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/my-login.css">
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<script src="/js/jquery.js" ></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+
+<body>
+<div id="app">
+    <div class="header">
+        <div class="bar">
+            <div class="w1200">
+                <span class="l">二手房交易网<font>用户中心</font></span>
+                <span class="r"><a href="#"><i class="icon iconfont icon-dianyuan"></i>退出</a></span>
+            </div>
+        </div>
+        <div class="user-info">
+            <div class="w1200">
+                <div class="user-headface">
+                    <img src="/images/user_face.jpg"/>
+                </div>
+                <div class="user-account">
+                    <p class="tip">欢迎你，{{this.list.nickname}}</p>
+                    <p class="account">
+                        <span>帐户名：</span><span>{{this.list.username}}</span>
+                        <span>用户类型：</span><span>{{this.role}}</span>
+                    </p>
+                </div>
+                <div class="user-modify">
+                    <a href="#">修改资料></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main w1200">
+        <div class="left">
+            <ul>
+                <li>
+                    <a href="/userhome/">
+                        <i class="icon iconfont icon-lingdang"></i>
+                        个人信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myfavorite/">
+                        <i class="icon iconfont icon-fangzidichan"></i>
+                        我的收藏
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/myquestion/">
+                        <i class="icon iconfont icon-wenda"></i>
+                        问答
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/houseManage" class="active">
+                        <i class="icon iconfont icon-icon--"></i>
+                        房源管理
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon iconfont icon-geren"></i>
+                        中介签约
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="icon iconfont icon-jilu"></i>
+                        看房记录
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentInformation">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        中介信息
+                    </a>
+                </li>
+                <li>
+                    <a href="/userhome/agentContractingManage">
+                        <i class="icon iconfont glyphicon-eye-open"></i>
+                        签约管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul class="nav nav-tabs">
+                <li><a class="active" href="#">我的房源</a></li>
+            </ul>
+            <div class="container">
+                <form class="form-horizontal" role="form">
+                    <br>
+                    <template v-if="unchecked">
+                        <div class="form-group">
+                            <label for="propertyNo" class="col-md-2 control-label no-padding-right">房产证号</label>
+                            <div class="col-md-10">
+                                <input type="text" id="propertyNo" class="col-md-12" v-model="propertyNo" placeholder="请输入房产证号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-info no-padding-right" @click="checkHousePropertyNo">提交验证</button>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="form-group">
+                            <label for="regionNo" class="col-md-2 control-label no-padding-right">区域编码</label>
+                            <div class="col-md-4">
+                                <input type="text" id="regionNo" v-model="regionNo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="communityName" class="col-md-2 control-label no-padding-right">小区名称</label>
+                            <div class="col-md-10">
+                                <input type="text" class="col-md-8" id="communityName" v-model="communityName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="communityNo" class="col-md-2 control-label no-padding-right">小区编号</label>
+                            <div class="col-md-4">
+                                <input type="text" id="communityNo" v-model="communityNo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address" class="col-md-2 control-label no-padding-right">具体地址</label>
+                            <div class="col-md-10">
+                                <input type="text" class="col-md-12" id="address" v-model="address">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label no-padding-right">经纬度</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="buildYear" class="col-md-2 control-label no-padding-right">建筑年代</label>
+                            <div class="col-md-4">
+                                <input type="text" id="buildYear" v-model="buildYear">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="structure" class="col-md-2 control-label no-padding-right">建筑结构</label>
+                            <div class="col-md-4">
+                                <select id="structure" v-model="structure">
+                                    <option value="1">钢结构</option>
+                                    <option value="2">钢、钢筋混凝土结构</option>
+                                    <option value="3">钢筋混凝土结构</option>
+                                    <option value="4">混合结构</option>
+                                    <option value="5">砖木结构</option>
+                                    <option value="6">其他结构</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="size" class="col-md-2 control-label no-padding-right">建筑面积</label>
+                            <div class="col-md-4">
+                                <input type="number" min="0.01" id="size" v-model="size">mm²
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="maxFloor" class="col-md-2 control-label no-padding-right">总楼层</label>
+                            <div class="col-md-4">
+                                <input type="number" min="1" id="maxFloor" v-model="maxFloor">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="floor" class="col-md-2 control-label no-padding-right">相对楼层</label>
+                            <div class="col-md-4">
+                                <select id="floor" v-model="floor">
+                                    <option value="3">高楼层</option>
+                                    <option value="2">中楼层</option>
+                                    <option value="1">低楼层</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="elevator" class="col-md-2 control-label no-padding-right">是否配备电梯</label>
+                            <div class="col-md-4">
+                                <select id="elevator" v-model="elevator">
+                                    <option value="Y">是</option>
+                                    <option value="N">否</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownStatus" class="col-md-2 control-label no-padding-right">产权所属</label>
+                            <div class="col-md-4">
+                                <select id="ownStatus" v-model="ownStatus">
+                                    <option value="0">非共有</option>
+                                    <option value="1">共有</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="diyaInfo" class="col-md-2 control-label no-padding-right">抵押信息</label>
+                            <div class="col-md-10">
+                                <input type="text" id="diyaInfo" class="col-md-12" v-model="diyaInfo">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="usage" class="col-md-2 control-label no-padding-right">房屋用途</label>
+                            <div class="col-md-4">
+                                <select id="usage" v-model="usage">
+                                    <option value="1">普通住宅</option>
+                                    <option value="2">商业类</option>
+                                    <option value="3">别墅</option>
+                                    <option value="4">四合院</option>
+                                    <option value="5">车位</option>
+                                    <option value="6">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label no-padding-right">特色标签</label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="ditie" value="0" v-model="tag">
+                                <label for="ditie">地铁房</label>
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="xuequ" value="1" v-model="tag">
+                                <label for="xuequ">学区房</label>
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="peibei" value="2" v-model="tag">
+                                <label for="peibei">配备齐全</label>
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="suishi" value="3" v-model="tag">
+                                <label for="suishi">随时看房</label>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="faceAt" class="col-md-2 control-label no-padding-right">房屋朝向</label>
+                            <div class="col-md-4">
+                                <select id="faceAt" v-model="faceAt">
+                                    <option value="1">东</option>
+                                    <option value="2">南</option>
+                                    <option value="3">西</option>
+                                    <option value="4">北</option>
+                                    <option value="5">东南</option>
+                                    <option value="6">东北</option>
+                                    <option value="7">西南</option>
+                                    <option value="8">西北</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="decoration" class="col-md-2 control-label no-padding-right">装修情况</label>
+                            <div class="col-md-4">
+                                <select id="decoration" v-model="decoration">
+                                    <option value="1">精装修</option>
+                                    <option value="2">普通装修</option>
+                                    <option value="3">毛坯房</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bedroomNum" class="col-md-2 control-label no-padding-right">卧室数</label>
+                            <div class="col-md-4">
+                                <input type="number" min="0" id="bedroomNum" v-model="bedroomNum">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="livingroomNum" class="col-md-2 control-label no-padding-right">大厅数</label>
+                            <div class="col-md-4">
+                                <input type="number" min="0" id="livingroomNum" v-model="livingroomNum">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="kitchenNum" class="col-md-2 control-label no-padding-right">厨房数</label>
+                            <div class="col-md-4">
+                                <input type="number" min="0" id="kitchenNum" v-model="kitchenNum">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="toiletNum" class="col-md-2 control-label no-padding-right">卫生间数</label>
+                            <div class="col-md-4">
+                                <input type="number" min="0" id="toiletNum" v-model="toiletNum">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="price" class="col-md-2 control-label no-padding-right">估价</label>
+                            <div class="col-md-4">
+                                <input type="number" min="0.01" id="price" v-model="price">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="environmentImages" class="col-md-2 control-label no-padding-right">周边环境图</label>
+                            <div class="col-md-4">
+                                <input type="file" id="environmentImages" v-model="environmentImages">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="outsideImages" class="col-md-2 control-label no-padding-right">室外图</label>
+                            <div class="col-md-4">
+                                <input type="file" id="outsideImages" v-model="outsideImages">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="insideImages" class="col-md-2 control-label no-padding-right">室内图</label>
+                            <div class="col-md-4">
+                                <input type="file" id="insideImages" v-model="insideImages">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="video" class="col-md-2 control-label no-padding-right">房源视频</label>
+                            <div class="col-md-4">
+                                <input type="file" id="video" v-model="video">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="houseInfo" class="col-md-2 control-label no-padding-right">户型介绍</label>
+                            <div class="col-md-10">
+                                <textarea rows="5" id="houseInfo" class="col-md-12" v-model="houseInfo"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="keyPoint" class="col-md-2 control-label no-padding-right">核心卖点</label>
+                            <div class="col-md-10">
+                                <textarea rows="5" id="keyPoint" class="col-md-12" v-model="keyPoint"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sellReason" class="col-md-2 control-label no-padding-right">售房缘由</label>
+                            <div class="col-md-10">
+                                <textarea rows="5" id="sellReason" class="col-md-12" v-model="sellReason"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-info no-padding-right" @click="uploadHouseDetail">上架房源</button>
+                            </div>
+                        </div>
+                    </template>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            list:[],
+            msg:'sdfjnfjkls',
+            role:'普通用户',
+            innernick:'',
+            inneremail:'',
+            unchecked: true,
+            propertyNo: "",
+            regionNo: "",
+            communityName: "",
+            communityNo: "",
+            address: "",
+            buildYear: "",
+            structure: "3",
+            size: "",
+            maxFloor: "",
+            floor: "2",
+            elevator: "N",
+            ownStatus: "0",
+            diyaInfo: "",
+            usage: "1",
+            tag: [],
+            faceAt: "1",
+            decoration: "2",
+            bedroomNum: "",
+            livingroomNum: "",
+            kitchenNum: "",
+            toiletNum: "",
+            price: "",
+            environmentImages: "",
+            outsideImages: "",
+            insideImages: "",
+            video: "",
+            houseInfo: "",
+            keyPoint: "",
+            sellReason: "",
+        },
+        created(){
+            console.log("gogogo");
+            this.getAll();
+            console.log(this.list.role)
+        },
+        methods:{
+            getAll() {
+                var that = this;
+                var postlist = null;
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: '/user',
+                        success: function (d) {
+                            that.list = d;
+                            console.log(that.list)
+                        }
+
+                    }
+                )
+            },
+            checkHousePropertyNo: function () {
+                var that = this;
+                console.log(that.list.userId + ' '+ that.propertyNo)
+                $.ajax({
+                    type: "POST",
+                    url: "/uploadHouse/checkHousePropertyNo",
+                    data: {
+                        userId: that.list.userId,
+                        propertyNo: that.propertyNo
+                    },
+                    success: function (msg) {
+                        if (msg==="success") {
+                            that.unchecked = false;
+                        } else {
+                            alert("请输入正确的房产证号");
+                        }
+                    }
+                })
+            },
+            uploadHouseDetail: function () {
+
+            }
+        },
+    })
+</script>
+
+</html>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.CompanyMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.Company">
+    <id column="compNo" jdbcType="INTEGER" property="compNo" />
+    <result column="compName" jdbcType="VARCHAR" property="compName" />
+    <result column="qualifyNo" jdbcType="VARCHAR" property="qualifyNo" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="licenseNo" jdbcType="VARCHAR" property="licenseNo" />
+    <result column="storesNum" jdbcType="INTEGER" property="storesNum" />
+    <result column="registFund" jdbcType="INTEGER" property="registFund" />
+    <result column="starLevel" jdbcType="DECIMAL" property="starLevel" />
+    <result column="legalRepresentor" jdbcType="VARCHAR" property="legalRepresentor" />
+    <result column="employeeNum" jdbcType="INTEGER" property="employeeNum" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="businessScope" jdbcType="VARCHAR" property="businessScope" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    compNo, compName, qualifyNo, address, licenseNo, storesNum, registFund, starLevel,
+    legalRepresentor, employeeNum, tel, businessScope
+  </sql>
+  <select id="getTenCompany" resultType="hnu.houseweb.entity.CompanyPart">
+    select compNo,compName
+    from company
+    order by
+    starLevel
+    limit 10
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from company
+    where compNo = #{compno,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from company
+    where compNo = #{compno,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="hnu.houseweb.entity.Company">
+    insert into company (compNo, compName, qualifyNo,
+      address, licenseNo, storesNum,
+      registFund, starLevel, legalRepresentor,
+      employeeNum, tel, businessScope
+      )
+    values (#{compNo,jdbcType=DECIMAL}, #{compName,jdbcType=VARCHAR}, #{qualifyNo,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{licenseNo,jdbcType=VARCHAR}, #{storesNum,jdbcType=INTEGER},
+      #{registFund,jdbcType=DECIMAL}, #{starLevel,jdbcType=DECIMAL}, #{legalRepresentor,jdbcType=VARCHAR},
+      #{employeeNum,jdbcType=INTEGER}, #{tel,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.Company">
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="compNo != null">
+        compNo,
+      </if>
+      <if test="compName != null">
+        compName,
+      </if>
+      <if test="qualifyNo != null">
+        qualifyNo,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="licenseNo != null">
+        licenseNo,
+      </if>
+      <if test="storesNum != null">
+        storesNum,
+      </if>
+      <if test="registFund != null">
+        registFund,
+      </if>
+      <if test="starLevel != null">
+        starLevel,
+      </if>
+      <if test="legalRepresentor != null">
+        legalRepresentor,
+      </if>
+      <if test="employeeNum != null">
+        employeeNum,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="businessScope != null">
+        businessScope,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="compNo != null">
+        #{compNo,jdbcType=DECIMAL},
+      </if>
+      <if test="compName != null">
+        #{compName,jdbcType=VARCHAR},
+      </if>
+      <if test="qualifyNo != null">
+        #{qualifyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseNo != null">
+        #{licenseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storesNum != null">
+        #{storesNum,jdbcType=INTEGER},
+      </if>
+      <if test="registFund != null">
+        #{registFund,jdbcType=DECIMAL},
+      </if>
+      <if test="starLevel != null">
+        #{starLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="legalRepresentor != null">
+        #{legalRepresentor,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeNum != null">
+        #{employeeNum,jdbcType=INTEGER},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="businessScope != null">
+        #{businessScope,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.Company">
+    update company
+    <set>
+      <if test="compName != null">
+        compName = #{compName,jdbcType=VARCHAR},
+      </if>
+      <if test="qualifyNo != null">
+        qualifyNo = #{qualifyno,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseNo != null">
+        licenseNo = #{licenseno,jdbcType=VARCHAR},
+      </if>
+      <if test="storesNum != null">
+        storesNum = #{storesNum,jdbcType=INTEGER},
+      </if>
+      <if test="registFund != null">
+        registFund = #{registFund,jdbcType=DECIMAL},
+      </if>
+      <if test="starLevel != null">
+        starLevel = #{starLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="legalRepresentor != null">
+        legalRepresentor = #{legalRepresentor,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeNum != null">
+        employeeNum = #{employeeNum,jdbcType=INTEGER},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="businessScope != null">
+        businessScope = #{businessScope,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where compNo = #{compno,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.Company">
+    update company
+    set compName = #{compName,jdbcType=VARCHAR},
+      qualifyNo = #{qualifyNo,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      licenseNo = #{licenseNo,jdbcType=VARCHAR},
+      storesNum = #{storesNum,jdbcType=INTEGER},
+      registFund = #{registFund,jdbcType=DECIMAL},
+      starLevel = #{starLevel,jdbcType=DECIMAL},
+      legalRepresentor = #{legalRepresentor,jdbcType=VARCHAR},
+      employeeNum = #{employeeNum,jdbcType=INTEGER},
+      tel = #{tel,jdbcType=VARCHAR},
+      businessScope = #{businessScope,jdbcType=VARCHAR}
+    where compNo = #{compNo,jdbcType=DECIMAL}
+  </update>
+</mapper>

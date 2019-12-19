@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/my-navbar.css">
+    <link rel="stylesheet" href="/css/fileinput.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap-fileinput/css/fileinput.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap-fileinput/themes/explorer/theme.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap-fileinput/themes/explorer-fa/theme.min.css">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <style>
+        .upload-btn{
+            float: right;
+            margin-left:5px;
+        }
+
+        .browse-btn{
+            float: right;
+        }
+
+        .remove-btn{
+            margin-left:5px;
+            float: right;
+        }
+
+        #main{
+            width: 800px;
+            margin:0 auto;
+        }
+        .layui-form-label{
+            width: 110px;
+        }
+        .layui-elem-quote{
+            margin-bottom: 10px;
+            padding: 15px;
+            line-height: 22px;
+            border-left: 5px solid #1E9FFF;
+            border-radius: 0 2px 2px 0;
+            background-color: #f2f2f2;
+        }
+        .layui-tab-brief>.layui-tab-title .layui-this {
+            color: #1E9FFF;
+        }
+        .layui-tab-brief>.layui-tab-more li.layui-this:after, .layui-tab-brief>.layui-tab-title .layui-this:after {
+            border: none;
+            border-radius: 0;
+            border-bottom: 2px solid #1E9FFF;
+        }
+
+        .needed{
+            color: red;
+        }
+    </style>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+
+        .layui-form-radio>i:hover, .layui-form-radioed>i {
+            color: #1E9FFF;
+        }
+        .layui-form-select dl dd.layui-this {
+            background-color: #1E9FFF;
+            color: #fff;
+        }
+        .layui-form-checked span, .layui-form-checked:hover span {
+            background-color: #1E9FFF;
+        }
+
+        #main{
+            width: 1200px;
+            margin:60px auto;
+        }
+
+        #formContainer{
+            margin:60px auto;
+            width: 900px;
+        }
+
+        .tab-ul {
+            width: 700px;
+            margin:50px auto;
+            overflow: hidden;
+        }
+        .tab-ul-li {
+            font-weight: 700;
+            float: left;
+            list-style: none;
+            width: 40%;
+            line-height: 50px;
+            text-align: center;
+            color: #c8c8c8;
+            border-bottom: 4px solid #c8c8c8;
+        }
+        .tab-ul-li:first-child {
+            margin-left: 3%;
+        }
+
+        .tab-li-check {
+            color: #3498db;
+            border-bottom: 4px solid #3498db;
+        }
+        .tab-ul-li:last-child {
+            margin-left: 7%;
+        }
+
+        .tab-ul-li .tab-li-span {
+            margin-right: 15px;
+            padding: 5px 10px;
+            line-height: 50px;
+            background-color: #c8c8c8;
+            color: #fff;
+            border-radius: 50%;
+        }
+        .tab-li-check .tab-li-span {
+            background-color: #3498db;
+        }
+
+
+        .hintsbox-mark {
+            position: relative;
+        }
+
+        .hintsbox-mark input{
+            width: 250px;
+        }
+
+        .hintsbox {
+            position: absolute;
+            z-index: 9999;
+            background: #fff;
+            width: 250px;
+            border: 1px solid #ddd;
+        }
+
+        .hintslist .hint {
+            padding: 4px 2px;
+        }
+
+        .hintslist .hint:hover {
+            background-color: #DDD8E5;
+            cursor: pointer;
+        }
+
+        .hintslist .hint.active {
+            background-color: #DDD8E5;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- 下拉触发按钮 以及 商标-->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">二手房交易平台</a>
+            </div>
+            <!-- 适配手机，将部分栏目转至下拉导航-->
+            <div class="collapse navbar-collapse" id="collapse1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="/house">二手房</a></li>
+                    <li class="active"><a href="/houseUpload">发布房源</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" id="userInfo" v-cloak>
+                    <li v-if="userInfo==null" ><a href="#" data-toggle="modal" data-target="#myModal">登录</a></li>
+                    <li v-if="userInfo==null" ><a href="register.html">注册</a></li>
+                    <li v-if="userInfo!=null" ><span style="line-height: 50px;color: #fff">欢迎您!{{userInfo.userName}}</span></li>
+                    <li v-if="userInfo!=null" ><a href="/userhome">个人中心</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </nav>
+
+    <div id="main">
+        <div id="formContainer">
+            <ul class="tab-ul">
+                <li class="tab-ul-li">
+                    <span class="tab-li-span">1</span>
+                    验证房产证号
+                </li>
+                <li class="tab-ul-li tab-li-check">
+                    <span class="tab-li-span">2</span>
+                    填写房源详细信息
+                </li>
+            </ul>
+            <form class="layui-form" id="form" name="form" method= "post" onsubmit="checkUpload();return false;" enctype ="multipart/form-data" v-cloak>
+                <blockquote class="layui-elem-quote">
+                    基本信息
+                </blockquote>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>小区</label>
+                    <div class="layui-input-block hintsbox-mark">
+                        <input type="text" id="community" name="community" v-model="keyword" @keyup="whenInput($event)" ref="keyword" @blur="closeHintsBox()" required  :value="houseDetail.community" placeholder="请输入小区名" class="layui-input">
+                        <div class="hintsbox" v-if="showHintsBox">
+                            <ul class="hintslist">
+                                <li v-for="(item,index) in hints" ref="hint" class="hint" @click="fillInput(index)" v-cloak>{{item.name}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">地图坐标</label>
+                    <div class="layui-input-block">
+                        <div id="mapContainer" style="width: 100%;height: 400px"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item" >
+                    <label class="layui-form-label"><span class="needed">*</span>区域</label>
+                    <div class="layui-input-inline">
+                        <select name="province" lay-verify="required">
+                            <option v-for="item in prov" v-text="item.name" :value="item.id"></option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="city" lay-verify="required">
+                            <option v-for="item in cities" :value="item.id" v-text="item.name"></option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="region" lay-verify="required" :value="houseDetail.region">
+                            <option v-for="item in regions" :value="item.id" v-text="item.name"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" required  :value="houseDetail.address" lay-verify="required" placeholder="请输入房源较为详细地址" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>建筑面积</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="size" id="size" required  lay-verify="required" :value="houseDetail.size?houseDetail.size:100" placeholder="请输入建筑面积" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">/㎡</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>户型</label>
+                    <div class="layui-input-inline" style="width: 20%">
+                        <select name="roomNum" lay-verify="required">
+                            <option value="1">1室</option>
+                            <option value="2">2室</option>
+                            <option value="3">3室</option>
+                            <option value="4" selected>4室</option>
+                            <option value="5">5室</option>
+                            <option value="6">5室以上</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 20%">
+                        <select name="hallNum" lay-verify="required">
+                            <option value="0">0厅</option>
+                            <option value="1" selected>1厅</option>
+                            <option value="2">2厅</option>
+                            <option value="3">3厅</option>
+                            <option value="4">3厅以上</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 20%">
+                        <select name="kitchenNum" lay-verify="required">
+                            <option value="0">0厨</option>
+                            <option value="1" selected>1厨</option>
+                            <option value="2">2厨</option>
+                            <option value="3">2厨以上</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 20%">
+                        <select name="toiletNum" lay-verify="required">
+                            <option value="0">0卫</option>
+                            <option value="1" selected>1卫</option>
+                            <option value="2">2卫</option>
+                            <option value="3">3卫</option>
+                            <option value="4">3卫以上</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>价格</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="price" id="price" required  :value="houseDetail.price?houseDetail.price:100" lay-verify="required" placeholder="请输入价格" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>建筑年代</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="buildYear" min="1900" max="2050" :value="houseDetail.buildYear" required  lay-verify="required" placeholder="请输入建筑年代" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>所在楼层</label>
+                    <div class="layui-input-inline">
+                        <select name="floor" lay-verify="required">
+                            <option value="1">低楼层</option>
+                            <option value="2">中楼层</option>
+                            <option value="3">高楼层</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux" style="margin-left: 30px">/共</div>
+                    <div class="layui-input-inline" style="width: 80px">
+                        <div class="layui-input-inline" style="width: 80px">
+                            <input type="number" id="maxFloor" name="maxFloor" style="width: 80px" required :value="houseDetail.maxFloor?houseDetail.maxFloor:6" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">层</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>朝向</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="faceAt" value="1" title="东" checked>
+                        <input type="radio" name="faceAt" value="2" title="南">
+                        <input type="radio" name="faceAt" value="3" title="西">
+                        <input type="radio" name="faceAt" value="4" title="北">
+                        <input type="radio" name="faceAt" value="5" title="东南">
+                        <input type="radio" name="faceAt" value="6" title="东北">
+                        <input type="radio" name="faceAt" value="7" title="西南">
+                        <input type="radio" name="faceAt" value="8" title="西北">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>看房时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="lookTime" required :value="houseDetail.lookTime" lay-verify="required" placeholder="输入看房时间,如：随时看房" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">装修程度</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="decoration" value="1" title="精装修">
+                        <input type="radio" name="decoration" value="2" title="普通装修" checked>
+                        <input type="radio" name="decoration" value="3" title="毛坯房">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标签</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="t1" title="近地铁">
+                        <input type="checkbox" name="t2" title="近学区">
+                        <input type="checkbox" name="t3" title="有电梯">
+                    </div>
+                </div>
+                <blockquote class="layui-elem-quote">
+                    住宅信息
+                </blockquote>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">房屋用途</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="yongTu" value="1" title="普通住宅" checked>
+                        <input type="radio" name="yongTu" value="2" title="商业类">
+                        <input type="radio" name="yongTu" value="3" title="别墅">
+                        <input type="radio" name="yongTu" value="4" title="四合院">
+                        <input type="radio" name="yongTu" value="5" title="车位">
+                        <input type="radio" name="yongTu" value="6" title="其它">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>房屋产权</label>
+                    <div class="layui-input-inline">
+                        <select name="ownStatus" lay-verify="required">
+                            <option value="0">非共有</option>
+                            <option value="1">共有</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产权年限</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="propertyYear" value="70年产权" title="70年产权">
+                        <input type="radio" name="propertyYear" value="50年产权" title="50年产权" checked>
+                        <input type="radio" name="propertyYear" value="40年产权" title="40年产权" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>房屋结构</label>
+                    <div class="layui-input-inline">
+                        <select name="structure" lay-verify="required" lay-search>
+                            <option value="1">钢结构</option>
+                            <option value="2">钢、钢混结构</option>
+                            <option value="3" selected>钢混结构</option>
+                            <option value="4">混合结构</option>
+                            <option value="5">砖木结构</option>
+                            <option value="6">其它结构</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电梯</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="elevator" value="1" title="有">
+                        <input type="radio" name="elevator" value="0" title="无" checked>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">抵押信息</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="diyaInfo" :value="houseDetail.diyaInfo"  placeholder="选填，房源处于抵押状态时填写" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <blockquote class="layui-elem-quote">
+                    房屋介绍
+                </blockquote>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span class="needed">*</span>房源标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required  lay-verify="required" :value="houseDetail.title" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">售房详情</label>
+                    <div class="layui-input-block">
+                        <textarea name="sellReason" placeholder="填写售房初衷,售房原因等介绍" :value="houseDetail.sellReason" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">户型介绍</label>
+                    <div class="layui-input-block">
+                        <textarea name="houseInfo" placeholder="填写房源户型介绍, 如各房间面积等" :value="houseDetail.houseInfo" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">房源特色</label>
+                    <div class="layui-input-block">
+                        <textarea name="keyPoint" placeholder="描述房源特色, 据以往经验, 此处填写有助于房源推广" :value="houseDetail.keyPoint" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <blockquote class="layui-elem-quote">
+                    图片
+                </blockquote>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">封面图片</label>
+                    <div class="layui-input-block">
+                        <input id="coverUrl" name="coverUrl" type="file" class="file" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">室内图</label>
+                    <div class="layui-input-block">
+                        <input id="insideUrl" name="insideUrl" type="file" class="file"  multiple >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">室外图</label>
+                    <div class="layui-input-block">
+                        <input id="outsideUrl" name="outsideUrl" type="file" class="file"  multiple>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">环境图</label>
+                    <div class="layui-input-block">
+                        <input id="envUrl" name="envUrl" type="file" class="file" accept="image/jpeg,image/jpg,image/png" multiple>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">视频文件</label>
+                    <div class="layui-input-block">
+                        <input id="video" name="video" type="file" class="file">
+                    </div>
+                </div>
+                <hr class="layui-bg-blue" style="margin:50px 0">
+                <div class="layui-form-item" style="margin-bottom: 50px" v-cloak>
+                    <div class="layui-input-block" style="text-align: right">
+                        <!--                        lay-submit lay-filter="formDemo"-->
+                        <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" >立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/assets/bootstrap-fileinput/js/plugins/sortable.min.js"></script>
+<script src="/assets/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="/assets/bootstrap-fileinput/js/locales/zh.js"></script>
+<script src="/assets/bootstrap-fileinput/themes/explorer/theme.js"></script>
+<script src="/assets/bootstrap-fileinput/themes/explorer-fa/theme.min.js"></script>
+<script src="/assets/bootstrap-fileinput/themes/fa/theme.min.js"></script>
+<script src="/assets/layui/layui.all.js"></script>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=DVBBZ-TQCK6-D2LSU-EDV5T-4OJJJ-R6BDJ&libraries=place"></script>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=DVBBZ-TQCK6-D2LSU-EDV5T-4OJJJ-R6BDJ&libraries=geometry"></script>
+<script src="/js/city.js"></script>
+<!--如果该房源已设置信息则回填房源信息-->
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var houseDetail =  [[${houseDetail}]]
+    var userInfo = [[${userInfo}]]
+    if(houseDetail==null){
+        houseDetail = {}
+    }
+    //
+    // $(function() {
+    //     $("img.lazy").lazyload({effect: "fadeIn",threshold: 250});
+    // });
+</script>
+<!--Vue初始化-->
+<script>
+    var hunan
+    var changsha
+    for(let i = 0;i < province.length;i++){
+        if(province[i].id=='430000'){
+            hunan = province[i]
+            break
+        }
+    }
+    for(let i = 0;i < city.length;i++){
+        if(city[i].id=='430100'){
+            changsha = city[i]
+            break
+        }
+    }
+
+    $("#community").blur(function(){
+        console.log('blur')
+    })
+
+
+    var main = new Vue({
+        el:'#main',
+        data:{
+            prov:[hunan],
+            // prov:province,
+            // cities:[{id:'',name:'先选择省份'}],
+            cities:[changsha],
+            regions:[{id:'',name:'先选择城市'}],
+            provincePick:'',
+            cityPick:'',
+            regionPick:'',
+            houseDetail:houseDetail,
+            mapMarker:{},
+            hints:[],
+            showHintsBox:false,
+            keyword:houseDetail.community,
+            villageChoseId:houseDetail.communityNo,
+            lastTime:0
+        },
+        created(){
+            for(let i = 0;i < city.length;i++){
+                if(city[i].id=='430100'){
+                    this.regions = city[i].children
+                    break
+                }
+            }
+            // console.log(houseDetail.region)
+            // if(houseDetail.region!=null){
+            //     this.regionPick = houseDetail.region
+            //     // for(let i = 0;i < this.regions.length;i++){
+            //     //     if(this.regions[i].id==houseDetail.region){
+            //     //         // this.regions = [this.regions[i]]        //回填所在区
+            //     //         this.regionPick =
+            //     //     }
+            //     // }
+            // }
+        },
+        methods:{
+            getRegions(cityId){
+                for(let i = 0;i < city.length;i++){
+                    if(city[i].id==cityId){
+                        this.regions = city[i].children
+                        break
+                    }
+                }
+            },
+            initQuyu(){
+                // this.getRegions('430100')
+                // console.log(this.regions)
+                this.$nextTick(function () {
+                    let that = this
+                    // this.getRegions('430100')
+                    layui.use(['layer', 'form'], function(){
+                        var form = layui.form;
+                        form.on('select', function(data){
+                            // App.getMakerQQ(data.value);
+                            console.log(data.value.substring(2))
+                            if(data.value.substring(2)=='0000'){
+                                that.getCities(data.value)
+                                console.log(that.cities)
+                                setTimeout(function () {
+                                    layui.form.render();//延迟重新渲染
+                                },10);
+                            }else if(data.value.substring(4)=='00'){
+                                that.getRegions(data.value)
+                                console.log(that.regions)
+                                setTimeout(function () {
+                                    layui.form.render();//延迟重新渲染
+                                },10);
+                            }
+                        });
+                        // //监听提交
+                        // form.on('submit(formDemo)', function(data){
+                        //     layer.msg(JSON.stringify(data.field));
+                        //     return false;
+                        // });
+                        form.render();
+                    });
+                    layui.use('element', function(){
+                        var element = layui.element;
+                    });
+                })
+            },
+            getCities(provinceId){
+                // for(let i = 0;i < province.length;i++){
+                //     if(province[i].id==provinceId){
+                //         this.cities = province[i].children
+                //         break
+                //     }
+                // }
+            },
+            whenInput: function($event) {
+
+                var len = this.hints.length;
+
+                //Down键事件
+                if($event.keyCode == 40) {
+                    return;
+                }
+
+                //Up键事件
+                if($event.keyCode == 38) {
+                    return;
+                }
+                if(!this.keyword) {
+                    this.closeHintsBox();
+                    return;
+                }
+                if($event.keyCode !== 38 && $event.keyCode !== 40 && $event.keyCode !== 13) {
+                    this.getHintsList(this.keyword);
+                    // mapSearch(this.keyword)
+                }
+            },
+            //获取候选列表
+            getHintsList: function(kw) {
+                console.log("发起查询请求");
+                var that = this
+                this.villageChoseId = ''
+                $.ajax({
+                    url:'/village',
+                    dataType:'json',
+                    data:{
+                        kw:kw
+                    },
+                    success:function (data) {
+                        console.log(data)
+                        that.hints = data
+                        that.showHintsBox = true
+                    }
+                })
+            },
+
+            //依据hints数组下标值填充输入框
+            fillInput: function(index) {
+                console.log('fillInput')
+                this.keyword = this.hints[index].name
+                this.villageChoseId = this.hints[index].id
+                this.closeHintsBox();
+                var that  = this
+                setTimeout(function () {
+                    mapSearch(that.keyword)
+                },50)
+            },
+
+            //关闭候选框
+            closeHintsBox: function() {
+                var that = this
+                setTimeout(function() {
+                    that.hints = [];
+                    that.showHintsBox = false;
+                    if(that.keyword.trim())
+                        mapSearch(that.keyword)
+                }, 80)
+            }
+        },
+        mounted(){
+            this.initQuyu()
+        }
+    })
+</script>
+<!--图片上传-->
+<script>
+    var insidePics,outsidePics,envPics
+    /* 对已经存有的图片进行初始化*/
+    if(houseDetail.insideUrl!=null) {
+        insidePics = houseDetail.insideUrl.split(';')
+        let Length = insidePics.length
+        var insideCaption = new Array(Length)
+        let i = 0;
+        for (i = 0; i < Length; i++) {
+            insideCaption[i] = {
+                caption: '室内图'+i,
+                size: '未知大小',
+                url: "/imgTools/delete/",
+                key: insidePics[i]
+            }
+        }
+    }
+    if(houseDetail.insideUrl!=null) {
+        outsidePics = houseDetail.outsideUrl.split(';')
+        Length = outsidePics.length
+        var outsideCaption = new Array(Length)
+        for (i = 0; i < Length; i++) {
+            outsideCaption[i] = {
+                caption: '室外图'+i,
+                size: '未知大小',
+                url: "/imgTools/delete/",
+                key: outsidePics[i]
+            }
+        }
+    }
+    if(houseDetail.insideUrl!=null) {
+        envPics = houseDetail.envUrl.split(';')
+        Length = envPics.length
+        var envCaption = new Array(Length)
+        for (i = 0; i < Length; i++) {
+            envCaption[i] = {caption: '环境图'+i, size: '未知大小', url: "/imgTools/delete/", key: envPics[i]}
+        }
+    }
+
+    let uploadUrl = '/imgTools/saveImg'
+    $("#coverUrl").fileinput({
+        language:'zh',                                          // 多语言设置，需要引入local中相应的js，例如locales/zh.js
+        theme: "explorer-fa",                               // 主题
+        //uploadUrl: uploadUrl,         // 上传地址
+        minFileCount: 0,                                        // 最小上传数量
+        // maxFileCount: 1,                                        // 最大上传数量
+        allowedFileExtensions: ['jpg', 'png', 'gif','jpeg'],
+        dropZoneTitle: '上传一张图片作为封面，格式大于740x400像素',
+        uploadAsync:true,
+        overwriteInitial: false,                        // 覆盖初始预览内容和标题设置
+        initialPreviewAsData: true,                     //这会将初始内容作为文件数据来加载
+        showCancel:false,                                       // 显示取消按钮
+        showZoom:false,                                         // 显示预览按钮
+        showCaption:false,                                  // 显示文件文本框
+        dropZoneEnabled:true,                          // 是否可拖拽
+        showUpload:false,
+        uploadLabel:"上传附件",                         // 上传按钮内容
+        browseLabel: '选择附件',                            // 浏览按钮内容
+        removeLabel: '移除全部',
+        showRemove:false,                                       // 显示移除按钮
+        showClose:false,
+        minImageWidth: 640, //图片的最小宽度
+        minImageHeight: 400,//图片的最小高度
+        maxFileSize:5000,
+        // maxImageWidth: 1920,//图片的最大宽度
+        // maxImageHeight: 1080,//图片的最大高度
+        browseClass:"layui-btn layui-btn-sm layui-btn-normal browse-btn",                        // 浏览按钮样式
+        uploadClass:"layui-btn layui-btn-sm upload-btn",                        // 上传按钮样式
+        removeClass:"layui-btn layui-btn-sm layui-btn-danger remove-btn",
+        previewFileIcon: '<i class="fas fa-file"></i>',
+        // uploadExtraData: {'taskId':taskId,'createBy':userId,'createByname':username},   // 上传数据
+        // hideThumbnailContent:true,                  // 是否隐藏文件内容
+        fileActionSettings: {                               // 在预览窗口中为新选择的文件缩略图设置文件操作的对象配置
+            showRemove: true,                                   // 显示删除按钮
+            showUpload: false,                                   // 显示上传按钮
+            showDownload: false,                            // 显示下载按钮
+            showZoom: true,                                    // 显示预览按钮
+            showDrag: true,                                        // 显示拖拽
+            removeIcon: '<i class="fa fa-trash"></i>',   // 删除图标
+            uploadIcon: '<i class="fa fa-upload"></i>',     // 上传图标
+            uploadRetryIcon: '<i class="fa fa-repeat"></i>'  // 重试图标
+        },
+        removeFromPreviewOnError: true,
+        initialPreview: [
+            houseDetail.coverUrl
+        ],
+        initialPreviewConfig: [
+            {caption:'封面图',size:'未知大小',width:'120px',url: "/imgTools/delete/",key:houseDetail.coverUrl}
+        ]
+    })
+
+    $("#insideUrl").fileinput({
+        language:'zh',                                          // 多语言设置，需要引入local中相应的js，例如locales/zh.js
+        theme: "explorer-fa",                               // 主题
+        // uploadUrl: uploadUrl,         // 上传地址
+        minFileCount: 0,                                        // 最小上传数量
+        maxFileCount: 5,                                        // 最大上传数量
+        allowedFileExtensions: ['jpg', 'png', 'gif','jpeg'],
+        dropZoneTitle: '上传5张以内的室内图,格式大于750x400像素',
+        uploadAsync:true,
+        overwriteInitial: false,                        // 覆盖初始预览内容和标题设置
+        initialPreviewAsData: true,                     //这会将初始内容作为文件数据来加载
+        showRemove:false,
+        showCancel:false,                                       // 显示取消按钮
+        showZoom:false,                                         // 显示预览按钮
+        showCaption:false,                                  // 显示文件文本框
+        dropZoneEnabled:true,                          // 是否可拖拽
+        showUpload:false,
+        uploadLabel:"上传附件",                         // 上传按钮内容
+        browseLabel: '选择附件',                            // 浏览按钮内容
+        removeLabel: '移除全部',
+        showClose:false,
+        minImageWidth: 640, //图片的最小宽度
+        minImageHeight: 400,//图片的最小高度
+        maxFileSize:5000,
+        // maxImageWidth: 1920,//图片的最大宽度
+        // maxImageHeight: 1080,//图片的最大高度
+        browseClass:"layui-btn layui-btn-sm layui-btn-normal browse-btn",                        // 浏览按钮样式
+        uploadClass:"layui-btn layui-btn-sm upload-btn",                        // 上传按钮样式
+        removeClass:"layui-btn layui-btn-sm layui-btn-danger remove-btn",
+        previewFileIcon: '<i class="fas fa-file"></i>',
+        removeFromPreviewOnError: true,
+        // uploadExtraData: {'taskId':taskId,'createBy':userId,'createByname':username},   // 上传数据
+        // hideThumbnailContent:true,                  // 是否隐藏文件内容
+        fileActionSettings: {                               // 在预览窗口中为新选择的文件缩略图设置文件操作的对象配置
+            showRemove: true,                                   // 显示删除按钮
+            showUpload: false,                                   // 显示上传按钮
+            showDownload: false,                            // 显示下载按钮
+            showZoom: true,                                    // 显示预览按钮
+            showDrag: true,                                        // 显示拖拽
+            removeIcon: '<i class="fa fa-trash"></i>',   // 删除图标
+            uploadIcon: '<i class="fa fa-upload"></i>',     // 上传图标
+            uploadRetryIcon: '<i class="fa fa-repeat"></i>'  // 重试图标
+        },
+        initialPreview:  insidePics                                                                  //初始预览内容
+            //用于回填图片
+        ,
+        initialPreviewConfig: insideCaption                                                     // 初始预览配置 caption 标题，size文件大小 ，url 删除地址，key删除时会传这个
+            //配合上面的preview使用
+    });
+
+    $("#outsideUrl").fileinput({
+        language:'zh',                                          // 多语言设置，需要引入local中相应的js，例如locales/zh.js
+        theme: "explorer-fa",                               // 主题
+        // uploadUrl: uploadUrl,         // 上传地址
+        minFileCount: 0,                                        // 最小上传数量
+        maxFileCount: 5,                                        // 最大上传数量
+        allowedFileExtensions: ['jpg', 'png', 'gif','jpeg'],
+        dropZoneTitle: '上传5张以内的室外图，格式大于740x400像素',
+        uploadAsync:true,
+        overwriteInitial: false,                        // 覆盖初始预览内容和标题设置
+        initialPreviewAsData: true,                     //这会将初始内容作为文件数据来加载
+        showCancel:false,                                       // 显示取消按钮
+        showZoom:false,                                         // 显示预览按钮
+        showCaption:false,                                  // 显示文件文本框
+        dropZoneEnabled:true,                          // 是否可拖拽
+        showUpload:false,
+        uploadLabel:"上传附件",                         // 上传按钮内容
+        browseLabel: '选择附件',                            // 浏览按钮内容
+        removeLabel: '移除全部',
+        showRemove:true,                                       // 显示移除按钮
+        showClose:false,
+        minImageWidth: 640, //图片的最小宽度
+        minImageHeight: 400,//图片的最小高度
+        // maxImageWidth: 1920,//图片的最大宽度
+        // maxImageHeight: 1080,//图片的最大高度
+        maxFileSize:5000,
+        browseClass:"layui-btn layui-btn-sm layui-btn-normal browse-btn",                        // 浏览按钮样式
+        uploadClass:"layui-btn layui-btn-sm upload-btn",                        // 上传按钮样式
+        removeClass:"layui-btn layui-btn-sm layui-btn-danger remove-btn",
+        previewFileIcon: '<i class="fas fa-file"></i>',
+        removeFromPreviewOnError: true,
+        // uploadExtraData: {'taskId':taskId,'createBy':userId,'createByname':username},   // 上传数据
+        // hideThumbnailContent:true,                  // 是否隐藏文件内容
+        fileActionSettings: {                               // 在预览窗口中为新选择的文件缩略图设置文件操作的对象配置
+            showRemove: true,                                   // 显示删除按钮
+            showUpload: false,                                   // 显示上传按钮
+            showDownload: false,                            // 显示下载按钮
+            showZoom: true,                                    // 显示预览按钮
+            showDrag: true,                                        // 显示拖拽
+            removeIcon: '<i class="fa fa-trash"></i>',   // 删除图标
+            uploadIcon: '<i class="fa fa-upload"></i>',     // 上传图标
+            uploadRetryIcon: '<i class="fa fa-repeat"></i>'  // 重试图标
+        },
+        initialPreview:  outsidePics                 //初始预览内容
+            //用于回填图片
+        ,
+        initialPreviewConfig: outsideCaption                     // 初始预览配置 caption 标题，size文件大小 ，url 删除地址，key删除时会传这个
+            //配合上面的preview使用
+    });
+
+    $("#envUrl").fileinput({
+        language:'zh',                                          // 多语言设置，需要引入local中相应的js，例如locales/zh.js
+        theme: "explorer-fa",                               // 主题
+        // uploadUrl: uploadUrl,         // 上传地址
+        minFileCount: 0,                                        // 最小上传数量
+        maxFileCount: 5,                                        // 最大上传数量
+        allowedFileExtensions: ['jpg', 'png', 'gif','jpeg'],
+        dropZoneTitle: '上传5张以内的环境图，格式大于740x400像素',
+        uploadAsync:true,
+        overwriteInitial: false,                        // 覆盖初始预览内容和标题设置
+        initialPreviewAsData: true,                     //这会将初始内容作为文件数据来加载
+        showCancel:false,                                       // 显示取消按钮
+        showZoom:false,                                         // 显示预览按钮
+        showCaption:false,                                  // 显示文件文本框
+        dropZoneEnabled:true,                          // 是否可拖拽
+        showUpload:false,
+        uploadLabel:"上传附件",                         // 上传按钮内容
+        browseLabel: '选择附件',                            // 浏览按钮内容
+        removeLabel: '移除全部',
+        showRemove:true,                                       // 显示移除按钮
+        showClose:false,
+        minImageWidth: 640, //图片的最小宽度
+        minImageHeight: 400,//图片的最小高度
+        // maxImageWidth: 1920,//图片的最大宽度
+        // maxImageHeight: 1080,//图片的最大高度
+        maxFileSize:5000,
+        browseClass:"layui-btn layui-btn-sm layui-btn-normal browse-btn",                        // 浏览按钮样式
+        uploadClass:"layui-btn layui-btn-sm upload-btn",                        // 上传按钮样式
+        removeClass:"layui-btn layui-btn-sm layui-btn-danger remove-btn",
+        previewFileIcon: '<i class="fas fa-file"></i>',
+        removeFromPreviewOnError: true,
+        // uploadExtraData: {'taskId':taskId,'createBy':userId,'createByname':username},   // 上传数据
+        // hideThumbnailContent:true,                  // 是否隐藏文件内容
+        fileActionSettings: {                               // 在预览窗口中为新选择的文件缩略图设置文件操作的对象配置
+            showRemove: true,                                   // 显示删除按钮
+            showUpload: false,                                   // 显示上传按钮
+            showDownload: false,                            // 显示下载按钮
+            showZoom: true,                                    // 显示预览按钮
+            showDrag: true,                                        // 显示拖拽
+            removeIcon: '<i class="fa fa-trash"></i>',   // 删除图标
+            uploadIcon: '<i class="fa fa-upload"></i>',     // 上传图标
+            uploadRetryIcon: '<i class="fa fa-repeat"></i>'  // 重试图标
+        },
+        initialPreview:envPics                                                           //初始预览内容
+            //用于回填图片
+        ,
+        initialPreviewConfig: envCaption               // 初始预览配置 caption 标题，size文件大小 ，url 删除地址，key删除时会传这个
+            //配合上面的preview使用
+    });
+    $("#video").fileinput({
+        language:'zh',                                          // 多语言设置，需要引入local中相应的js，例如locales/zh.js
+        theme: "explorer-fa",                               // 主题
+        // uploadUrl: uploadUrl,         // 上传地址
+        minFileCount: 0,                                        // 最小上传数量
+        maxFileCount: 1,                                        // 最大上传数量
+        dropZoneTitle: '上传一个2分钟内,30M以下的视频',
+        allowedFileExtensions: ['mp4'],
+        overwriteInitial: false,                        // 覆盖初始预览内容和标题设置
+        // initialPreviewAsData: true,                     //这会将初始内容作为文件数据来加载
+        showCancel:false,                                       // 显示取消按钮
+        showZoom:false,                                         // 显示预览按钮
+        showCaption:false,                                  // 显示文件文本框
+        dropZoneEnabled:true,                          // 是否可拖拽
+        showUpload:false,
+        uploadLabel:"上传附件",                         // 上传按钮内容
+        browseLabel: '选择附件',                            // 浏览按钮内容
+        removeLabel: '移除全部',
+        showRemove:true,                                       // 显示移除按钮
+        showClose:false,
+        maxFileSize:30000,
+        maxFilePreviewSize: 30600, // 25 MB
+        browseClass:"layui-btn layui-btn-sm layui-btn-normal browse-btn",                        // 浏览按钮样式
+        uploadClass:"layui-btn layui-btn-sm upload-btn",                        // 上传按钮样式
+        removeClass:"layui-btn layui-btn-sm layui-btn-danger remove-btn",
+        previewFileIcon: '<i class="fas fa-file"></i>',
+        removeFromPreviewOnError: true,
+        // uploadExtraData: {'taskId':taskId,'createBy':userId,'createByname':username},   // 上传数据
+        // hideThumbnailContent:true,                  // 是否隐藏文件内容
+        fileActionSettings: {                               // 在预览窗口中为新选择的文件缩略图设置文件操作的对象配置
+            showRemove: true,                                   // 显示删除按钮
+            showUpload: false,                                   // 显示上传按钮
+            showDownload: false,                            // 显示下载按钮
+            showZoom: true,                                    // 显示预览按钮
+            showDrag: true,                                        // 显示拖拽
+            removeIcon: '<i class="fa fa-trash"></i>',   // 删除图标
+            uploadIcon: '<i class="fa fa-upload"></i>',     // 上传图标
+            uploadRetryIcon: '<i class="fa fa-repeat"></i>'  // 重试图标
+        },
+        initialPreview:[                                                                    //初始预览内容
+            houseDetail.videoUrl
+            //用于回填图片
+        ],
+        initialPreviewConfig: [                                                     // 初始预览配置 caption 标题，size文件大小 ，url 删除地址，key删除时会传这个
+            {caption: '视频文件', size:'未知大小',url: "/imgTools/delete/", key: houseDetail.videoUrl},
+            //配合上面的preview使用
+        ]
+    });
+</script>
+<!--表单检查-->
+<script>
+    function isRealNum(val){
+        // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除，
+        if(val === "" || val ==null){
+            return false;
+        }
+        if(!isNaN(val)){
+            //对于空数组和只有一个数值成员的数组或全是数字组成的字符串，isNaN返回false，例如：'123'、[]、[2]、['123'],isNaN返回false,
+            //所以如果不需要val包含这些特殊情况，则这个判断改写为if(!isNaN(val) && typeof val === 'number' )
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    function getRelativePath(filePath) {
+        return filePath.substring(location.origin.length)
+    }
+    function checkAndUploadForm() {
+        if(!isRealNum($("#price").val())){
+            $("#price").focus()
+            layer.msg('估价需要为数值')
+            return false
+        }else if(!isRealNum($("#size").val())){
+            $("#size").focus()
+            layer.msg('面积需要为数值')
+            return false
+        }else if(!isRealNum($("#maxFloor").val())){
+            $("#maxFloor").focus()
+            layer.msg('楼层总数需要为数值')
+            return false
+        }
+        uploadForm()
+    }
+</script>
+<!--上传表单-->
+<script>
+    var userVue = new Vue({
+        el:"#userInfo",
+        data:{
+            userInfo:userInfo
+        }
+    })
+    /*对之前载入的图片进行上传, 否则将丢失图片地址*/
+    let coverOrigin = ''
+    let insideOrigin = ''
+    let outsideOrigin = ''
+    let envOrigin = ''
+
+    function checkUpload(){
+        layer.confirm('确认提交审核?', {icon: 3, title:'确认'}, function(index){
+            checkAndUploadForm();
+            layer.close(index);
+        });
+    }
+    function updateOriginFile(){
+        /* 提取出用户对图片改动后的文件名, 拿到后台去, 和用户新提交的图片进行拼接地址*/
+        $(".file-preview-thumbnails").children('tr.file-preview-initial').each(function(){
+            if(this.id.indexOf('coverUrl')!=-1){
+                i = 0
+            } else if(this.id.indexOf('insideUrl')!=-1){
+                i = 1
+            }else if(this.id.indexOf('outsideUrl')!=-1){
+                i = 2
+            }else if(this.id.indexOf('envUrl')!=-1){
+                i = 3
+            }
+            $(this).children('.kv-file-content').each(function(){
+                $(this).children('img').each(function(){
+                    switch (i) {
+                        case 0:
+                            coverOrigin+=getRelativePath(this.src)
+                            break
+                        case 1:
+                            insideOrigin+=getRelativePath(this.src)+';'
+                            break
+                        case 2:
+                            outsideOrigin+=getRelativePath(this.src)+';'
+                            break
+                        case 3:
+                            envOrigin+=getRelativePath(this.src)+';'
+                            break
+                    }console.log(i + ' ' +getRelativePath(this.src))
+                })})})
+    }
+    var houseNo = location.pathname.substring(location.pathname.lastIndexOf('/')+1)
+    function uploadForm() {
+        updateOriginFile()
+        let formObj = document.getElementById("form")
+        let formData = new FormData(formObj)
+        formData.append("houseNo",parseInt(houseNo))
+        let lat = marker.getPosition().lat
+        let lng = marker.getPosition().lng
+        console.log(lat + ' ' + lng)
+        formData.append("lat",lat)
+        formData.append("lng",lng)
+        formData.append("coverOrigin",coverOrigin)
+        formData.append("insideOrigin",insideOrigin)
+        formData.append("outsideOrigin",outsideOrigin)
+        formData.append("envOrigin",envOrigin)
+        formData.append("communityNo",main.villageChoseId)
+        console.log(coverOrigin + ' ' + insideOrigin +' ' + outsideOrigin + ' ' + envOrigin)
+        var loading = layer.load(0, {
+            shade: false,
+            time: 100*1000
+        });
+        $.ajax({
+            url:'/uploadHouse/uploadHouseDetail',
+            type: "POST",
+            processData: false,   // jQuery不要去处理发送的数据
+            contentType: false,   // jQuery不要去设置Content-Type请求头
+            data:formData,
+            success:function (data,status) {
+                layer.close(loading)
+                if(data=='1')
+                    layer.msg('新增房源明细成功,已提交审核')
+                else if(data=='2')
+                    layer.msg('房源信息修改成功,已提交审核')
+                setTimeout("window.location.href = '/userhome/houseManage'",2000)
+            },
+            error:function (data,status) {
+                layer.close(loading)
+                layer.msg('网络错误')
+            }
+        })
+    }
+
+</script>
+<!--地图-->
+<script>
+
+     var mapCenter = new qq.maps.LatLng(28.23345,111.53);
+     var marker;
+     if(houseDetail.latitude!=null && houseDetail.longitude!=null){
+         mapCenter = new qq.maps.LatLng(houseDetail.latitude,houseDetail.longitude)
+     }
+
+     let myMap = new qq.maps.Map(
+        document.getElementById("mapContainer"),
+        {
+            center: mapCenter,
+            zoom: 13,
+            draggable: true,
+            scrollwheel: false,
+            panControl : false,
+            zoomControlOptions : {
+                // style : qq.maps.ZoomControlStyle.SMALL,
+                position: qq.maps.ControlPosition.RIGHT_CENTER
+            },
+            disableDoubleClickZoom: true
+        }
+    );
+
+     marker = new qq.maps.Marker({
+         position: mapCenter,
+         content:'您的房源位置',
+         title:'您的房源位置',
+         animation:qq.maps.MarkerAnimation.DROP,
+         draggable: true,
+         map: myMap
+     });
+
+
+     /* 用于地点关键字检索*/
+     let key = 'DVBBZ-TQCK6-D2LSU-EDV5T-4OJJJ-R6BDJ'
+     var resUrl="https://apis.map.qq.com/ws/place/v1/search";
+     var markerCenter = mapCenter
+     circle = new qq.maps.Circle({
+         map:myMap,
+         center:markerCenter,
+         radius:1000,
+         strokeWeight:5
+     });
+     function mapSearch(keyword) {
+         console.log('do it ')
+         var params={
+             boundary:"region(长沙,0)",
+             key:key,
+             keyword:keyword,
+             output:"jsonp",
+         };
+         $.ajax({
+             type:"get",
+             url:resUrl,
+             data:params,
+             dataType:'jsonp',
+    //      jsonpCallback:"addresscallback",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+             success:function(results, textStatus) {
+                 console.log(results)
+                 console.log("results sucess：");
+                 var address = results.data[0].location;
+                 markerCenter = new qq.maps.LatLng(address.lat,address.lng)
+                 console.log(markerCenter)
+                 marker.setPosition(markerCenter)
+                 marker.setTitle(results.data[0].title)
+                 myMap.panTo(markerCenter)
+                 console.log(address);
+                 circle.setCenter(markerCenter)
+             },
+             error:function(errors){
+                 console.log(errors);
+             }
+         });
+     }
+
+     qq.maps.event.addListener(marker, 'dragend', function() {
+         var distinct = Math.round(qq.maps.geometry.spherical.computeDistanceBetween(markerCenter,marker.getPosition())*10)/10;
+         console.log(distinct)
+         if(distinct>1000){
+             marker.setPosition(markerCenter)
+             layer.msg('请不要将坐标拖出小区范围内')
+         }else{
+
+         }
+     });
+     // function mapSearch(keyword) {
+     //     //调用Poi检索类。用于进行本地检索、周边检索等服务。
+     //     var searchService = new qq.maps.SearchService({
+     //         complete : function(results){
+     //             if(results.type === "CITY_LIST") {
+     //                 console.log(results.detail.cities[0].cityName)
+     //                 searchService.setLocation(results.detail.cities[0].cityName);
+     //                 searchService.search(keyword);
+     //                 return;
+     //             }
+     //             var pois = results.detail.pois;
+     //             var latlngBounds = new qq.maps.LatLngBounds();
+     //
+     //             for(var i = 0,l = pois.length;i < l; i++){
+     //                 var poi = pois[i];
+     //                 latlngBounds.extend(poi.latLng);
+     //             }
+     //             myMap.fitBounds(latlngBounds)
+     //             marker.setPosition(latlngBounds.getCenter())
+     //         }
+     //     });
+     //     //添加监听事件
+     //     qq.maps.event.addListener(ap, "confirm", function(res){
+     //         keyword = res.value;
+     //         searchService.search(keyword);
+     //     });
+     //
+     //     qq.maps.event.addListener(
+     //         myMap,
+     //         'click',
+     //         function(event) {
+     //             // alert('您点击的位置为:[' + event.latLng.getLng() +
+     //             //     ',' + event.latLng.getLat() + ']');
+     //             marker.setPosition(new qq.maps.LatLng(event.latLng.getLat(),event.latLng.getLng()))
+     //         }
+     //     );
+     // }
+
+</script>
+
+</html>

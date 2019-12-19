@@ -1,0 +1,158 @@
+a{
+    text-decoration-line: none;
+}
+a:link{
+    text-decoration-line: none;
+}
+a:hover{
+    text-decoration-line: none;
+}
+a:active{
+    text-decoration-line: none;
+}
+a:visited{
+    text-decoration-line: none;
+}
+
+.navbar-default {
+    background-color: #172f60;
+    border-color: #031333;
+    border-radius: 0;
+}
+.navbar-default .navbar-brand {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #ffffff;
+}
+.navbar-default .navbar-text {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #ffffff;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background-color: #031333;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #ffffff;
+    background-color: #031333;
+}
+.navbar-default .navbar-toggle {
+    border-color: #031333;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #031333;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ecf0f1;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+    border-color: #ecf0f1;
+    border: none;
+}
+.navbar-default .navbar-link {
+    color: #ecf0f1;
+}
+.navbar-default .navbar-link:hover {
+    color: #ffffff;
+}
+
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #ffffff;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #ffffff;
+        background-color: #031333;
+    }
+}
+
+.left-side{
+    margin-right: 20px;
+    padding:15px;
+    width: 240px;float: left;height: 500px;background-color: #fff;border: solid 1px #dddddd;
+}
+
+.right-side{
+    position: relative;
+    width: 920px;margin:0 auto;float: left;min-height: 500px;background-color: #fff;padding:10px 20px;border: solid 1px #dddddd;
+}
+
+.left-side .sub{
+    margin-bottom: 5px;
+    background: #bdc3c7;
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.left-side .active{
+    background: #172f60;
+}
+
+.my-nav{
+    float: left;
+    padding-left: 0;
+}
+
+.my-nav li{
+    height: 50px;
+    line-height: 50px;
+    float: left;
+    display: block;
+}
+
+.my-nav li a{
+    color: #fff;
+    padding:15px;
+}
+.my-nav .active{
+    background: #031333;
+}
+.right-header{
+    height: 30px;line-height: 30px;border-bottom: solid 2px #003366;margin-bottom: 20px;
+}
+.table{
+    table-layout:fixed;
+}
+
+.table-striped thead tr{
+    background: #e6e6e6;
+}
+
+.table-striped thead tr,.table-striped tbody tr{
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-striped thead tr th,.table-striped tbody tr td{
+    width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+    text-align: center;
+}
+ul{
+    margin:0;
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.LawMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.Law">
+    <id column="lawNo" jdbcType="INTEGER" property="lawNo" />
+    <result column="adminNo" jdbcType="INTEGER" property="adminNo" />
+    <result column="created" jdbcType="DATE" property="created" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="hnu.houseweb.entity.Law">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    lawNo, adminNo, created, title
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from law
+    where lawNo = #{lawNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from law
+    where lawNo = #{lawNo,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="hnu.houseweb.entity.Law">
+    insert into law (lawNo, adminNo, created,
+      title, content)
+    values (#{lawNo,jdbcType=INTEGER}, #{adminNo,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP},
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.Law">
+    insert into law
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lawNo != null">
+        lawNo,
+      </if>
+      <if test="adminNo != null">
+        adminNo,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lawNo != null">
+        #{lawNo,jdbcType=INTEGER},
+      </if>
+      <if test="adminNo != null">
+        #{adminNo,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.Law">
+    update law
+    <set>
+      <if test="adminNo != null">
+        adminNo = #{adminNo,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where lawNo = #{lawNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="hnu.houseweb.entity.Law">
+    update law
+    set adminNo = #{adminNo,jdbcType=INTEGER},
+      created = #{created,jdbcType=TIMESTAMP},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where lawNo = #{lawNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.Law">
+    update law
+    set adminNo = #{adminNo,jdbcType=INTEGER},
+      created = #{created,jdbcType=TIMESTAMP},
+      title = #{title,jdbcType=VARCHAR}
+    where lawNo = #{lawNo,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.HouseDetailMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.HouseDetail">
+    <id column="houseNo" jdbcType="INTEGER" property="houseNo" />
+    <result column="size" jdbcType="DECIMAL" property="size" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="roomNum" jdbcType="INTEGER" property="roomNum" />
+    <result column="hallNum" jdbcType="INTEGER" property="hallNum" />
+    <result column="faceAt" jdbcType="CHAR" property="faceAt" />
+    <result column="decoration" jdbcType="CHAR" property="decoration" />
+    <result column="elevator" jdbcType="CHAR" property="elevator" />
+    <result column="frozenInfo" jdbcType="VARCHAR" property="frozenInfo" />
+    <result column="envUrl" jdbcType="VARCHAR" property="envUrl" />
+    <result column="outsideUrl" jdbcType="VARCHAR" property="outsideUrl" />
+    <result column="insideUrl" jdbcType="VARCHAR" property="insideUrl" />
+    <result column="videoUrl" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="sellReason" jdbcType="VARCHAR" property="sellReason" />
+    <result column="region" jdbcType="CHAR" property="region" />
+    <result column="floor" jdbcType="CHAR" property="floor" />
+    <result column="maxFloor" jdbcType="INTEGER" property="maxFloor" />
+    <result column="yongTu" jdbcType="CHAR" property="yongTu" />
+    <result column="ownStatus" jdbcType="CHAR" property="ownStatus" />
+    <result column="diyaInfo" jdbcType="VARCHAR" property="diyaInfo" />
+    <result column="houseInfo" jdbcType="VARCHAR" property="houseInfo" />
+    <result column="keyPoint" jdbcType="VARCHAR" property="keyPoint" />
+    <result column="structure" jdbcType="CHAR" property="structure" />
+    <result column="community" jdbcType="VARCHAR" property="community" />
+    <result column="communityNo" jdbcType="VARCHAR" property="communityNo" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="buildYear" jdbcType="CHAR" property="buildYear" />
+    <result column="toiletNum" jdbcType="INTEGER" property="toiletNum" />
+    <result column="kitchenNum" jdbcType="INTEGER" property="kitchenNum" />
+    <result column="role" jdbcType="INTEGER" property="role" />
+    <result column="created" jdbcType="DATE" property="created"/>
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+  </resultMap>
+  <resultMap id="AgentHouseMap" type="hnu.houseweb.entity.AgentHouse" extends="BaseResultMap">
+    <result column="starLevel" jdbcType="DECIMAL" property="starLevel" />
+    <result column="imgSrc" jdbcType="VARCHAR" property="imgSrc" />
+    <result column="compNo" jdbcType="INTEGER" property="compNo" />
+    <result column="compName" jdbcType="VARCHAR" property="compName" />
+    <result column="businessScope" jdbcType="VARCHAR" property="businessScope" />
+  </resultMap>
+  <resultMap id="UserHouseMap" type="hnu.houseweb.entity.UserHouse" extends="BaseResultMap">
+    <result column="img" jdbcType="LONGVARCHAR" property="imgSrc" />
+  </resultMap>
+
+<!--  列名，中介还要多出机构信息-->
+  <sql id="Base_Column_List">
+     size,description,title, tag, price, roomNum, hallNum, faceAt, decoration, elevator, frozenInfo, coverUrl,
+    envUrl, outsideUrl, insideUrl, videoUrl, longitude, latitude, sellReason, region,
+    floor, maxFloor, yongTu, ownStatus, diyaInfo, houseInfo, keyPoint, structure, community,
+    communityNo, address, buildYear, toiletNum, kitchenNum,lookTime
+  </sql>
+  <sql id="agentHouse">
+    <include refid="Base_Column_List" />
+    role,imgSrc,compNo,compname, starlevel
+  </sql>
+
+<!--  常规检索条件-->
+  <sql id="queryCondition">
+    <if test="HouseParam.district!=null">
+      and region=#{HouseParam.district}
+    </if>
+    <if test="HouseParam.tag!=null">
+      and tag like "%" #{HouseParam.tag} "%"
+    </if>
+    <if test="HouseParam.priceMin!=-1">
+      and price&gt;=#{HouseParam.priceMin}
+    </if>
+    <if test="HouseParam.priceMax!=-1">
+      and price &lt; #{HouseParam.priceMax}
+    </if>
+    <if test="HouseParam.sizeMin!=-1">
+      and size &gt;= #{HouseParam.sizeMin}
+    </if>
+    <if test="HouseParam.sizeMax!=-1">
+      and size &lt; #{HouseParam.sizeMax}
+    </if>
+    <if test="HouseParam.roomNum!=-1">
+      <if test="HouseParam.roomNum &lt;= 5">
+        and roomNum=#{HouseParam.roomNum}
+      </if>
+      <if test="HouseParam.roomNum == 6">
+        and roomNum &gt; 5
+      </if>
+    </if>
+    <if test="HouseParam.faceAt!=null">
+      and faceAt=#{HouseParam.faceAt}
+    </if>
+    <if test="HouseParam.decoration!=null">
+      and decoration=#{HouseParam.decoration}
+    </if>
+    <if test="HouseParam.floor!=null">
+      and floor=#{HouseParam.floor}
+    </if>
+  </sql>
+<!--  分页条件-->
+  <sql id="limitCondition">
+    <if test="HouseParam.pageNum!=null">
+      limit ${(HouseParam.pageNum-1)*5} , 5
+    </if>
+  </sql>
+<!--  排序方式-->
+  <sql id="userOrderCondition">
+    <if test="HouseParam.orderType == 1">
+      order by hangout.created
+    </if>
+    <if test="HouseParam.orderType == 2">
+      order by hangout.created desc
+    </if>
+    <if test="HouseParam.orderType == 3">
+      order by price
+    </if>
+    <if test="HouseParam.orderType == 4">
+      order by price desc
+    </if>
+    <if test="HouseParam.orderType == 5">
+      order by size
+    </if>
+    <if test="HouseParam.orderType == 6">
+      order by size desc
+    </if>
+  </sql>
+  <sql id="agentOrderCondition">
+    <if test="HouseParam.orderType == 1">
+      order by agentHangout.created
+    </if>
+    <if test="HouseParam.orderType == 2">
+      order by agentHangout.created desc
+    </if>
+    <if test="HouseParam.orderType == 3">
+      order by price
+    </if>
+    <if test="HouseParam.orderType == 4">
+      order by price desc
+    </if>
+    <if test="HouseParam.orderType == 5">
+      order by size
+    </if>
+    <if test="HouseParam.orderType == 6">
+      order by size desc
+    </if>
+  </sql>
+  <sql id="bothOrderCondition">
+    <if test="HouseParam.orderType == 1">
+      order by created
+    </if>
+    <if test="HouseParam.orderType == 2">
+      order by created desc
+    </if>
+    <if test="HouseParam.orderType == 3">
+      order by price
+    </if>
+    <if test="HouseParam.orderType == 4">
+      order by price desc
+    </if>
+    <if test="HouseParam.orderType == 5">
+      order by size
+    </if>
+    <if test="HouseParam.orderType == 6">
+      order by size desc
+    </if>
+  </sql>
+
+  <select id="getSome" resultType="hnu.houseweb.entity.HousePart">
+    select houseNo,title,description,region,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,address from houseDetail
+    limit 100
+  </select>
+
+<!--  个人房源部分信息-->
+  <select id="findUserHouse" resultType="hnu.houseweb.entity.HousePart" parameterType="hnu.houseweb.entity.HouseParam">
+    select house.houseNo,role,hangout.created,maxFloor,floor,title,region,description,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,address
+    from houseDetail,hangout,user,house
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = hangout.houseNo
+      and
+      hangout.userId = user.userId
+      and
+      house.status = '1'
+      <if test="HouseParam!=null">
+        <include refid="queryCondition" />
+        <include refid="userOrderCondition" />
+        <include refid="limitCondition" />
+      </if>
+    </where>
+  </select>
+  <!--全部个人房源数量-->
+  <select id="findUserHouseTotal" resultType="int" parameterType="hnu.houseweb.entity.HouseParam">
+    select count(house.houseNo)
+    from houseDetail,hangout,user,house
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = hangout.houseNo
+      and
+      hangout.userId = user.userId
+      and
+      house.status = '1'
+      <if test="HouseParam!=null">
+        <include refid="queryCondition" />
+        <include refid="userOrderCondition" />
+      </if>
+    </where>
+  </select>
+
+<!--  中介房源部分信息-->
+  <select id="findAgentHouse" resultType="hnu.houseweb.entity.HousePart" parameterType="hnu.houseweb.entity.HouseParam">
+    select house.houseNo,role,agentHangout.created,maxFloor,floor,title,region,description,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,houseDetail.address
+    from houseDetail,agentHangout,agent,house,company
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = agentHangout.houseNo
+      and
+      agentHangout.workNo = agent.workNo
+      and
+      agent.compNo=company.compNo
+      and
+      house.status = '1'
+      <if test="HouseParam!=null">
+        <include refid="queryCondition" />
+        <if test="HouseParam.company!=null">
+            and agent.compNo=#{HouseParam.company}
+        </if>
+        <include refid="agentOrderCondition" />
+        <include refid="limitCondition" />
+      </if>
+    </where>
+  </select>
+  <!--  全部中介房源数量-->
+  <select id="findAgentHouseTotal" resultType="int" parameterType="hnu.houseweb.entity.HouseParam">
+    select count(house.houseNo)
+    from houseDetail,agentHangout,agent,house,company
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = agentHangout.houseNo
+      and
+      agentHangout.workNo = agent.workNo
+      and
+      agent.compNo=company.compNo
+      and
+      house.status = '1'
+      <if test="HouseParam!=null">
+        <include refid="queryCondition" />
+        <if test="HouseParam.company!=null">
+          and agent.compNo=#{HouseParam.company}
+        </if>
+        <include refid="agentOrderCondition" />
+      </if>
+    </where>
+  </select>
+
+<!--  全部房源部分信息-->
+  <select id="findBoth" resultType="hnu.houseweb.entity.HousePart" parameterType="hnu.houseweb.entity.HouseParam">
+      select * from ((
+      select house.houseNo,latitude,longitude,role,hangout.created,maxFloor,floor,title,region,description,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,address
+      from houseDetail,hangout,user,house
+      <where>
+          houseDetail.houseNo=house.houseNo
+          and
+          house.houseNo = hangout.houseNo
+          and
+          hangout.userId = user.userId
+          and
+          house.status = '1'
+          <if test="HouseParam!=null">
+            <include refid="queryCondition" />
+          </if>
+      </where>
+      )
+      UNION
+      (
+      select house.houseNo,latitude,longitude,role,agentHangout.created,maxFloor,floor,title,region,description,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,houseDetail.address
+      from houseDetail,agentHangout,agent,house,company
+      <where>
+          houseDetail.houseNo=house.houseNo
+          and
+          house.houseNo = agentHangout.houseNo
+          and
+          agentHangout.workNo = agent.workNo
+          and
+          agent.compNo=company.compNo
+          and
+          house.status = '1'
+          <if test="HouseParam!=null">
+            <include refid="queryCondition" />
+            <if test="HouseParam.company!=null">
+              and agent.compNo=#{HouseParam.company}
+            </if>
+          </if>
+      </where>
+      )) t
+      <if test="HouseParam!=null">
+        <include refid="bothOrderCondition" />
+        <include refid="limitCondition" />
+      </if>
+  </select>
+  <!--  全部房源的数量-->
+  <select id="findBothTotal" resultType="int" parameterType="hnu.houseweb.entity.HouseParam">
+    select count(houseNo) from ((
+    select house.houseNo
+    from houseDetail,hangout,user,house
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = hangout.houseNo
+      and
+      hangout.userId = user.userId
+      and
+      house.status = '1'
+      <if test="HouseParam!=null">
+        <include refid="queryCondition" />
+      </if>
+    </where>
+    )
+    UNION
+    (
+    select house.houseNo
+    from houseDetail,agentHangout,agent,house,company
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = agentHangout.houseNo
+      and
+      agentHangout.workNo = agent.workNo
+      and
+      agent.compNo=company.compNo
+      and
+      house.status = '1'
+      <if test="HouseParam!=null">
+        <include refid="queryCondition" />
+        <if test="HouseParam.company!=null">
+          and agent.compNo=#{HouseParam.company}
+        </if>
+      </if>
+    </where>
+    )) t
+  </select>
+
+<!--个人房源详细信息-->
+  <select id="userHouseDetail" parameterType="java.lang.Integer" resultMap="UserHouseMap">
+    select
+    house.houseNo,user.img,role,
+    <include refid="Base_Column_List" />
+    ,hangout.created,user.name,user.tel
+    from houseDetail,house,hangout,user
+    where house.houseNo = #{houseNo,jdbcType=INTEGER}
+    and houseDetail.houseNo=house.houseNo
+    and hangout.houseNo=house.houseNo
+    and hangout.userId=user.userId
+--     and house.status = '1'
+  </select>
+<!--中介房源详细信息-->
+  <select id="agentHouseDetail" parameterType="java.lang.Integer" resultMap="AgentHouseMap">
+    select
+    house.houseNo,company.compNo,house.status,compname,agent.starLevel,workYear,businessScope,qualifyNo,licenseNo,
+     size,description,title, tag, price, roomNum, hallNum, faceAt, decoration, elevator, frozenInfo, coverUrl,
+    envUrl, outsideUrl, insideUrl, videoUrl, longitude, latitude, sellReason, region,
+    floor, maxFloor, yongTu, ownStatus, diyaInfo, houseInfo, keyPoint, structure, community,
+    communityNo, houseDetail.address, buildYear, toiletNum, kitchenNum,role
+    ,agentHangout.created,agent.name,agent.workNo,agent.tel,agent.imgSrc,lookTime
+    from houseDetail,house,agentHangout,agent,company
+    where house.houseNo = #{houseNo,jdbcType=INTEGER}
+    and houseDetail.houseNo=house.houseNo
+    and agentHangout.houseNo=house.houseNo
+    and agentHangout.workNo=agent.workNo
+    and agent.compNo=company.compNo
+--     and house.status = '1'
+  </select>
+
+<!--  个人名下房源-->
+  <select id="findHouseByUserId" parameterType="java.lang.Integer" resultType="hnu.houseweb.entity.HousePart">
+    select house.houseNo,role,hangout.created,maxFloor,floor,title,region,description,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,address
+    from houseDetail,hangout,user,house
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = hangout.houseNo
+      and
+      hangout.userId = user.userId
+      and
+      user.userId = #{userId,jdbcType=INTEGER}
+    </where>
+  </select>
+
+<!--  中介名下房源-->
+  <select id="findHouseByWorkNo" parameterType="java.lang.Integer" resultType="hnu.houseweb.entity.HousePart">
+    select house.houseNo,role,agentHangout.created,maxFloor,floor,title,region,description,size,tag,price,roomNum,hallNum,elevator,coverUrl,community,houseDetail.address
+    from houseDetail,agentHangout,agent,house,company
+    <where>
+      houseDetail.houseNo=house.houseNo
+      and
+      house.houseNo = agentHangout.houseNo
+      and
+      agentHangout.workNo = agent.workNo
+      and
+      agent.compNo=company.compNo
+      and agent.workNo = #{workNo,jdbcType=INTEGER}
+    </where>
+  </select>
+
+<!-- 各区域的房源数量 -->
+  <select id="regionHouseCount" resultType="hnu.houseweb.entity.RegionHouseCount">
+    select count(houseNo) as count,region
+    from houseDetail
+    group by
+    region
+    order by
+    region
+  </select>
+<!--  基础查询，上面的都是业务查询-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />,
+    houseNo
+    from houseDetail
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from houseDetail
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="hnu.houseweb.entity.HouseDetail">
+    insert into houseDetail (houseNo, size, tag,
+      price, roomNum, hallNum,
+      faceAt, decoration, elevator,
+      frozenInfo, envUrl, outsideUrl,
+      insideUrl, videoUrl, longitude,
+      latitude, sellReason, region,
+      floor, maxFloor, yongTu,
+      ownStatus, diyaInfo, houseInfo,
+      keyPoint, structure, community,
+      communityNo, address, buildYear,
+      toiletNum, kitchenNum)
+    values (#{houseNo,jdbcType=INTEGER}, #{size,jdbcType=DECIMAL}, #{tag,jdbcType=VARCHAR},
+      #{price,jdbcType=DECIMAL}, #{roomNum,jdbcType=INTEGER}, #{hallNum,jdbcType=INTEGER},
+      #{faceAt,jdbcType=CHAR}, #{decoration,jdbcType=CHAR}, #{elevator,jdbcType=CHAR},
+      #{frozenInfo,jdbcType=VARCHAR}, #{envUrl,jdbcType=VARCHAR}, #{outsideUrl,jdbcType=VARCHAR},
+      #{insideUrl,jdbcType=VARCHAR}, #{videoUrl,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL},
+      #{latitude,jdbcType=DECIMAL}, #{sellReason,jdbcType=VARCHAR}, #{region,jdbcType=CHAR},
+      #{floor,jdbcType=CHAR}, #{maxFloor,jdbcType=INTEGER}, #{yongTu,jdbcType=CHAR},
+      #{ownStatus,jdbcType=CHAR}, #{diyaInfo,jdbcType=VARCHAR}, #{houseInfo,jdbcType=VARCHAR},
+      #{keyPoint,jdbcType=VARCHAR}, #{structure,jdbcType=CHAR}, #{community,jdbcType=VARCHAR},
+      #{communityNo,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{buildYear,jdbcType=CHAR},
+      #{toiletNum,jdbcType=INTEGER}, #{kitchenNum,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.HouseDetail">
+    insert into houseDetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="houseNo != null">
+        houseNo,
+      </if>
+      <if test="size != null">
+        size,
+      </if>
+      <if test="tag != null">
+        tag,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="roomNum != null">
+        roomNum,
+      </if>
+      <if test="hallNum != null">
+        hallNum,
+      </if>
+      <if test="faceAt != null">
+        faceAt,
+      </if>
+      <if test="decoration != null">
+        decoration,
+      </if>
+      <if test="elevator != null">
+        elevator,
+      </if>
+      <if test="frozenInfo != null">
+        frozenInfo,
+      </if>
+      <if test="envUrl != null">
+        envUrl,
+      </if>
+      <if test="outsideUrl != null">
+        outsideUrl,
+      </if>
+      <if test="insideUrl != null">
+        insideUrl,
+      </if>
+      <if test="videoUrl != null">
+        videoUrl,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="sellReason != null">
+        sellReason,
+      </if>
+      <if test="region != null">
+        region,
+      </if>
+      <if test="floor != null">
+        floor,
+      </if>
+      <if test="maxFloor != null">
+        maxFloor,
+      </if>
+      <if test="yongTu != null">
+        yongTu,
+      </if>
+      <if test="ownStatus != null">
+        ownStatus,
+      </if>
+      <if test="diyaInfo != null">
+        diyaInfo,
+      </if>
+      <if test="houseInfo != null">
+        houseInfo,
+      </if>
+      <if test="keyPoint != null">
+        keyPoint,
+      </if>
+      <if test="structure != null">
+        structure,
+      </if>
+      <if test="community != null">
+        community,
+      </if>
+      <if test="communityNo != null">
+        communityNo,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="buildYear != null">
+        buildYear,
+      </if>
+      <if test="toiletNum != null">
+        toiletNum,
+      </if>
+      <if test="kitchenNum != null">
+        kitchenNum,
+      </if>
+      <if test="coverUrl != null">
+        coverUrl,
+      </if>
+      <if test="lookTime != null">
+        lookTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="houseNo != null">
+        #{houseNo,jdbcType=INTEGER},
+      </if>
+      <if test="size != null">
+        #{size,jdbcType=DECIMAL},
+      </if>
+      <if test="tag != null">
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="roomNum != null">
+        #{roomNum,jdbcType=INTEGER},
+      </if>
+      <if test="hallNum != null">
+        #{hallNum,jdbcType=INTEGER},
+      </if>
+      <if test="faceAt != null">
+        #{faceAt,jdbcType=CHAR},
+      </if>
+      <if test="decoration != null">
+        #{decoration,jdbcType=CHAR},
+      </if>
+      <if test="elevator != null">
+        #{elevator,jdbcType=CHAR},
+      </if>
+      <if test="frozenInfo != null">
+        #{frozenInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="envUrl != null">
+        #{envUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="outsideUrl != null">
+        #{outsideUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="insideUrl != null">
+        #{insideUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="sellReason != null">
+        #{sellReason,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        #{region,jdbcType=CHAR},
+      </if>
+      <if test="floor != null">
+        #{floor,jdbcType=CHAR},
+      </if>
+      <if test="maxFloor != null">
+        #{maxFloor,jdbcType=INTEGER},
+      </if>
+      <if test="yongTu != null">
+        #{yongTu,jdbcType=CHAR},
+      </if>
+      <if test="ownStatus != null">
+        #{ownStatus,jdbcType=CHAR},
+      </if>
+      <if test="diyaInfo != null">
+        #{diyaInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="houseInfo != null">
+        #{houseInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="keyPoint != null">
+        #{keyPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="structure != null">
+        #{structure,jdbcType=CHAR},
+      </if>
+      <if test="community != null">
+        #{community,jdbcType=VARCHAR},
+      </if>
+      <if test="communityNo != null">
+        #{communityNo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        #{buildYear,jdbcType=CHAR},
+      </if>
+      <if test="toiletNum != null">
+        #{toiletNum,jdbcType=INTEGER},
+      </if>
+      <if test="kitchenNum != null">
+        #{kitchenNum,jdbcType=INTEGER},
+      </if>
+      <if test="coverUrl != null">
+        #{coverUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="lookTime != null">
+        #{lookTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.HouseDetail">
+    update houseDetail
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        size = #{size,jdbcType=DECIMAL},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="roomNum != null">
+        roomNum = #{roomNum,jdbcType=INTEGER},
+      </if>
+      <if test="hallNum != null">
+        hallNum = #{hallNum,jdbcType=INTEGER},
+      </if>
+      <if test="faceAt != null">
+        faceAt = #{faceAt,jdbcType=CHAR},
+      </if>
+      <if test="decoration != null">
+        decoration = #{decoration,jdbcType=CHAR},
+      </if>
+      <if test="elevator != null">
+        elevator = #{elevator,jdbcType=CHAR},
+      </if>
+      <if test="frozenInfo != null">
+        frozenInfo = #{frozenInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="envUrl != null">
+        envUrl = #{envUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="outsideUrl != null">
+        outsideUrl = #{outsideUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="insideUrl != null">
+        insideUrl = #{insideUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null">
+        videoUrl = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="sellReason != null">
+        sellReason = #{sellReason,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=CHAR},
+      </if>
+      <if test="floor != null">
+        floor = #{floor,jdbcType=CHAR},
+      </if>
+      <if test="maxFloor != null">
+        maxFloor = #{maxFloor,jdbcType=INTEGER},
+      </if>
+      <if test="yongTu != null">
+        yongTu = #{yongTu,jdbcType=CHAR},
+      </if>
+      <if test="ownStatus != null">
+        ownStatus = #{ownStatus,jdbcType=CHAR},
+      </if>
+      <if test="diyaInfo != null">
+        diyaInfo = #{diyaInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="houseInfo != null">
+        houseInfo = #{houseInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="keyPoint != null">
+        keyPoint = #{keyPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="structure != null">
+        structure = #{structure,jdbcType=CHAR},
+      </if>
+      <if test="community != null">
+        community = #{community,jdbcType=VARCHAR},
+      </if>
+      <if test="communityNo != null">
+        communityNo = #{communityNo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        buildYear = #{buildYear,jdbcType=CHAR},
+      </if>
+      <if test="toiletNum != null">
+        toiletNum = #{toiletNum,jdbcType=INTEGER},
+      </if>
+      <if test="kitchenNum != null">
+        kitchenNum = #{kitchenNum,jdbcType=INTEGER},
+      </if>
+      <if test="coverUrl != null">
+        coverUrl = #{coverUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="lookTime != null">
+        lookTime = #{lookTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.HouseDetail">
+    update houseDetail
+    set size = #{size,jdbcType=DECIMAL},
+      title = #{title,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      roomNum = #{roomNum,jdbcType=INTEGER},
+      hallNum = #{hallNum,jdbcType=INTEGER},
+      faceAt = #{faceAt,jdbcType=CHAR},
+      decoration = #{decoration,jdbcType=CHAR},
+      elevator = #{elevator,jdbcType=CHAR},
+      frozenInfo = #{frozenInfo,jdbcType=VARCHAR},
+      envUrl = #{envUrl,jdbcType=VARCHAR},
+      outsideUrl = #{outsideUrl,jdbcType=VARCHAR},
+      insideUrl = #{insideUrl,jdbcType=VARCHAR},
+      videoUrl = #{videoUrl,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      sellReason = #{sellReason,jdbcType=VARCHAR},
+      region = #{region,jdbcType=CHAR},
+      floor = #{floor,jdbcType=CHAR},
+      maxFloor = #{maxFloor,jdbcType=INTEGER},
+      yongTu = #{yongTu,jdbcType=CHAR},
+      ownStatus = #{ownStatus,jdbcType=CHAR},
+      diyaInfo = #{diyaInfo,jdbcType=VARCHAR},
+      houseInfo = #{houseInfo,jdbcType=VARCHAR},
+      keyPoint = #{keyPoint,jdbcType=VARCHAR},
+      structure = #{structure,jdbcType=CHAR},
+      community = #{community,jdbcType=VARCHAR},
+      communityNo = #{communityNo,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      buildYear = #{buildYear,jdbcType=CHAR},
+      toiletNum = #{toiletNum,jdbcType=INTEGER},
+      kitchenNum = #{kitchenNum,jdbcType=INTEGER},
+      coverUrl = #{coverUrl,jdbcType=VARCHAR},
+      lookTime = #{lookTime,jdbcType=VARCHAR},
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </update>
+</mapper>

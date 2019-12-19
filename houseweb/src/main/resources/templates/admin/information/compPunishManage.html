@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>二手房后台管理系统</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" >
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/build.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/elementui.css">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
+
+    <!-- Custom CSS -->
+    <link href="/dist/css/style.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap-select.min.css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+
+    <style>
+        html[dir=ltr] body .m-t-10 {
+            margin-top: 0px;
+        }
+
+        body,html{
+            width: 100%;
+        }
+        .my-tab{
+            float:left;
+            height: 45px;
+            font-size:18px;
+            line-height: 50px;
+            border-bottom: 2px solid gray;
+            margin-right: 15px;
+            padding: 0 20px;
+            color: #666;
+            cursor: pointer;
+        }
+        .checkbox label {
+            display: inline-block;
+            position: relative;
+            padding-left: 0px;
+            cursor: default;
+        }
+        .my-tab:hover,.my-tab.active{
+            color: #4fc3f7;
+            border-bottom: 2px solid #4fc3f7;
+        }
+        .my-table thead tr th,.my-table tbody tr td{
+            font-size: 16px;
+            text-align: center;
+        }
+        .my-table thead tr th:first-child,.my-table tbody tr td:first-child{
+            width: 50px;
+        }
+
+        .my-table tbody tr td .checkbox, .radio {
+             margin-top: 0;
+             margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
+    <!-- ============================================================== -->
+    <!-- Topbar header - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <header class="topbar" data-navbarbg="skin5">
+        <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+            <div class="navbar-header" data-logobg="skin5">
+                <!-- ============================================================== -->
+                <!-- Logo -->
+                <!-- ============================================================== -->
+                <a class="navbar-brand" href="index.html">
+                    <!-- Logo icon -->
+                    <b class="logo-icon">
+                        <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                        <!-- Dark Logo icon -->
+                        <img src="/assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                        <!-- Light Logo icon -->
+                        <img src="/assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
+                    </b>
+                    <!--End Logo icon -->
+                    <!-- Logo text -->
+                    <span class="logo-text">
+                             <!-- dark Logo text -->
+                             <img src="/assets/images/logo-text.png" alt="homepage" class="dark-logo" />
+                        <!-- Light Logo text -->
+                             <img src="/assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
+                        </span>
+                </a>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <!-- This is for the sidebar toggle which is visible on mobile only -->
+                <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Logo -->
+            <!-- ============================================================== -->
+            <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+                <!-- ============================================================== -->
+                <!-- toggle and nav items -->
+                <!-- ============================================================== -->
+                <ul class="navbar-nav float-left mr-auto">
+                    <!-- ============================================================== -->
+                    <!-- Search -->
+                    <!-- ============================================================== -->
+                    <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+                        <form class="app-search position-absolute">
+                            <input type="text" class="form-control" placeholder="Search &amp; enter"> <a class="srh-btn"><i class="ti-close"></i></a>
+                        </form>
+                    </li>
+                </ul>
+                <!-- ============================================================== -->
+                <!-- Right side toggle and nav items -->
+                <!-- ============================================================== -->
+                <ul class="navbar-nav float-right">
+                    <!-- ============================================================== -->
+                    <!-- User profile and search -->
+                    <!-- ============================================================== -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../../assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
+                        <div class="dropdown-menu dropdown-menu-right user-dd animated">
+<!--                            <a class="dropdown-item" href="javascript:void(0)"><i class="ti-wallet m-r-5 m-l-5"></i>管理员信息</a>-->
+                            <a class="dropdown-item" href="/admin/logoutService"><i class="fa fa-power-off m-r-5 m-l-5"></i>注销</a>
+                        </div>
+                    </li>
+                    <!-- ============================================================== -->
+                    <!-- User profile and search -->
+                    <!-- ============================================================== -->
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- ============================================================== -->
+    <!-- End Topbar header -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- ============================================================== -->
+    <aside class="left-sidebar" data-sidebarbg="skin6">
+        <!-- Sidebar scroll-->
+        <div class="scroll-sidebar">
+            <!-- Sidebar navigation-->
+            <nav class="sidebar-nav" style="margin-top: 80px">
+                <ul id="sidebarnav">
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin" aria-expanded="false"><i class="mdi mdi-open-in-app"></i><span class="hide-menu">首页</span></a></li>
+                    <!-- User Profile-->
+                    <!-- User Profile-->
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/agentpass" aria-expanded="false"><i class="mdi mdi-pencil"></i><span class="hide-menu">中介审核</span></a></li>
+                    <li class="p-15 m-t-10"><a href="javascript:void(0)" class="btn btn-block create-btn text-white no-block d-flex align-items-center"><i class="fa fa-plus-square"></i> <span class="hide-menu m-l-5">信息发布</span> </a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/communityManage" aria-expanded="false"><i class="mdi mdi-pentagon-outline"></i><span class="hide-menu">地图管理</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/agent" aria-expanded="false"><i class="mdi mdi-face"></i><span class="hide-menu">中介管理</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/company" aria-expanded="false"><i class="mdi mdi-pentagon-outline"></i><span class="hide-menu">机构管理</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/housereview" aria-expanded="false"><i class="mdi mdi-home"></i><span class="hide-menu">房源审核</span></a></li>
+                    <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark no-block sidebar-link" href="/admin/housemanage" aria-expanded="false"><i class="mdi mdi-file"></i><span class="hide-menu">房源管理</span></a></li>
+                    <li class="sidebar-item"><a href="/admin/user" class="sidebar-link waves-effect waves-dark no-block sidebar-link"><i class="mdi mdi-account-network"></i><span class="hide-menu m-l-5">用户管理</span></a></li>
+                </ul>
+            </nav>
+            <!-- End Sidebar navigation -->
+        </div>
+        <!-- End Sidebar scroll-->
+    </aside>
+    <!-- ============================================================== -->
+    <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+    <div class="page-wrapper" style="min-width: 1200px;">
+        <!-- ============================================================== -->
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <div class="page-breadcrumb">
+            <div class="row align-items-center">
+                <div class="col-5">
+                    <h4 class="page-title">经纪机构监管</h4>
+                    <div class="d-flex align-items-center">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin">后台首页</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">经纪机构监管信息管理</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Container fluid  -->
+        <!-- ============================================================== -->
+        <div class="container-fluid" id="app">
+            <!-- ============================================================== -->
+            <!-- Sales chart -->
+            <!-- ============================================================== -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-md-flex align-items-center">
+                                <a href="/admin/compPunishManage">
+                                    <div class="my-tab active">
+                                        机构检查
+                                    </div>
+                                </a>
+                                <a href="/admin/agentPunishManage">
+                                    <div class="my-tab">
+                                        中介检查
+                                    </div>
+                                </a>
+                                <a href="/admin/redListManage">
+                                    <div class="my-tab">
+                                        红名单管理
+                                    </div>
+                                </a>
+                                <a href="/admin/blackListManage">
+                                    <div class="my-tab">
+                                        黑名单管理
+                                    </div>
+                                </a>
+                                <a href="/admin/lawNewsManage">
+                                    <div class="my-tab">
+                                        政策法规公示
+                                    </div>
+                                </a>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="row">
+                                <!-- column -->
+                                <div class="col-12" style="height: 500px;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- title -->
+                                            <div class="d-md-flex align-items-center" style="float: left;line-height: 55px">
+                                                <h4 class="card-title" style="margin-bottom: 0;line-height: 55px">经纪机构检查信息管理</h4>
+                                                <div class="form-group" style="margin-top: 1rem;margin-left: 2rem;">
+                                                    <div style="width: 550px;float: left">
+                                                        <input type="text" class="form-control"  v-model="keyword" name="keyword" id="keyword" placeholder="请输入经纪机构名称检索">
+                                                    </div>
+                                                    <button for="keyword" class="btn btn-success" style="width:100px;float: left;margin-right: 50px" @click="search">搜索</button>
+                                                    <div style="clear: both"></div>
+                                                </div>
+                                            </div>
+                                            <!-- title -->
+                                            <div style="float: right;line-height: 55px;margin-right: 60px">
+                                                <button class="btn btn-lg btn-danger" style="width: 90px" @click="deleteAll">批量删除</button>
+                                                <button class="btn btn-lg btn-success" style="width: 90px" onclick="showEdit()">新增</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table v-middle my-table">
+                                                <thead>
+                                                <tr class="bg-light">
+                                                    <th class="border-top-0">选择</th>
+                                                    <th class="border-top-0">机构名称</th>
+                                                    <th class="border-top-0">检查原因</th>
+                                                    <th class="border-top-0">日期</th>
+                                                    <th class="border-top-0">操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="(item,index) in dataShow">
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="checkbox"  style="margin: 0 auto;">
+                                                                <input type="checkbox" :id="item.id" v-model="checkBox" :value="item.id">
+                                                                <label :for="item.id">
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td v-text="item.compName"></td>
+                                                    <td v-text="item.reason"></td>
+                                                    <td v-text="item.created"></td>
+                                                    <td>
+                                                        <button class="btn btn-primary" @click="update(index)">修改</button>
+                                                        <button class="btn btn-danger" @click="deleteOne(item.id)">删除</button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center;font-size: 16px" v-if="dataShow.length==0">这里空空如也~</div>
+
+                                    <div style="position: absolute;bottom: 0;right: 0">
+                                        <el-pagination
+                                                @size-change="handleSizeChange"
+                                                @current-change="handleCurrentChange"
+                                                :current-page="currentPage"
+                                                :page-sizes="[5, 10, 20, 40]"
+                                                :page-size="pageSize"
+                                                layout="total, sizes, prev, pager, next, jumper"
+                                                :total="punishmentList.length">
+                                        </el-pagination>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="edit" style="display:none;position: absolute;top: 230px;left: 20px;right: 20px;background: #fff;padding:50px 200px" >
+                <form class="form-horizontal" id="editForm" action="javascript:void(0)" style="width: 700px;margin: 0 auto;font-size: 16px">
+                    <div class="form-group">
+                        <label for="compNo" class="control-label" style="width:100px;float: left;margin-right: 50px">被处罚机构</label>
+                        <div style="width: 300px;float: left">
+                            <select class="my-select" title="请选择机构" v-model="compNo" name="compNo" id="compNo" data-live-search="true">
+                                <option v-for="item in searchData" :value="item.compNo" v-text="item.compName"></option>
+                            </select>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reason" class="control-label" style="width:100px;float: left;margin-right: 50px">处罚原因</label>
+                        <div style="width: 550px;float: left">
+                            <input type="text" class="form-control" v-model="reason" name="reason" id="reason" placeholder="请输入处罚原因">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="result" class="control-label" style="width:100px;float: left;margin-right: 50px">处理结果</label>
+                        <div style="width: 550px;float: left">
+                            <input type="text" class="form-control" v-model="result" name="result" id="result" placeholder="请输入处理结果">
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                    <button type="button" class="btn btn-lg btn-primary" style="float: right" @click="upload">提交</button>
+                    <button type="button" class="btn btn-lg btn-success" style="float: right" onclick="hideEdit()">取消</button>
+                </form>
+                <div style="clear: both"></div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Container fluid  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- footer -->
+        <!-- ============================================================== -->
+        <footer class="footer text-center">
+            长沙市住房保障和房产管理局版权所有 © 隐私保护
+
+            开发小组人员：王知往 周世焕 凌城军 李祉臻 黄滔 吐努克
+
+            字节跳动开发小组提供技术支持
+        </footer>
+        <!-- ============================================================== -->
+        <!-- End footer -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page wrapper  -->
+    <!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Wrapper -->
+<!-- ============================================================== -->
+</body>
+<!-- ============================================================== -->
+<!-- All Jquery -->
+<!-- ============================================================== -->
+<script src="/assets/libs/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+<script src="/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+<!--<script src="/dist/js/app-style-switcher.js"></script>-->
+<!--Menu sidebar -->
+<!--<script src="/dist/js/sidebarmenu.js"></script>-->
+<!--Custom JavaScript -->
+<script src="/dist/js/custom.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script src="/js/sweetalert.min.js"></script>
+<script src="/js/bootstrap-select.min.js"></script>
+
+<script>
+    $.fn.selectpicker.Constructor.BootstrapVersion = '4';
+
+    $('.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn)').css({
+        'width': '500px',
+    })
+
+</script>
+<script type="text/javascript">
+
+    function showEdit(){
+        $("#edit").show(300)
+    }
+    function hideEdit(){
+        Vue.set(app,'id','')
+        Vue.set(app,'compNo','')
+        Vue.set(app,'reason','')
+        Vue.set(app,'result','')
+        $(".filter-option-inner-inner").html('请选择机构')
+        $("#edit").hide(300)
+    }
+
+    var app = new Vue({
+        el:'#app',
+        data:{
+            punishmentList:[],
+            dataShow:[],
+            pageSize:5,
+            currentPage:1,
+            checkBox:[],
+            compNo:'',
+            reason:'',
+            result:'',
+            id:'',
+            keyword:'',
+            searchData:[]
+        },
+        created(){
+            var that = this
+            $.ajax({
+                url:'/information/getCompPunishmentList',
+                dataType:'json',
+                success:function(data){
+                    that.punishmentList = data
+                    that.dataShow = data.slice(0,5)
+                },
+                error:function () {
+                    swal("加载数据过程出错!", {
+                        icon: "warning",
+                    });
+                }
+            })
+            $.ajax({
+                url:'/information/getAllComp',
+                dataType:'json',
+                success:function (data) {
+                    that.searchData = data;
+                    $('.my-select').selectpicker();
+                }
+            })
+        },
+        methods: {
+            handleSizeChange: function (size) {
+                this.pageSize = size;
+                this.dataShow = this.punishmentList.slice(size * (this.currentPage - 1), size * (this.currentPage))
+                console.log(this.pageSize)  //每页下拉显示数据
+            },
+            handleCurrentChange: function (currentPage) {
+                let size = this.pageSize
+                this.currentPage = currentPage;
+                this.dataShow = this.punishmentList.slice(size * (currentPage - 1), size * (currentPage))
+            },
+            detail(id) {
+                window.location.href = '/information/compPunishmentDetail?id=' + id;
+            },search(){
+                var that = this
+                $.ajax({
+                    url:'/information/getCompPunishmentList',
+                    type:'post',
+                    data:{
+                        kw:that.keyword.trim()?that.keyword.trim():''
+                    },success:function (data) {
+                        that.punishmentList = data
+                        that.dataShow = data.slice(0,5)
+                        that.keyword = ''
+                    },error:function () {
+                        layer.msg('网络发生了点问题')
+                    }
+                })
+            },
+            update(index){
+                var rindex = index + (this.currentPage-1)*this.pageSize
+                var p = this.punishmentList[rindex]
+                this.compNo = p.compNo
+                this.reason = p.reason
+                this.result = p.result
+                this.id = p.id
+                $(".filter-option-inner-inner").html(p.compName)
+                showEdit()
+            },
+            upload(){
+                var that = this
+                var form = document.getElementById("editForm")
+                var data = new FormData(form)
+                if(this.id.trim()){
+                    data.append("id",this.id)
+                }
+                $.ajax({
+                    url:'/information/addCompPunishment',
+                    type:'post',
+                    data:data,
+                    contentType:false,
+                    processData:false,
+                    success:function (data) {
+                        swal("发布成功!", {
+                            icon: "success",
+                        });
+                        hideEdit()
+                        var _that = that
+                        $.ajax({
+                            url:'/information/getCompPunishmentList',
+                            dataType:'json',
+                            success:function(data){
+                                _that.punishmentList = data
+                                _that.dataShow = data.slice(0,5)
+                            },
+                            error:function () {
+                                swal("加载数据过程出错!", {
+                                    icon: "warning",
+                                });
+                            }
+                        })
+                    },error:function () {
+                        swal("未知错误!", {
+                            icon: "error",
+                        });
+                    }
+                })
+            },
+            deleteAll(){
+                var that = this
+                if(that.checkBox.length>0) {
+                    swal({
+                        title: "确认删除吗?",      //弹出框的title
+                        type: "warning",        //弹出框类型
+                        buttons:true,
+                        cancelButtonText: "取消",//取消按钮文本
+                        confirmButtonText: "是的，确定删除！",//确定按钮上面的文档
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: '/information/deleteCompPunishment',
+                                data: {
+                                    id: that.checkBox
+                                },
+                                success: function (data) {
+                                    swal("删除成功!", {
+                                        icon: "success",
+                                    });
+                                    var _that = that
+                                    $.ajax({
+                                        url: '/information/getCompPunishmentList',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            _that.punishmentList = data
+                                            _that.dataShow = data.slice(0, 5)
+                                        },
+                                        error: function () {
+                                            swal("加载数据过程出错!", {
+                                                icon: "warning",
+                                            });
+                                        }
+                                    })
+                                }, error: function () {
+                                    swal("未知错误!", {
+                                        icon: "error",
+                                    });
+                                }
+                            })
+                        }
+                    });
+                }else{
+                    swal("请选择至少一个选项")
+                }
+            },
+            deleteOne(i){
+                var that = this
+                swal({
+                    title: "确认删除吗?",      //弹出框的title
+                    type: "warning",        //弹出框类型
+                    buttons:true,
+                    cancelButtonText: "取消",//取消按钮文本
+                    confirmButtonText: "是的，确定删除！",//确定按钮上面的文档
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            let id = new Array()
+                            id.push(i)
+                            console.log(id)
+                            $.ajax({
+                                url: '/information/deleteCompPunishment',
+                                type:'post',
+                                data: {
+                                    "id":id
+                                },
+                                success: function (data) {
+                                    swal("删除成功!", {
+                                        icon: "success",
+                                    });
+                                    var _that = that
+                                    $.ajax({
+                                        url: '/information/getCompPunishmentList',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            _that.punishmentList = data
+                                            _that.dataShow = data.slice(0, 5)
+                                        },
+                                        error: function () {
+                                            swal("加载数据过程出错!", {
+                                                icon: "warning",
+                                            });
+                                        }
+                                    })
+                                },error:function () {
+                                    swal("删除失败!", {
+                                        icon: "error",
+                                    });
+                                }
+                            })
+                        }
+                    });
+            }
+        }
+    })
+</script>
+</html>

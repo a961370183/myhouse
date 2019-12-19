@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title >二手房检索页面</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/my-navbar.css">
+    <link rel="stylesheet" href="/css/houseSearch/house-filter.css">
+    <link rel="stylesheet" href="/css/houseSearch/house-show.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <style>
+        body{
+            padding-right: 0px !important;  /*阻止模态框改变容器大小*/
+        }
+        .page-navigator{
+            width: 1200px;
+            padding-right: 300px;
+            margin: 0 auto;
+            line-height: 1;
+        }
+        .page-navigator .float-right {
+            float: right;
+        }
+
+        .page-navigator .float-right .pagination{
+            margin:0;
+        }
+
+        /*.page-navigator .float-right a {*/
+        /*    height: 30px;*/
+        /*    padding: 0 12px;*/
+        /*    margin-left: 5px;*/
+        /*    text-align: center;*/
+        /*    line-height: 30px;*/
+        /*    !*border: 1px solid #b0b4b9;*!*/
+        /*    overflow: hidden;*/
+        /*    font-size: 12px;*/
+        /*    font-weight: 700;*/
+        /*    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+        /*    !*color: #fff;*!*/
+        /*    !*background-color: #3498db;*!*/
+        /*    border: 0;*/
+        /*    display: inline-block;*/
+        /*    *display: inline;*/
+        /*    zoom: 1;*/
+        /*    vertical-align: middle;*/
+        /*}*/
+
+        .page-navigator .float-right a.on {
+            background-color: #394043;
+            color: #ffffff;
+        }
+
+        #main{
+            min-height: 1000px;position: relative;padding-bottom:150px;
+        }
+        #buyBox{
+            min-height: 800px;position: relative;
+        }
+
+        .modal-open {
+            　　overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <!-- 下拉触发按钮 以及 商标-->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">二手房交易平台</a>
+                </div>
+                <!-- 适配手机，将部分栏目转至下拉导航-->
+                <div class="collapse navbar-collapse" id="collapse1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+                        <li class="active"><a href="#">二手房</a></li>
+                        <li><a href="javascript:void(0);" onclick="redirectHelp('/propertyPage/')">发布房源</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" id="userInfo" v-cloak>
+                        <li v-if="userInfo==null" ><a href="javascript:void(0)" onclick="openLoginLayer()" >登录</a></li>
+                        <li v-if="userInfo==null" ><a href="javascript:void(0)" onclick="openRegisterLayer()">注册</a></li>
+                        <li v-if="userInfo!=null" ><span style="line-height: 50px;color: #fff">欢迎您!{{userInfo.userName}}</span></li>
+                        <li v-if="userInfo!=null" ><a href="/userhome">个人中心</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div>
+        </nav>
+        <!--主面板-->
+        <div id="buy" >
+            <div class="buy-filter" id="buyFilter">
+                <div class="filter-title">
+                    <ul>
+                        <li><a>条件筛选</a></li>
+                    </ul>
+                    <div class="map-search">
+                        <a href="/mapSearch" target="_blank">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAcCAIAAAAY8Y2vAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MkI1RTJFNEZBRkNBMTFFNzk5QTNDNkYyQjZBOTRFM0MiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MkI1RTJFNTBBRkNBMTFFNzk5QTNDNkYyQjZBOTRFM0MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoyQjVFMkU0REFGQ0ExMUU3OTlBM0M2RjJCNkE5NEUzQyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoyQjVFMkU0RUFGQ0ExMUU3OTlBM0M2RjJCNkE5NEUzQyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnjGTlQAAAaCSURBVHja7Fl7UFRV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">
+                        </a>
+                    </div>
+                </div>
+                <div class="filter-content" v-cloak>
+                    <div class="filter-box">
+                        <ul class="fred">
+                            <li>区域：</li>
+                            <li @click="changeDict('')" :class="{active:district==''}">全部</li>
+                            <li v-for="(item,index) in regionAddr" @click="changeDict(item.id)" :class="{active:item.id==district}">{{item.name}}</li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box">
+                        <ul class="fred">
+                            <li>价格：</li>
+                            <li v-for="(item,index) in price" @click="selectPrice(item.code)" :class="{active:item.code==priceActive}">{{item.name}}</li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box">
+                        <ul class="fred">
+                            <li>面积：</li>
+                            <li v-for="(item,index) in size" @click="selectSize(item.code)" :class="{active:item.code==sizeActive}">{{item.name}}</li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box">
+                        <ul class="fred">
+                            <li>户型：</li>
+                            <li v-for="(item,index) in fx" @click="selectRoom(item.code)" :class="{active:item.code==roomActive}">{{item.name}}</li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box">
+                        <ul class="fred">
+                            <li>机构：</li>
+                            <li :class="{active:compActive=='c0'}" @click="selectComp('c0')">全部</li>
+                            <li v-for="(item,index) in comps" @click="selectComp('c'+item.compNo)" :class="{active:'c'+item.compNo==compActive}">{{item.compName}}</li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box">
+                        <ul>
+                            <li>特色：</li>
+                            <li><input type="checkbox" id="ditie" value="t1"  v-model="tagModel" @click="clickTag"><label for="ditie">近地铁</label></li>
+                            <li><input type="checkbox" id="xuequ"  value="t2"  v-model="tagModel" @click="clickTag"><label for="xuequ">近学区</label></li>
+                            <li><input type="checkbox" id="dianti" value="t3" v-model="tagModel" @click="clickTag"><label for="dianti">有电梯</label></li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box">
+                        <ul id="list">
+                            <li>其它：</li>
+                            <li>
+                                <select v-model="faceAtModel" @change="selectFunc($event)">
+                                    <option value="f0" selected>朝向</option>
+                                    <option v-for="item in faceAt" :value="item.code" v-text="item.name">/option>
+                                </select>
+                            </li>
+                            <li>
+                                <select v-model="floorModel" @change="selectFunc($event)">
+                                    <option value="l0" selected>楼层</option>
+                                    <option v-for="item in floor" :value="item.code" v-text="item.name"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <select v-model="decorationModel" @change="selectFunc($event)">
+                                    <option value="z0" selected>装修</option>
+                                    <option v-for="item in decoration" :value="item.code" v-text="item.name"></option>
+                                </select>
+                            </li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                    <div class="filter-box filter-orderby">
+                        <ul>
+                            <li>排序方式：</li>
+                            <li :class="{orderActive:'o0'==orderActive}" @click="selectOrder('o0')">默认</li>
+                            <li :class="{orderActive:'o2'==orderActive}" @click="selectOrder('o2')">最新</li>
+                            <li :class="{orderActive:sortFunc[0].code==orderActive}" @click="selectOrder(sortFunc[0].url)">{{sortFunc[0].code=='o4'?'价格⬇':'价格⬆'}}</li>
+                            <li :class="{orderActive:sortFunc[1].code==orderActive}" @click="selectOrder(sortFunc[1].url)">{{sortFunc[1].code=='o6'?'面积⬇':'面积⬆'}}</li>
+                            <div style="clear: both"></div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="buy-box" id="buyBox" v-cloak>
+                <div class="box-title">
+                    <ul>
+                        <li :class="{active:isTypeActive('b0')}" @click="changeUrl('b0')">全部房源</li>
+                        <li :class="{active:isTypeActive('b1')}" @click="changeUrl('b1')">个人房源</li>
+                        <li :class="{active:isTypeActive('b2')}" @click="changeUrl('b2')">中介房源</li>
+                        <li class="house-count">共有<span v-text="totalNum"></span>套</li>
+                        <div style="clear: both"></div>
+                    </ul>
+                </div>
+                <div class="box-detail" id="box-detail">
+                    <div style="width: 100%;text-align: center;padding-top: 20px" v-if="house.length==0">
+                        <span>未找到符合条件记录</span>
+                    </div>
+                    <div class="house-show" v-for="item in house" @click="detail(item.houseNo,item.role)">
+                        <div class="show-pic">
+                            <img :src="item.coverUrl" onerror="onerror=null;src='/images/default.png'">
+                            <div class="show-type">
+                                <img :src="item.role == 1?grTag:zjTag">
+                            </div>
+                            <div class="clicks">
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAATB0lEQVR4Xu1dC7QkRXn+/+qZ3b17V/Z5Z7pqwEgSUXaVxyoPUTEIyEtXkCBkXRE9EZRoML4IEEXBhSAalWxkERIjr0UgQTS8VLKAigiSqBDjGiCwa1fP3Bv3IezeXWam/pw/p2/O3b493T0z3X377nSds2fPuVNd/19/ff1X1f9qhKINtARwoGdfTB4KAAw4CAoAFAAYcAkM+PQLDVAAYMAlMODTLzRAAYABl8CAT7/QAAUABlwCAz79QgMUABhwCQz49AsNUABgwCUw4NMvNEABgAGXwIBPv9AABQAGXAIDPv1CAxQAGHAJDPj0Cw1QAGDAJTDg0y80QAGAAZfAgE+/0AAFAAZcAgM+/UIDFAAYcAkM+PQLDVAAYM+VwObNm+fv2rVrb2NMDQD2FkLUiGgBAOxFRHsh4l4AYAHA74joeSHE88aYrYjoIOKGUqm0YWRkxN1zJQR7TnLo1q1bF27fvv0QRDyUiA4FgCMQcXECi7ediJ5ExJ8AwPqhoaEHFi5cuDWBcXMxxIzeArTWrwSAkwHgFADgRc+iGSL6OQDcb1nW7bZtMzBmbJtxABgbG9uv2Wy+l4hORcSX50DyTxPRjZZlfcO27f/OAT9dsTAjAOC67ogx5k8Q8UwAeE1XM8ywMxE9IoS4xrbtWxBxZ4akeyaVWwAQ0SzXdd8KAO8DgOMAoNTzLDN+kIg2A8A/IOIapdRzGZPvilzuAKC1Xo6IZxljViHiwq5ms3vnFwDgpwDAC7AJADYS0XNCiC2lUmmbMWZbpVLZ5n9Tiahcr9f3A4BlxphliPhqAHgDAIz0wAsR0Xcsy7rItu0ne3g+9UdyAwDHcY5BxMsB4LU9zrrBBzNEfNgY87BS6ueIaHoca8pjjUbjwFardTwiHu8BohuNxHzcREQX1Wo1BmNu2rQDwHGcYxHxsh4WvgUAPwaAe4nonlqt9u9ZSdWzL5xCRKcDwLGeLSGSPBHtQsSvAsBlSqn/iXwggw7TBgCt9WuIaA0iHt7FPAkAHgKAW4aHh2+dP38+77XT2tj+MD4+foYx5jxEfEVMZnjrWW3b9lcQ8cWYz6TSLXMAjI6O2s1m83JEfA/ENEQR0W+EEF8plUo3j4yM6FQk0eegRISNRuOkdrv9l4j4+pjDPYuI50spb43ZP/FumQGAiEpa648i4qcBYDjOTIjo1wBwhVLqekRklT8jmtb6tUT0KURcEYdhInq4XC6fValU/itO/yT7ZAIAx3FYNX4TEQ+MyfwvEfGztm3fnuRBLibtxLrxwbHdbl8EAKcCgAgbmIheRMRLpZSsHduJMRExUKoAICKhtf44AFyKiLOiJkVEP0PES5RSd0T1nUm/j46O/mGr1fosAKyMwfeTQoiVtm0/EaNv311SA4Drui8zxtyEiEfE4JIn+xml1D/H6Ntzl3q9XjHGHEtEb0bEP/ANtImI1iPi/WkZb+r1+mHGmL+LYc1sE9HnlFL84qSqDVIBgNaaHTQ3AMC8CLW3wbKsi6vV6q2IyCf8xJt3zTwRAI4GADbqRDYi4r34+5Zl3V2tVu9Kkjc+LLquu5KIrkBEdlOHtccsyzqjWq0+E8l0jx0SBQARzdZafxER/yyCn98BwMeklF9PC+H1ev1V7XZ7bRcn8k4sP05E59VqtR/1KOPAx9iWMD4+/iVEfG/EuDsQ8UMsqyTpT4yVGAAcx9kHAL4T46D30KxZs1YuWbLESWNCmzZtGrIsi28an4hroInJxw9LpdKHK5XKz2L2j9WNLaAA8A1EVBHa8utKqfcn/cIkAgDXdQ8xxtwTFoDhWcEulFIy6lNR91rrI1mYAPCyWNLvvtMOIlpZq9Xu7P7Rzk942uBriPjOiHEfnD179orFixezBk2k9Q0A13VPM8bcGHHK50Pe6Uqp/0yE64BBmA8iWpfwWx/ELvEWJ6W8Oum5uK57JhHxIbHj2YmIniqVSscldS7oCwBa6/cDwNdCBMEn2M9LKS9GxGbSApsYT2vN9+zbI1ToLgD4gRDiXiEE+xAaiNhotVoGEStCCNVqtdgTeQIA/BEAzA0bDxHfl8a+zLcnIuK5hMU9jCLiUVLKX/Yr054BUK/XTzfG8BsXOAYRbUHEtyulftAvk2HPs/uYLWmIODuk323eWzsWhxdPJX8MEf8i5G1sCyGOs237/jhjdtPHi4W4DgDe3ek5IuLg1WOUUo93M7a/b08A8K55jFKOqA1qz1iWdWxSaqrTBMfGxl7SbDZ/0WnPZxAKIVZJKe/uRUha6yWeZnlT4F5A9NtSqbSsWq2yKzrxxhrWc5h1MqJtB4DjlVI/7JV41wDwrlePd9rzOSxqeHj4xAULFmzplam4z2mtbwqxrv2K1bmU8tm443VYZEtrzV67wKstEd1fq9X4JJ9K4wM2EX0bAOwOBHYAwAlKKfaSdt26AgCrJq31E4jIETNTGhH9pFwuH1OpVDgaJ9XmGXi+24HIE3PmzHnjokWLtiXFhNaaDVurOox3plKKf0+leTGR3w5xne8QQhxt2/Yj3TLQFQBc172KiD483YvP9LXWvPctD+ClYVnWgUmrZc/I9SgiHuCnyV5LpdT+aTquPG/qtRwu12GR+aU7SinFYXCxW2wAuK57FBH9a4fF//WcOXMOSfJ+GjYD13U5+SMwHh8RD5NSPhpbAl10ZKdOs9lkT2U54LFTlFLf6mK4rrt6ZmS2cwQeDolIW5Z1sG3bo3EHjwUAIrJc1+XD1tKAgbdZlrU87QPfZLpa6y+wKTmAl+uVUhxokloLoX2nUop9IKk2z8N6MyJyONqUxmcwpdQb4loMYwHAdd1zPQPFFIKIeKKU8p5UZ+0bXGvNB7vf8/2ZyuVyLe1cPu/mwWbsl/jot6SUQ1kErvALqbW+l6+BHeT+10qpC+KsSSQAvLe/DgB8JfK3q5RS58UhlFSf0dHRl7daLY4U8reHlFKB17WkaE+Mo7XmKzAbn/ztTb2exrvlsV6vDxtj+OQ/5RxERM1yuby0Uqk8FTVuJAC8cO3vBQz0tJTyVVlnwGit+SQ+5cSNiJ+QUvLWkHpzXfc9RPSPAYQ+qpT6UuoMeAQ4vrLVarFzqhpA83tKqbdE8RIJAK31NQBwdsBA71ZK3RhFIOnfHce5BBE/5R9XCHF4Voma9Xp9X2NMkI9+rVLqg0nPOWw8x3Fej4isCaaEnHnm4gfCno8DADaf7qb+OfVJKVXNYr/zM6+1vhYA/tT/93K5rNLe/ydocvaQ67rsW/DLL5ODYIBMLgWAv/L/nYj+pVarva1nAHDM+44dO4Ji769j33SWSJ+g5TjOOkQ8w0ebpJRWWm7moHlqrdn8W5n8W9pWwU7yZhuBd0vb3y8XRKxKKTv6QEI1gOM4ByPiv/kJZ7nf+mk7jsPRxX6/+XQAgO/a/nzB9UqpN0/Ti/FJRLwigPaRYQ65UABorTkPbsoVj61RUko2SGTeQrYAvgJmkjTiGWTY1Z2LLYAXQWvN5zQ+r+3WiOhdtVrt5k4LFaUBXoGIvwp4eJ1SKk6Ic+IAycMhcGxsTDWbzSkhbUR0da1WOzfxSUcMyO7rnTt3sqHupf6uQogDwkLMQwHgGRxeQMQ5AXvL4WmZXMPm6zjOSkRkL+BuDRE/KaW8Mgvh1+v1txlj2EPnf9s4ePSqLHiYoOFZBr+LiBz17G8bpZT7hvkoIm8BjuNwAmeQK/TZuXPnLs/C7Tt5VlprPugERcI8qJTiSJ7Um9Z6LQCc4ydkWdYR1WqVo40yayHXdObhHKVUWMRWdJWwsbEx2Ww2NwZV6CCiHyuljkJEvhJl1hzH2RxQPKJdLpdfmvY5gPd/rfUmf0w/R+gopRZlfBP5CAAEGp44t0EptTTqqh6pAXhVtdafAwDOcQtq90kpV2SZ5tzpIMgWQqUU1xFKrWmtPwAAQQGhqTuiJk/Kdd0PEhHXGpjSiGgcEZcrpYLOb7v1jwUA757J18FOmTWZgqDRaLyu3W4/HDT5NC2C7Ah68cUXnwsqXYOIb5VS3pUa8iYNrLVeDQAXdqDFIfenKaX+KQ4vsQDgaQGuycd+dr8X7P/oENGPZs2adcLIyMjzcQj320dr/ViHqiLPDg0NHZx0MUfvsHUnL7Sfd0/dvjLNgBCm6QGQQ/DD0s7PVkqxtTRWiw0AHq3RaBzRarW4Do//VjBB7AkhxDHdBCTE4jKgU4iTinvfq5Ti8O7EGscFAsCfdxgwdb9IvV5/tTGGE1L2DZnURUopLrcTu3UFAB7VcZy3ICKruk5Fkp5hhEop/yM2Fz12jIjTu01KyZXG+irB4l2FORQrMIePo6RqtVrQFazHWU19jI08RHRVWOg7EZ1fq9U+3y3RrgHgbQdcmpXLmgSCwDuErEo73XvLli0LxsfHuThUp1Swx2bPnv2OxYsX/6ZbwXD/bdu2Ldq+fTunrE9LWLjn82e38x934p99/wBwZq1Wu6WXOfYEACbkuu5Jxpg7OsTHTfDyN1LKC/p9C8MmFpUYQkQ7uTLX8PDw6m6KSnHcARF9OSTfMbXEEO8l25+IvtUpApv7eMk3KzLNC5i8GF5oNlfzCKv5w/mAp6aZF+ilht0WVnSKS7B4qWHs23jItu1f+O0XnPNARCcYY7gO8WFhwEsrNcx7ubhQ5lcRcSjkzd+AiMf1W8yiZw0wwZgXosWHE78r8v9594T/caUUWxXTygx+l5cZ3ClbyS9LrsLxFCJy7kCViGScMjb84qWVHDo6Ojqv2Wz+bUjo98Qc7hNCnGrbNmcG9dX6BgBT93LyOZctykHEMeucRJFKlnC9Xj+63W5zHmA/JWbDBMouYOb/vr6kHvCwt6VyQYu9Q8bml2e1lPLTSb1IiQBggmFObzbGXBNyTeR9i1Xx5Uqp1WlkDHvZtWsA4KQEF4kFf+3Q0ND5SdsXPFM7XzFPi+CXM4LPkFKuT3Be0b6Abol5JeHYYBJVNfNpIcTZtm0HJpt0S9fff3R09KBms8lbTtyijZ1Ich7kuUl7Pj3rKtsVLolRN5EX/Z1plJdNVANMSFBrPZeIeC/jUu9R7Q6vBk8qRZQnFYnimr7LopjxTtccdv59IcRdtm1z5ZNEzy0cyAkAXB8p9IMX3g3mAiklJ6cmysOEHFIBwMTgjuOwyZInuihM8DxRAFgzb968y7u5qsVZzMl9vDDqo70ycb/vuzVsRMT1HNenlGLvZ+LNs+bxGx+ZQeQl2q6KE9vfD6OpAoAZ48xWIuLwsTimWU5wXDM8PHxlmkDoR2C9POu67jIi+kyYQWdiXK6lBAAXK6WuTNu3wDRTB4DvgMiqjD/bFtVeIKK1QgguLxOrqkfUgNPxu+u6S4mI3/h3xJE1f1yiVCp9JMs8y8wAwAvgVdzgGHYOYAytnevtxbw1XDdnzpwrejXnTsfCs3USADh5JVLVe/xxMYsPSCkfzJrfTAEwSRvw51j4uhj3hM6VwtdZlrW2Wq0GxgFkLTg/Pc9ufzIRnRWStLnbY0T0WyHExbZt8/0/1ZKwneQzLQCYYMarNcQqMlYJV+85rlBydalUujGr2INOwuMYAdd1+XbBVkhOFg2tLDZpn2f/xJfL5fJl0z2HaQWAp+a5di6/OWzdOijum+xdkR7gz8WUy+W70z4tT+aLv3bilYthy+du2UER/PO3g24ol8sXph27GFeO0w6AyYw6jvN2ROTy8vyVrq4a2/U5EEQIcU+r1Vq/zz77jHc1QEjnRqNRNca8EQCONMZwPESUkcs/Gqv3dVwBvFarbUiKryTGyRUAJibkWfHYSsY5AGH1/wJl4JWl5QMVZ83y/X6jEGJTpVLhaN7QgpVcUr7dbh8khDiQiPgDF3yg6+joClsEjw/25/NHolKxLfQLglwCYGJSXkDGOUT0oahiyl0Igj8GzR9t2kZEXHOXvXt8NV1ARAt7AZyfNmsjIcT1pVLp7/Oi6nN5CIy7aF6VkhUeEKYl+TKKV69y5zf5G8JZJ4dE8Rb2e641QBDj7GxCRE5N51N3WlXB48q0RUR87rjetm12gPUVfxiXaJL9ZhwAJk++0WgcYIw5xRhzcjc3iH4EyDF4iMgl6m4fHh6+YaabrGc0AHxXsyWIeCgAcGlVriP4uiQCQ4iIQ6+4QCQv+qO2bfOHrVKrfN4POHt5do8BQNDkOdii3W4vbbfbfIrnf/uxZ5KI9kLE+fw/2+gRkQ+DHBrG/xpE9FMhxCNz5859ZKa/4VGg2KMBEDX54vcMvYGFsPMpgUID5HNdMuOqAEBmos4noQIA+VyXzLgqAJCZqPNJqABAPtclM64KAGQm6nwSKgCQz3XJjKsCAJmJOp+ECgDkc10y46oAQGaiziehAgD5XJfMuCoAkJmo80moAEA+1yUzrgoAZCbqfBIqAJDPdcmMqwIAmYk6n4QKAORzXTLjqgBAZqLOJ6ECAPlcl8y4KgCQmajzSagAQD7XJTOuCgBkJup8EioAkM91yYyrAgCZiTqfhAoA5HNdMuOqAEBmos4noQIA+VyXzLgqAJCZqPNJ6H8BIsl+6gmfvs0AAAAASUVORK5CYII=">
+                                <span>1</span>
+                            </div>
+                        </div>
+                        <div class="show-self">
+                            <div class="self-title"><span>{{item.title}}</span></div>
+                            <div class="self-type"><span>天马小区</span><span>{{item.roomNum}}室{{item.hallNum}}厅</span><span>{{item.size}}m²</span></div>
+                            <div class="self-site">
+                                <span>
+                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAYAAAAiYZ4HAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MEQ3NzQ1ODJBMTFFMTFFNzhEQTBDN0E2NjRBQjBGNDIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MEQ3NzQ1ODNBMTFFMTFFNzhEQTBDN0E2NjRBQjBGNDIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowRDc3NDU4MEExMUUxMUU3OERBMEM3QTY2NEFCMEY0MiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowRDc3NDU4MUExMUUxMUU3OERBMEM3QTY2NEFCMEY0MiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PjKHep0AAAErSURBVHjahNI9LwRRFMbxWSZoNRKEZlqJUPgGE1kvLbEtCSEUykUhatGKBMUWEi9ReGk30a0oFDY+AYVas+Lt/8gzyc3EcpLf5s655+w9c3fjNE0jRxsWMIMB5x5whF28KdHijV7UoO4yuq3sXM01Pw365kucYxJVvFrVuTNcob01SZJFFl2Yj5rHDcbQqRNK2A42i3i2YpDfUW3MxzDugo19THl9jB6vVTOkE97x+csYXygEz6r50Al1jPgFFXM40SZmgwbV1NVQwWrQcO0rzYdqKhppD31Y++OW1tGvWp3QwLh/iw5s5Iq3MOFrbcROPmEU97jAbTC33mkQL+FfI3JiBYc+SQ6wnBUr4tzxp5jGpp8fnYuaNSiWPFrBo0T/NWSjReEoWXwLMAD1Kj5cZxdduwAAAABJRU5ErkJggg==">
+                                    {{item.address}}
+                                </span>
+                                <span>
+                                    {{floor[item.floor].name}}/共{{item.maxFloor}}层
+                                </span>
+                            </div>
+                            <div class="self-tag">
+                                <span v-if="stringContains('t1',item.tag)">近地铁</span>
+                                <span v-if="stringContains('t2',item.tag)">近学区</span>
+                                <span v-if="stringContains('t3',item.tag)">有电梯</span>
+                            </div>
+                            <div class="self-price"><span>{{item.price}}</span>万</div>
+                            <div class="self-danjia">单价{{(item.price/item.size).toFixed(4) * 10000}}元/平米</div>
+                            <div class="created">上次更新时间：{{item.created}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-navigator">
+        <div class="float-right">
+            <ul class="pagination" id="pages"></ul>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+    <div class="my-footer">
+        <div class="content">
+            <span style="line-height: 60px">二手房交易平台 HNU</span>
+        </div>
+    </div>
+</body>
+
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<!--<script src="/js/vue-router.js"></script>-->
+<script src="/js/jquery.lazyload.min.js"></script>
+<script src="/js/city.js"></script>
+<script src="/assets/layui/layui.all.js"></script>
+<script src="/js/jq-paginator.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script language='javascript' th:inline="javascript">
+    /* 后台加载好数据，直接通过Model 将数据写入js变量，然后Vue再绑定这个变量*/
+    var comps = [[${comps}]]
+    var houses = [[${houses}]]
+    var userInfo = [[${userInfo}]]
+    var totalNum = [[${totalNum}]]
+    var currentPage = [[${currentPage}]]
+</script>
+<script>
+
+    window.onload = function() {
+        count = $.cookie('SMScount')
+        if(!isNaN(count)){
+            disableSMS()
+        }
+    }
+
+    var totalPage = Math.ceil(totalNum/5)
+    if(currentPage>totalPage){
+        currentPage = totalPage
+        window.history.pushState({},'',location.pathname+'?page='+currentPage)
+    }
+    // $(function() {
+    //     $("img.lazy").lazyload({effect: "fadeIn",threshold: 250});
+    // });
+
+    function submitLogin() {
+        $('#loginForm').submit()
+    }
+    var loginLayer,registerLayer
+    function openLoginLayer() {
+        loginLayer = layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 1,
+            shadeClose: true,
+            skin: 'layerForm',
+            content: `
+                <form class="layui-form" style="padding:35px;width: 300px" id="loginForm" action="/login" method="post">
+                  <div style="font-size: 18px;font-weight: 600">账号密码登录</div>
+                  <hr style="margin-bottom: 35px">
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <input type="text" name="username" required placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <input type="password" name="password" required placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                   <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <button class="layui-btn" style="background:#3498db;width: 100%">立即提交</button>
+                    </div>
+                  </div>
+                </form>
+                `
+        });
+    }
+
+    function openRegisterLayer() {
+        registerLayer = layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 1,
+            shadeClose: true,
+            skin: 'layerForm',
+            content: `
+                <form class="layui-form" style="padding:35px;width: 300px" id="registerForm" action="javascript:void(0)" onsubmit="">
+                  <div style="font-size: 18px;font-weight: 600">手机号注册</div>
+                  <hr style="margin-bottom: 35px">
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <input type="text" name="tel" id="tel" required placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width: 110px;float: left">
+                      <input type="text" id="code" name="checkCode" required placeholder="请输入验证码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline" style="width:110px;float: right;margin-right: 0">
+                      <input type="button" id="sendSMS" style="width: 100%;background:#3498db " class="layui-btn layui-btn-normal" onclick="sendS()" value="发送验证码">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <input type="password" id="password" name="password" required placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-inline" style="width:100%">
+                      <button class="layui-btn" style="background:#3498db;width: 100%" onclick="submit()">立即提交</button>
+                    </div>
+                  </div>
+                </form>
+                `
+        });
+    }
+
+    function submit() {
+        $.ajax({
+            url:'/user/register',
+            data:{
+                tel:$("#tel").val().trim(),
+                code:$("#code").val().trim(),
+                password:$("#password").val().trim()
+            },
+            type:'post',
+            success:function (data) {
+                if(data=='1'){
+                    layer.msg('注册成功')
+                    setTimeout(function () {
+                        layer.close(registerLayer)
+                        openLoginLayer()
+                    },1500)
+                }else{
+                    let l = layer.msg('请求服务器错误，请稍后重试')
+                    setTimeout(function () {
+                        layer.close(l)
+                    },1000)
+                }
+            },error:function () {
+                let l = layer.msg('请求服务器错误，请稍后重试')
+                setTimeout(function () {
+                    layer.close(l)
+                },1000)
+            }
+        })
+    }
+    function disableSMS(){
+        $('#sendSMS').attr('disabled',true)
+        $('#sendSMS').css('cursor','not-allowed')
+        var interval = setInterval(function () {
+            $('#sendSMS').val("重新发送"+count+"s")
+            count--;
+            if(count == 0){
+                $.cookie('SMScount',null)
+                $('#sendSMS').val("重新发送")
+                $('#sendSMS').attr('disabled',false)
+                $('#sendSMS').css('cursor','pointer')
+                clearInterval(interval)
+            }
+        },1000)
+    }
+    function getQueryVariable(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+    function sendS() {
+        let tmpTel = $("#tel").val().trim()
+        if(checkTel(tmpTel)){
+            $.ajax({
+                url:'/SMSTools/registerSMS',
+                type:'post',
+                data:{
+                    tel:tmpTel
+                },
+                success:function (data) {
+                    if(data=='1'){
+                        count = 60
+                        disableSMS()
+                    }
+                    else{
+                        let l = layer.msg('短信服务器忙,请稍后再试')
+                        setTimeout(function () {
+                            layer.close(l)
+                        },1000)
+                    }
+                },error(){
+                    let l = layer.msg('短信服务器忙,请稍后再试')
+                    setTimeout(function () {
+                        layer.close(l)
+                    },1000)
+                }
+            })
+        }else{
+            let l = layer.msg('请输入正确格式的手机号码')
+            setTimeout(function () {
+                layer.close(l)
+            },1000)
+            $("#tel").focus()
+            return;
+        }
+    }
+
+    function checkTel(tel) {
+        if(/^1[3456789]\d{9}$/.test(tel)){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+
+    $('#password').bind('input propertychange',function () {
+        var regexString1 = /([0-9a-zA-z]{6,10})/;
+        var regexString2 = /[0-9]+/;
+        var regexString3 = /[a-z]+/;
+        var regexString4 = /[A-Z]+/;
+        var regexString5 = /([^0-9a-zA-z])/;
+        var new_password = $('#password').val();
+        if(new_password.length<11 && regexString1.test(new_password) && regexString2.test(new_password)
+            &&regexString3.test(new_password) && regexString4.test(new_password) && !regexString5.test(new_password))
+        {
+            pwd_check = true;
+            $('#error-pwd').hide();
+        }
+        else{
+            pwd_check = false;
+            $('#error-pwd').show();
+        }
+    })
+
+    function redirectHelp(url) {
+        if(userInfo==null){
+            // $("#myModal").modal("show")
+            openLoginLayer()
+        }else{
+            window.location.href = url
+        }
+    }
+</script>
+<script>
+    var house = {};
+
+    var zjTag = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RjM0Mzc4OTVDODQxMTFFN0JFNkJCODNBNjY2NjREQjgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RjM0Mzc4OTZDODQxMTFFN0JFNkJCODNBNjY2NjREQjgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGMzQzNzg5M0M4NDExMUU3QkU2QkI4M0E2NjY2NERCOCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGMzQzNzg5NEM4NDExMUU3QkU2QkI4M0E2NjY2NERCOCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtHYydcAAAj7SURBVHja7Jt7TJVl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"
+    var grTag = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDA0Rjc0MDlDODQyMTFFN0I3QkE4NzQ3NEQ4REU1RDAiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDA0Rjc0MEFDODQyMTFFN0I3QkE4NzQ3NEQ4REU1RDAiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowMDRGNzQwN0M4NDIxMUU3QjdCQTg3NDc0RDhERTVEMCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowMDRGNzQwOEM4NDIxMUU3QjdCQTg3NDc0RDhERTVEMCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pj0mG4IAAAiPSURBVHja7JsJbFRV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"
+    var floor = [{code:'l0',name:'楼层'},{code:'l1',name:'低楼层'},{code:'l2',name:'中楼层'},{code:'l3',name:'高楼层'}]
+
+    var userVue = new Vue({
+        el:"#userInfo",
+        data:{
+            userInfo:userInfo
+        }
+    })
+
+
+    var buyFilter = new Vue({
+        el:'#buyFilter',
+        data:{
+            price:[{code:'p0',name:'全部'},{code:'p60',name:'60万以下'},{code:'p90',name:'60-90万'},{code:'p120',name:'90-120万'},
+                {code:'p150',name:'120-150万'},{code:'p200',name:'150万-200万'}, {code:'p201',name:'200万以上'}],
+            size:[{code:'s0',name:'全部'},{code:'s50',name:'50m²以下'},{code:'s70',name:'50-70m²'},{code:'s90',name:'70-90m²'},
+                {code:'s110',name:'90-110m²'}, {code:'s130',name:'110-130m²'},{code:'s150',name:'130-150m²'},
+                {code:'s200',name:'150-200m²'},{code:'s300',name:'200-300m²'},{code:'s301',name:'300以上'}],
+            fx:[{code:'r0',name:'全部'},{code:'r1',name:'一室'},{code:'r2',name:'二室'},{code:'r3',name:'三室'},
+                {code:'r4',name:'四室'},{code:'r5',name:'五室'},{code:'r6',name:'五室以上'}],
+            decoration:[{code:'z1',name:'精装修'},{code:'z2',name:'普通装修'},{code:'z3',name:'毛坯房'}],
+            faceAt:[{code:'f1',name:'东'},{code:'f2',name:'南'},{code:'f3',name:'西'},
+                {code:'f4',name:'北'},{code:'f5',name:'东南'},{code:'f6',name:'西南'},{code:'f7',name:'东北'},{code:'f8',name:'西北'}],
+            floor:[{code:'l1',name:'低楼层'},{code:'l2',name:'中楼层'},{code:'l3',name:'高楼层'}],
+            faceAtModel:'f0',
+            floorModel:'l0',
+            decorationModel:'z0',
+            comps:comps,
+            tagModel:[],
+            // tag:['0','0','0'],
+            params:[],
+            // tagUrl:'',
+            provinceAddr:[],
+            cityAddr:[],
+            regionAddr:[],
+            zjTag:zjTag,
+            grTag:grTag,
+            contextPath:'',
+            district:'',
+            sortFunc:[{code:'o4',url:'o3'},{code:'o6',url:'o5'}],        //code是当前的用于判断isActive, url是点击跳转的
+            totalNum:totalNum,      //从服务器获取到有多少页,用于分页判断
+            // districtActive:0,
+            priceActive:'p0',
+            sizeActive:'s0',
+            roomActive:'r0',
+            tagActive1:'',
+            tagActive2:'',
+            tagActive3:'',
+            compActive:'c0',
+            orderActive:'o0'
+        },
+        methods:{
+            /* 打算是让过长的内容，在右边加一个”展开“按钮*/
+            // expandToggle(e){
+            //     var height = e.target.parentElement.parentElement.firstElementChild
+            //     console.log(height.clientHeight)
+            //
+            //     if(e.target.innerHTML == "展开"){
+            //         console.log("expand")
+            //         height.setAttribute("style","height:auto")
+            //         e.target.innerHTML = "收起"
+            //     }else{
+            //         console.log("collapse")
+            //         height.removeAttribute("style")
+            //         e.target.innerHTML = "展开"
+            //     }
+            //
+            //     console.log(this.$router)
+            // },
+            //
+            // dictActive(dict){
+            //     var district = this.district
+            //     if(district == dict){
+            //         return true
+            //     }else if(dict == '全部' && district.trim().length == 0){
+            //         return true
+            //     }
+            //     return false
+            // },
+            isActive(Url){
+                var context = this.contextPath
+                if((context.indexOf(Url.substring(0,1)) == -1) && (Url.substring(1,2)=='0')){
+                    return true
+                }else{
+                    return context.indexOf(Url)!=-1;
+                }
+            },
+            changeDict(dict){
+                var newUrl
+                var historyUrl
+                this.updateParams()
+                if(dict!= ''){
+                    // this.district = pinyin.getFullChars(dict).toLowerCase()
+                    newUrl = '/getHouse/'+dict+'/'+this.contextPath
+                    historyUrl = '/house/'+dict+'/'+this.contextPath
+                }
+                else{
+                    newUrl = '/getHouse/'+this.contextPath
+                    historyUrl = '/house/'+this.contextPath
+                }
+                var loading = layer.load(2, {
+                    shade: false,
+                    time: 100*1000
+                });
+                var that = this
+                $.ajax({
+                    url:newUrl,
+                    dataType:'json',
+                    success:function (data) {
+                        that.district = dict
+                        Vue.set(buyBox,'house',data.house)
+                        Vue.set(buyBox,'totalNum',data.totalNum)
+                        window.history.pushState({},'',historyUrl)
+                        var totalPage = Math.ceil(data.totalNum/5)
+                        $('#pages').jqPaginator('option', {
+                            currentPage:1,
+                            totalPages: totalPage || 1
+                        });
+                        // setTimeout("$(\"img.lazy\").lazyload({effect: \"fadeIn\",threshold: 250});",20)
+                        layer.close(loading)
+                    },error:function (data) {
+                        alert()
+                    }
+                })
+            },
+            updateParams(){
+                var path = ''
+                /*初始化 各个筛选条件 */
+                var pathName = location.pathname
+                if(pathName.length>7) {
+                    path = pathName.substring(7)   // 即 /house/xxxxxxxxx  截取后面的
+                    var i = path.indexOf('/')
+                    this.district = path.substring(0, i) //截出 城市 如 410101
+                    // this.districtActive = this.district
+                    path = path.substring(i + 1)
+                    var list = []
+                    if (path.length > 0)
+                        list = path.split("-")      //空值也会显示，造成麻烦，所以先判断长度
+                    this.params = list
+                }
+                this.contextPath = path.trim()
+            },
+            changeUrl(Url){
+                var newUrl = "";
+                var start = Url.substring(0,1);
+                this.updateParams()
+                var list = this.params;
+                console.log(list)
+                var length = list.length
+                console.log(length)
+                console.log(this.params)
+
+                if(length>0) {
+                    var i;
+                    //正常的tag
+                    if (Url.substring(1,2) != '0') {
+                        for (i = 0; i < length; i++) {
+                            if (list[i].indexOf(start) != -1) {
+                                list[i] = Url;
+                                break;
+                            }
+                        }
+                        if (i == length) {
+                            list.push(Url)
+                        }
+                    } else {   //“全部”,删除对应的索引
+
+                        for (i = 0; i < length; i++) {
+                            // console.log('i: ' + i + '  list length:' +list[i].length)
+                            if (list[i].indexOf(start) != -1) {
+                                //注意list裁剪后,因为长度变了,所以i要回退一格并且Length要减少1,才不会影响后面的元素
+                                list.splice(i, 1);
+                                i-=1;
+                                length-=1
+                            }
+                        }
+                    }
+                    if (list.length > 0) {
+                        newUrl += list[0];
+                        var j;
+                        for (j = 1; j < list.length; j++) {
+                            newUrl += "-" + list[j]
+                        }
+                    }
+                }else{
+                    newUrl = Url;
+                }
+                this.queryAndChangeUrl(newUrl)
+                // window.location.href = newUrl
+            },
+            changeTag(){
+                /* 标签有多个，其实也可以给每个标签弄一个不一样的起始代号，但是我这里统一t1 t2 t3 等等*/
+                var newUrl = "";
+                this.updateParams()
+                var list = this.params;
+                var length = list.length;
+                if(length>0){
+                    var i = 0;
+                    if(length>0){
+                        for(i;i<length;i++){
+                            if(list[i].substring(0,1)=='t'){
+                                if(this.tagUrl.trim().length>0){
+                                    list[i] = this.tagUrl.trim()
+                                }else{
+                                    list.splice(i,1)
+                                    i-=1
+                                    length-=1
+                                }
+                                break
+                            }
+                        }
+                        /* 说明当前参数列表中还没有任何特色标签, 在末尾补上*/
+                        if(i==length){
+                            if(this.tagUrl.trim().length>0)
+                                list.push(this.tagUrl.trim())
+                        }
+                    }else{
+                        if(this.tagUrl.trim().length>0)
+                            list.push(this.tagUrl.trim())
+                    }
+                }else{
+                    if(this.tagUrl.trim().length>0)
+                        list.push(this.tagUrl.trim())
+                }
+                console.log(list)
+                if(list.length>0)
+                    newUrl += list[0]
+                for(var j = 1;j < list.length;j++){
+                    newUrl += '-'+list[j]
+                }
+                console.log('final '+ newUrl)
+                this.queryAndChangeUrl(newUrl)
+            },
+            clickTag:function () {
+                var that = this
+                /* 等待tagModel数据变更完全再去读取 */
+                setTimeout(function () {
+                    var tagModel = that.tagModel
+                    tagModel = tagModel.sort()
+                    var length = tagModel.length
+                    var Url=''
+                    var i = 1
+                    if(length > 0){
+                        Url = tagModel[0]
+                        for(i;i < length;i++){
+                            Url+='_'+tagModel[i]
+                        }
+                    }
+                    that.tagUrl = Url
+                    console.log(that.tagUrl)
+                    that.changeTag()
+                },50)
+            },
+            /* ajax异步访问后台获取新的房源列表, 更改变量house让vue重新渲染房源列表*/
+            queryAndChangeUrl(newUrl){
+                var historyUrl
+                if(this.district.trim()){
+                    historyUrl = '/house/'+this.district.trim()+'/'+newUrl
+                    newUrl = '/getHouse/'+this.district.trim()+'/'+newUrl
+                }
+                else{
+                    historyUrl = '/house/'+newUrl
+                    newUrl = '/getHouse/'+newUrl
+                }
+                var loading = layer.load(2, {
+                    shade: false,
+                    time: 100*1000
+                });
+                $.ajax({
+                    url:newUrl,
+                    dataType:'json',
+                    success:function (data) {
+                        Vue.set(buyBox,'house',data.house)
+                        Vue.set(buyBox,'totalNum',data.totalNum)
+                        window.history.pushState({},'',historyUrl)
+                        var totalPage = Math.ceil(data.totalNum/5)
+                        $('#pages').jqPaginator('option', {
+                            currentPage:1,
+                            totalPages: totalPage || 1
+                        });
+                        // setTimeout("$(\"img.lazy\").lazyload({effect: \"fadeIn\",threshold: 250});",20)
+                        // console.log('lazyload')
+                        layer.close(loading)
+                    },error:function (data) {
+                        alert()
+                    }
+                })
+
+            },
+            selectFunc(e) {
+                console.log(e.target.value)
+                this.changeUrl(e.target.value)
+            },
+            selectPrice(price){
+                this.changeUrl(price)
+                this.priceActive = price
+            },
+            selectRoom(room){
+                this.changeUrl(room)
+                this.roomActive = room
+            },
+            selectSize(size){
+                this.changeUrl(size)
+                this.sizeActive = size
+            },
+            selectComp(comp){
+                this.changeUrl(comp)
+                this.compActive = comp
+            },
+            selectOrder(order){
+                this.changeUrl(order)
+                if(order=='o3'){
+                    this.sortFunc[0] = {code:'o3',url:'o4'}
+                    this.sortFunc[1] = {code:'o6',url:'o5'}
+                }else if(order=='o5'){
+                    this.sortFunc[1] = {code:'o5',url:'o6'}
+                    this.sortFunc[0] = {code:'o4',url:'o3'}
+                }else if(order=='o4'){
+                    this.sortFunc[0] = {code:'o4',url:'o3'}
+                    this.sortFunc[1] = {code:'o6',url:'o5'}
+                }else if(order=='o6'){
+                    this.sortFunc[1] = {code:'o6',url:'o5'}
+                    this.sortFunc[0] = {code:'o4',url:'o3'}
+                }
+                this.orderActive = order
+            }
+        },
+        created:function () {
+            var that = this
+            /*初始化 地区，以后开放全国市场可以用*/
+            for (let item of province) {
+                if ('430000' == item.id) {
+                    console.log(item)
+                    this.cityAddr = item.children
+                }
+            }
+            for (let item of this.cityAddr) {
+                if ('430100' == item.id) {
+                    this.regionAddr = item.children
+                }
+            }
+            var path = ''
+            /*初始化 各个筛选条件 */
+            var pathName = location.pathname
+            if(pathName.length>7){
+                path = pathName.substring(7)   // 即 /house/xxxxxxxxx  截取后面的
+                var i = path.indexOf('/')
+                this.district = path.substring(0,i) //截出 城市 如 410101
+                // this.districtActive = this.district
+                path = path.substring(i+1)
+                var list=[]
+                if(path.length>0)
+                    list = path.split("-")      //空值也会显示，造成麻烦，所以先判断长度
+
+                this.params = list
+                for(var j = 0;j < list.length;j++){
+                    if(list[j].substring(0,1)=='t'){
+                        this.tagModel = list[j].split("_")
+                    }else if(list[j].substring(0,1)=='f'){
+                        this.faceAtModel = list[j]
+                    }else if(list[j].substring(0,1)=='l'){
+                        this.floorModel = list[j]
+                    }else if(list[j].substring(0,1)=='z'){
+                        this.decorationModel = list[j]
+                    }else if(list[j].substring(0,1)=='c'){
+                        this.compActive = list[j]
+                    }else if(list[j].substring(0,1)=='p'){
+                        this.priceActive = list[j]
+                    }else if(list[j].substring(0,1)=='r'){
+                        this.roomActive = list[j]
+                    }else if(list[j].substring(0,1)=='o'){
+                        this.orderActive = list[j]
+                    }
+                }
+            }
+            if(path.indexOf("o3")!=-1){
+                this.sortFunc[0] = {code:'o3',url:'o4'}
+            }else if(path.indexOf("o5")!=-1){
+                this.sortFunc[1] = {code:'o5',url:'o6'}
+            }
+            this.contextPath = path.trim()
+        }
+    })
+
+    var buyBox = new Vue({
+        el:'#buyBox',
+        data:{
+            house:houses,
+            totalNum:totalNum
+        },
+        methods:{
+            detail(houseNo,role){
+                window.open('/houseDetail/'+houseNo)
+            },
+            isTypeActive(url){
+                if(location.pathname.indexOf(url)!=-1){
+                    return true
+                }else if(location.pathname.indexOf('b')==-1 && url=='b0'){
+                    return true
+                }
+                return false
+            },
+            changeUrl(url){
+              buyFilter.changeUrl(url)
+            },
+            /* 用于判断str2字符串中是否包含str1 ， 在房源标签处有用*/
+            stringContains(str1,str2){
+                if(str2!=null){
+                    if(str2.indexOf(str1)!= -1){
+                        return true
+                    }else{
+                        return false
+                    }
+                }
+            }
+        }
+    })
+
+    /* 发送请求获取某一页的房源数据 */
+    $(function () {
+        $("#pages").jqPaginator({
+            totalPages: totalPage || 1,
+            // totalPages: totalPage,
+            visiblePages: 10,
+            // currentPage: parseInt(currentPage) || 1,
+            currentPage: parseInt(currentPage) || 1,
+            first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+            prev: '<li class="prev"><a href="javascript:void(0);">上一页<\/a><\/li>',
+            next: '<li class="next"><a href="javascript:void(0);">下一页<\/a><\/li>',
+            last: '<li class="last"><a href="javascript:void(0);">最后一页<\/a><\/li>',
+            page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+            onPageChange: function (n,type) {
+                if(type=='change'){
+                    console.log(n)
+                    var historyUrl = location.pathname + '?page='+n;
+                    var newurl = '/getHouse/'+location.pathname.substring(7)+ '?page='+n;
+                    console.log(newurl)
+                    window.history.pushState({},'',historyUrl)
+                    $.ajax({
+                        url:newurl,
+                        dataType:'json',
+                        success:function (data) {
+                            console.log(data)
+                            Vue.set(buyBox,'house',data.house)
+                            Vue.set(buyBox,'totalNum',data.totalNum)
+                            // setTimeout("$(\"img.lazy\").lazyload({effect: \"fadeIn\",threshold: 250});",20)
+                        }
+                    })
+
+                }
+            }
+        });
+    })
+</script>
+</html>

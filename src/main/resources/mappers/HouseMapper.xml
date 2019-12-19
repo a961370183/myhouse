@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.HouseMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.House">
+    <id column="houseNo" jdbcType="INTEGER" property="houseNo" />
+    <result column="propertyNo" jdbcType="VARCHAR" property="propertyNo" />
+    <result column="status" jdbcType="CHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    houseNo, propertyNo, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from house
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from house
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="hnu.houseweb.entity.House">
+    insert into house (houseNo, propertyNo, status
+      )
+    values (#{houseNo,jdbcType=INTEGER}, #{propertyNo,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.House">
+    insert into house
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="houseNo != null">
+        houseNo,
+      </if>
+      <if test="propertyNo != null">
+        propertyNo,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="houseNo != null">
+        #{houseNo,jdbcType=INTEGER},
+      </if>
+      <if test="propertyNo != null">
+        #{propertyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.House">
+    update house
+    <set>
+      <if test="propertyNo != null">
+        propertyNo = #{propertyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.House">
+    update house
+    set propertyNo = #{propertyNo,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR}
+    where houseNo = #{houseNo,jdbcType=INTEGER}
+  </update>
+</mapper>

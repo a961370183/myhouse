@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>经纪机构信息平台</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" href="/css/information.css">
+    <link rel="stylesheet" href="/css/elementui.css">
+</head>
+<body style="background:#f1f1f1 ">
+<nav class="navbar navbar-default navbar-static-top" style="min-width: 1200px">
+    <div style="width:1200px;margin:0 auto">
+        <!-- 下拉触发按钮 以及 商标-->
+        <div class="navbar-header" style="width: 156px;float:left;">
+            <a class="navbar-brand" href="#">二手房交易平台</a>
+        </div>
+        <ul class="my-nav">
+            <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+            <li ><a href="/information">机构人员信息</a></li>
+            <li><a href="/information/compPunishment">行业管理公示</a></li>
+            <li><a href="/information/agentCommentPage">服务评价公示</a></li>
+            <li><a href="/information/redList">红黑名单公示</a></li>
+            <li><a href="/information/lawNews">政策法规</a></li>
+            <li class="active"><a href="/information/agentContractSearch">签约排行</a></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+</nav>
+<div style="background-color: #f1f1f1;position: absolute;left: 0;right: 0;top:50px;bottom: 0">
+    <div style="width: 1200px;margin:60px auto">
+        <div class="left-side">
+            <a href="#">
+                <div class="sub active" style="background-image: url('/images/icon/logo12.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">签约排行</span>
+                </div>
+            </a>
+        </div>
+        <div class="right-side" id="app">
+            <div class="right-header">首页 &gt; 签约评价</div>
+            <div class="form-group"></div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <input type="text" class="form-control" placeholder="请输入中介姓名" v-model="searchText">
+                </div>
+                <div class="col-md-5">
+                    <button type="button" class="btn btn-primary" @click="search()">查询</button>
+                </div>
+            </div>
+            <el-table :data="contracts.slice((currentPage-1)*pageSize,currentPage*pageSize)" border style="width: 100%;min-height: 500px">
+                <el-table-column prop="name" label="中介姓名" width="80"></el-table-column>
+                <el-table-column prop="userId" label="评价用户" width="80"></el-table-column>
+                <el-table-column prop="formatDateString" label="评价日期" width="100"></el-table-column>
+                <el-table-column prop="description" label="评价内容"></el-table-column>
+                <el-table-column prop="starLevel" label="评价星级" width="80"></el-table-column>
+            </el-table>
+            <div class="block" style="float: right">
+                <span class="demonstration">共{{total}}条记录</span>
+                <el-pagination
+                        layout="prev, pager, next"
+                        @current-change="current_change"
+                        :total="total*10/pageSize">
+                </el-pagination>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            contracts: [],
+            searchText: "",
+            currentPage: 1,
+            total: 0,
+            pageSize: 9,
+        },
+        created: function () {
+            this.getAgentContract()
+        },
+        methods: {
+            getAgentContract: function (name) {
+                var that = this;
+                var data = null;
+                if (name==null || name==="") {
+                    data = {
+                        name: null
+                    }
+                } else {
+                    data = {
+                        name: name
+                    }
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/contracting/getAgentsContracts",
+                    dataType: "json",
+                    data: data,
+                    success: function (contracts) {
+                        that.contracts = contracts;
+                        that.total = contracts.length;
+                        var lastPage = Math.ceil(that.total/that.pageSize);
+                        if (that.currentPage > lastPage) {
+                            if (lastPage === 0) {
+                                lastPage = 1;
+                            }
+                            that.currentPage = lastPage;
+                        }
+                    },
+                    error: function () {
+                        alert("请检查网络状态");
+                    }
+                })
+            },
+            search: function() {
+                this.getAgentContract(this.searchText);
+            },
+            current_change: function (currentPage) {
+                var that = this;
+                that.currentPage = currentPage;
+            }
+        }
+    })
+</script>
+</html>

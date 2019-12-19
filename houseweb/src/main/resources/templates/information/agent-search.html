@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>经纪机构信息平台</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/information.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" href="/css/elementui.css">
+    <link rel="stylesheet" href="/css/agent/agent-show.css">
+    <style>
+        .table {
+            table-layout: auto;
+        }
+    </style>
+</head>
+<body style="background:#f1f1f1 ">
+<nav class="navbar navbar-default navbar-static-top" style="min-width: 1200px">
+    <div style="width:1200px;margin:0 auto">
+        <!-- 下拉触发按钮 以及 商标-->
+        <div class="navbar-header" style="width: 156px;float:left;">
+            <a class="navbar-brand" href="#">二手房交易平台</a>
+        </div>
+        <ul class="my-nav">
+            <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="/information">机构人员信息</a></li>
+            <li><a href="/information/compPunishment">行业管理公示</a></li>
+            <li><a href="/information/agentCommentPage">服务评价公示</a></li>
+            <li><a href="/information/redList">红黑名单公示</a></li>
+            <li><a href="/information/lawNews">政策法规</a></li>
+            <li><a href="/information/agentContractSearch">签约排行</a></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+</nav>
+<div style="background-color: #f1f1f1;position: absolute;left: 0;right: 0;top:50px;bottom: 0">
+    <div style="width: 1200px;margin:60px auto">
+        <div class="left-side">
+            <a href="/information">
+                <div class="sub " style="color:#666;background-image: url('/images/icon/logo11.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">机构信息</span>
+                </div>
+            </a>
+            <a href="#">
+                <div class="sub active" style="background-image: url('/images/icon/logo12.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">中介信息</span>
+                </div>
+            </a>
+        </div>
+        <div class="right-side" id="app">
+            <div class="right-header">首页 &gt; 机构人员信息</div>
+            <div class="form-group"></div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <input type="text" class="form-control" placeholder="请输入中介名称或编号" v-model="searchText">
+                </div>
+                <div class="col-md-5">
+                    <el-switch
+                            v-model="sortStarLevel"
+                            active-color="#3e8de5"
+                            active-text="按星级排序"
+                            inactive-color="#d4d4d4"
+                            inactive-text="不排序">
+                    </el-switch>
+                    <button type="button" class="btn btn-primary" @click="search()">查询</button>
+                </div>
+            </div>
+
+            <div class="agent-show" v-for="(agentDetail, index) in agentDetails.slice((currentPage-1)*pageSize,currentPage*pageSize)" v-cloak="" @click="detail(agentDetail.workNo)">
+                <div class="show-pic">
+                    <!--                <img class="lazy" :src="agentDetail.imgSrc" >-->
+                    <img class="lazy" src="/images/user_face.jpg" >
+                </div>
+                <div class="show-self">
+                    <div class="self-name"><span>{{ agentDetail.name }}</span></div>
+                    <div>
+                        <el-rate
+                                v-model="agentDetail.starLevel"
+                                disabled
+                                show-score
+                                text-color="#ff9900"
+                                score-template="{value}"
+                        >
+                        </el-rate>
+                    </div>
+                    <div class="self-workNo"><span>工作编号：{{ agentDetail.workNo }}</span></div>
+                    <div class="self-compName"><span>机构名称：{{ agentDetail.compName }}</span></div>
+                    <div class="self-tel"><span>联系电话：{{ agentDetail.tel }}</span></div>
+                    <div class="self-workYear"><span>工作年限：{{ agentDetail.workYear }}</span></div>
+                    <div class="self-contractNum"><span>签约数：{{ agentDetail.contractNum }}</span></div>
+                </div>
+            </div>
+            <div class="block" style="float: right">
+                <span class="demonstration">共{{total}}条记录</span>
+                <el-pagination
+                        layout="prev, pager, next"
+                        @current-change="current_change"
+                        :total="total*10/pageSize">
+                </el-pagination>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            agentDetails: [],
+            searchText: "",
+            sortStarLevel: false,
+            currentPage: 1,
+            total: 0,
+            pageSize: 4,
+        },
+        created: function () {
+            this.getAgents();
+        },
+        methods: {
+            getAgents: function (condition) {
+                var that = this;
+                var data = null;
+                if (condition==null || condition==="") {
+                    data = {
+                        condition: null,
+                        sortStarLevel: that.sortStarLevel
+                    }
+                } else {
+                    data = {
+                        condition: condition,
+                        sortStarLevel: that.sortStarLevel
+                    }
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/agent/getAgentDetails",
+                    dataType:'json',
+                    data: data,
+                    success: function (agentDetails) {
+                        for (let i = 0; i < agentDetails.length; i++) {
+                            if (agentDetails[i].contractNum == null) {
+                                agentDetails[i].contractNum = 0;
+                            }
+                        }
+                        that.agentDetails = agentDetails;
+                        that.total = agentDetails.length;
+                        var lastPage = Math.ceil(that.total/that.pageSize);
+                        if (that.currentPage > lastPage) {
+                            if (lastPage === 0) {
+                                lastPage = 1;
+                            }
+                            that.currentPage = lastPage;
+                        }
+                    },
+                    error: function () {
+                        alert("请检查网络状态");
+                    }
+                })
+            },
+            search: function() {
+                this.getAgents(this.searchText);
+            },
+            detail: function (workNo) {
+                window.location.href = "/information/agentDetailPage/"+String(workNo);
+            },
+            current_change: function (currentPage) {
+                var that = this;
+                that.currentPage = currentPage;
+            }
+        }
+    })
+</script>
+</html>

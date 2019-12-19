@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>经纪机构信息平台</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" href="/css/elementui.css">
+    <link rel="stylesheet" href="/css/information.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/bootstrapValidator.css">
+    <link rel="stylesheet" href="/css/elementui.css">
+    <style>
+        .table {
+            table-layout: auto;
+        }
+    </style>
+</head>
+<body style="background:#f1f1f1 ">
+<nav class="navbar navbar-default navbar-static-top" style="min-width: 1200px">
+    <div style="width:1200px;margin:0 auto">
+        <!-- 下拉触发按钮 以及 商标-->
+        <div class="navbar-header" style="width: 156px;float:left;">
+            <a class="navbar-brand" href="#">二手房交易平台</a>
+        </div>
+        <ul class="my-nav">
+            <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="/information">机构人员信息</a></li>
+            <li><a href="/information/compPunishment">行业管理公示</a></li>
+            <li><a href="/information/agentCommentPage">服务评价公示</a></li>
+            <li><a href="/information/redList">红黑名单公示</a></li>
+            <li><a href="/information/lawNews">政策法规</a></li>
+            <li><a href="/information/agentContractSearch">签约排行</a></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+</nav>
+<div style="background-color: #f1f1f1;position: absolute;left: 0;right: 0;top:50px;bottom: 0">
+    <div style="width: 1200px;margin:60px auto">
+        <div class="left-side">
+            <a href="#">
+                <div class="sub active" style="background-image: url('/images/icon/logo2.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">机构信息</span>
+                </div>
+            </a>
+            <a href="/information/agentSearch">
+                <div class="sub" style="color:#666;background-image: url('/images/icon/logo1.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">中介信息</span>
+                </div>
+            </a>
+        </div>
+        <div class="right-side" id="app">
+            <div class="right-header">首页 &gt; 机构检查公示</div>
+            <div class="form-group"></div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <input type="text" class="form-control" placeholder="请输入机构名称或编号" v-model="searchText">
+                </div>
+                <div class="col-md-5">
+                    <el-switch
+                            v-model="sortStarLevel"
+                            active-color="#3e8de5"
+                            active-text="按星级排序"
+                            inactive-color="#d4d4d4"
+                            inactive-text="不排序">
+                    </el-switch>
+                    <button type="button" class="btn btn-primary" @click="search()">查询</button>
+                </div>
+            </div>
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                <th>机构编号</th>
+                <th>机构名称</th>
+                <th>星级</th>
+                <th>操作</th>
+                </thead>
+                <tbody>
+                <tr v-for="companyPart in companyParts.slice((currentPage-1)*pageSize,currentPage*pageSize)">
+                    <td v-text="companyPart.compNo"></td>
+                    <td v-text="companyPart.compName"></td>
+                    <td v-text="companyPart.starLevel"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @click="detail(companyPart.compNo)">详细信息</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div style="clear: both"></div>
+            <div class="block" style="float: right">
+                <span class="demonstration">共{{total}}条记录</span>
+                <el-pagination
+                        layout="prev, pager, next"
+                        @current-change="current_change"
+                        :total="total*10/pageSize">
+                </el-pagination>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            companyParts: [],
+            searchText: "",
+            sortStarLevel: false,
+            currentPage: 1,
+            total: 0,
+            pageSize: 10,
+        },
+        created: function () {
+            this.getAllCompanyParts()
+        },
+        methods: {
+            getAllCompanyParts: function (condition) {
+                var that = this;
+                var data = null;
+                if (condition==null || condition==="") {
+                    data = {
+                        condition: null,
+                        sortStarLevel: that.sortStarLevel
+                    }
+                } else {
+                    data = {
+                        condition: condition,
+                        sortStarLevel: that.sortStarLevel
+                    }
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/company/getCompanyParts",
+                    dataType: "json",
+                    data: data,
+                    success: function (companyParts) {
+                        that.companyParts = companyParts;
+                        that.total = companyParts.length;
+                        var lastPage = Math.ceil(that.total/that.pageSize);
+                        if (that.currentPage > lastPage) {
+                            if (lastPage === 0) {
+                                lastPage = 1;
+                            }
+                            that.currentPage = lastPage;
+                        }
+                    },
+                    error: function () {
+                        alert("请检查网络状态");
+                    }
+                })
+            },
+            search: function() {
+                this.getAllCompanyParts(this.searchText);
+            },
+            detail: function (compNo) {
+                window.location.href = "/information/companyDetailPage/"+String(compNo);
+            },
+            current_change: function (currentPage) {
+                var that = this;
+                that.currentPage = currentPage;
+            }
+        }
+    })
+</script>
+</html>

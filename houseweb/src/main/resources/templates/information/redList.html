@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>经纪机构信息平台</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/iconfont.css" />
+    <link rel="stylesheet" href="/css/elementui.css">
+    <link rel="stylesheet" href="/css/information.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body style="background:#f1f1f1 ">
+<nav class="navbar navbar-default navbar-static-top" style="min-width: 1200px">
+    <div style="width:1200px;margin:0 auto">
+        <!-- 下拉触发按钮 以及 商标-->
+        <div class="navbar-header" style="width: 156px;float:left;">
+            <a class="navbar-brand" href="#">二手房交易平台</a>
+        </div>
+        <ul class="my-nav">
+            <li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+            <li><a href="/information">机构人员信息</a></li>
+            <li><a href="/information/compPunishment">行业管理公示</a></li>
+            <li><a href="/information/agentCommentPage">服务评价公示</a></li>
+            <li class="active"><a href="/information/redList">红黑名单公示</a></li>
+            <li><a href="/information/lawNews">政策法规</a></li>
+            <li><a href="/information/agentContractSearch">签约排行</a></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+</nav>
+    <div style="background-color: #f1f1f1;position: absolute;left: 0;right: 0;top:50px;bottom: 0">
+    <div style="width: 1200px;margin:60px auto">
+        <div class="left-side">
+            <a href="/information/redList" >
+                <div class="sub active" style="background-image: url('/images/icon/logo3.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">红名单</span>
+                </div>
+            </a>
+            <a href="/information/blackList" >
+                <div class="sub" style="color:#666;background-image: url('/images/icon/logo4.png');background-repeat: no-repeat;background-position: 14px center;">
+                    <span style="line-height: 50px;text-align: center">黑名单</span>
+                </div>
+            </a>
+        </div>
+        <div class="right-side" id="app">
+            <div class="right-header">首页 &gt; 红名单公示</div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <input type="text" class="form-control" placeholder="请输入中介名称或编号" v-model="keyword">
+                </div>
+                <div class="col-md-5">
+                    <button type="button" class="btn btn-primary" @click="search">查询</button>
+                </div>
+            </div>
+            <div style="margin-top: 10px" v-cloak>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>被表扬人员</th>
+                        <th>被表扬事迹</th>
+                        <th>日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in dataShow" @click="detail(item.id)">
+                        <td v-text="item.name"></td>
+                        <td v-text="item.reason"></td>
+                        <td v-text="item.created"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center" v-if="dataShow.length==0">暂无记录</div>
+            </div>
+            <div style="position: absolute;bottom: 0;right: 0">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[5, 10, 20, 40]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="redList.length">
+                </el-pagination>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+    </div>
+</body>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el:'#app',
+        data:{
+            redList:[],
+            dataShow:[],
+            pageSize:5,
+            currentPage:1,
+            keyword:''
+        },
+        created(){
+            var that = this
+            $.ajax({
+                url:'/information/getRedList',
+                dataType:'json',
+                success:function (data) {
+                    that.redList = data
+                    that.dataShow = data.slice(0,5)
+                }
+            })
+        },
+        methods:{
+            handleSizeChange: function (size) {
+                this.pageSize = size;
+                this.dataShow = this.redList.slice(size*(this.currentPage-1),size*(this.currentPage))
+                console.log(this.pageSize)  //每页下拉显示数据
+            },
+            handleCurrentChange: function(currentPage){
+                let size = this.pageSize
+                this.currentPage = currentPage;
+                this.dataShow = this.redList.slice(size*(currentPage-1),size*(currentPage))
+            },search(){
+                var that = this
+                $.ajax({
+                    url:'/information/getRedList',
+                    type:'post',
+                    data:{
+                        kw:that.keyword.trim()?that.keyword.trim():''
+                    },success:function (data) {
+                        that.redList = data
+                        that.dataShow = data.slice(0,5)
+                        that.keyword = ''
+                    },error:function () {
+                        swal('网络发生了点问题')
+                    }
+                })
+            },
+            detail(id){
+                window.location.href = '/information/redDetail?id=' + id;
+            }
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hnu.houseweb.dao.BlackListMapper">
+  <resultMap id="BaseResultMap" type="hnu.houseweb.entity.BlackList">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="adminNo" jdbcType="INTEGER" property="adminNo" />
+    <result column="workNo" jdbcType="INTEGER" property="workNo" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="created" jdbcType="DATE" property="created" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,adminNo, workNo, reason, created
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="hnu.houseweb.entity.BlackListKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from blackList
+    where adminNo = #{adminNo,jdbcType=INTEGER}
+      and workNo = #{workNo,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="String">
+    delete from blackList
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="hnu.houseweb.entity.BlackList">
+    insert into blackList (id,adminNo, workNo, reason,
+      created)
+    values (#{id,jdbcType=VARCHAR}, #{adminNo,jdbcType=INTEGER}, #{workNo,jdbcType=INTEGER}, #{reason,jdbcType=VARCHAR},
+      #{created,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="hnu.houseweb.entity.BlackList">
+    insert into blackList
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="adminNo != null">
+        adminNo,
+      </if>
+      <if test="workNo != null">
+        workNo,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="adminNo != null">
+        #{adminNo,jdbcType=INTEGER},
+      </if>
+      <if test="workNo != null">
+        #{workNo,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="hnu.houseweb.entity.BlackList">
+    update blackList
+    <set>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="hnu.houseweb.entity.BlackList">
+    update blackList
+    set reason = #{reason,jdbcType=VARCHAR},
+      created = #{created,jdbcType=DATE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
